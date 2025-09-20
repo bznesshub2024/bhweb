@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fleek Mart</title>
+    
+    <!-- Font awesome -->
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <!-- SmartMenus jQuery Bootstrap Addon CSS -->
+    <link href="css/jquery.smartmenus.bootstrap.css" rel="stylesheet">
+    <!-- Product view slider -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.simpleLens.css">
+    <!-- slick slider -->
+    <link rel="stylesheet" type="text/css" href="css/slick.css">
+    <!-- price picker slider -->
+    <link rel="stylesheet" type="text/css" href="css/nouislider.css">
+    <!-- Theme color -->
+    <link id="switcher" href="css/theme-color/default-theme.css" rel="stylesheet">
+    <!-- Top Slider CSS -->
+    <link href="css/sequence-theme.modern-slide-in.css" rel="stylesheet" media="all">
+    <!-- Main style sheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <!-- Google Font -->
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+    
+
+  </head>
+
+  <script>
+        function call_register(){
+        // alert("call");
+        var phonev  = $("#phone").val();
+      alert("phone  "+phonev);
+      $.ajax({
+        method: 'POST',
+        url: 'https://fleekmart.com/API/index.php/auth/signup',
+          headers: {
+        'X-API-KEY':'ysh2zka3fhcn4hsdkcn',
+        },
+              data: {
+                language: "default",
+                devicetype:"1",
+        phone :  phonev 
+          
+              },
+        success: function(response){
+          console.log(response);
+          alert("response is "+response);
+           var parsedJSON = JSON.parse(response);
+                       alert("status is" +parsedJSON );      
+                    
+        },
+      
+            
+      });
+         
+        }
+</script> 
+  <body>
+    
+    <!-- Start header section -->
+    <header id="aa-header">
+      <!-- start header top  -->
+      <div class="aa-header-top">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="aa-header-top-area">
+                <!-- start header top left -->
+                <div class="aa-header-top-left">
+                  <!-- start language -->
+                  <div class="aa-language">
+                    <p><span class="fa fa-envelope"></span>Info@whereicanfindhappiness.com</p>
+                  </div>
+                  <!-- / language -->
+                  <!-- start currency -->
+                  
+                  <!-- / currency -->
+                  <!-- start cellphone -->
+                  <div class="cellphone hidden-xs">
+                    <p><span class="fa fa-phone"></span>Call : 00011122233</p>
+                  </div>
+                  <!-- / cellphone -->
+                </div>
+                <!-- / header top left -->
+                <div class="aa-header-top-right">
+                  <ul class="aa-head-top-nav-right">
+                    
+                    <li class="hidden-xs"><a href="#"><span class="fa fa-shopping-basket"></span></a></li>
+                    <li class="hidden-xs"><a href="#"><span class="fa fa-heart"></span></a></li>
+                    
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- / header top  -->
+      <!-- start header bottom  -->
+      <div class="aa-header-bottom">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="aa-header-bottom-area">
+                <!-- logo  -->
+                <div class="aa-logo">
+                  <!-- Text based logo -->
+                  <a href="#">
+                    <h1>Your <strong>Logo</strong> <span></span></h1>
+                  </a>
+                  <!-- img based logo -->
+                  <!-- <a href="index.html"><img src="img/logo.jpg" alt="logo img"></a> -->
+                </div>
+                <!-- / logo  -->
+                <!-- cart box -->
+                <div class="aa-cartbox aa-mailbox">
+                  <a class="aa-mail" href="#">
+                    <span><a href="" data-toggle="modal" data-target="#login-modal" style="color: #fff;">Login</a></span>
+                    
+                  </a>
+                  
+                  
+                  
+                </div>
+                <!-- / cart box -->
+                <!-- search box -->
+                <div class="aa-search-box">
+                  <form action="">
+                    <input type="text" name="" id="" placeholder="Search Here ">
+                    <button type="submit"><span class="fa fa-search"></span></button>
+                  </form>
+                </div>
+                <!-- / search box -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- / header bottom  -->
+    </header>
+    <!-- / header section -->
+    <!-- menu -->
+    <section id="menu">
+      <div class="container">
+        <div class="menu-area">
+          <!-- Navbar -->
+          <div class="navbar navbar-default" role="navigation">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              </button>
+            </div>
+            <div class="navbar-collapse collapse">
+              <!-- Left nav -->
+              <ul class="nav navbar-nav">
+                <li><a href="#">Category 1 </a></li>
+                <li><a href="#">Category 2  <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Category 1</a></li>
+                  <li><a href="#">Category 2</a></li>
+                  <li><a href="#">Category 3</a></li>
+                  <li><a href="#">Category 4</a></li>
+                  <li><a href="#">Category 5</a></li>
+                  <li><a href="#">Category 6</a></li>
+                  <li><a href="#">Category 7</a></li>
+                  <li><a href="#">Category 8</a></li>
+                  <li><a href="#">Category 9 <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Category A</a></li>
+                    <li><a href="#">Category B</a></li>
+                    <li><a href="#">Category C</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li><a href="#">Category 3  <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Category 1</a></li>
+              <li><a href="#">Category 2</a></li>
+              <li><a href="#">Category 3</a></li>
+              <li><a href="#">Category 4</a></li>
+              <li><a href="#">Category 5</a></li>
+              <li><a href="#">Category 6</a></li>
+              <li><a href="#">Category 7</a></li>
+              <li><a href="#">Category 8</a></li>
+              <li><a href="#">And more.. <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Category A</a></li>
+                <li><a href="#">Category B</a></li>
+                <li><a href="#">Category C</a></li>
+                <li><a href="#">And more.. <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Category 1</a></li>
+                  <li><a href="#">Category 2</a></li>
+                  <li><a href="#">Category 3</a></li>
+                  <li><a href="#">Category 4</a></li>
+                  <li><a href="#">Category 5</a></li>
+                  <li><a href="#">Category 6</a></li>
+                  <li><a href="#">Category 7</a></li>
+                  <li><a href="#">Category 8</a></li>
+                  <li class="disabled"><a class="disabled" href="#">Category 9</a></li>
+                  
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#">Category 4  <span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li><a href="#">Category 1</a></li>
+        <li><a href="#">Category 2</a></li>
+        <li><a href="#">Category 3</a></li>
+        <li><a href="#">Category 4</a></li>
+        <li><a href="#">Category 5</a></li>
+        <li><a href="#">Category 6</a></li>
+        <li><a href="#">Category 7</a></li>
+        <li><a href="#">Category 8</a></li>
+        <li><a href="#">And more.. <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Category A</a></li>
+          <li><a href="#">Category B</a></li>
+          <li><a href="#">Category C</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#">Category 5 </a></li>
+  <li><a href="#">Category 6  <span class="caret"></span></a>
+  <ul class="dropdown-menu">
+    <li><a href="#">Camera</a></li>
+    <li><a href="#">Mobile</a></li>
+    <li><a href="#">Tablet</a></li>
+    <li><a href="#">Laptop</a></li>
+    <li><a href="#">Accesories</a></li>
+  </ul>
+</li>
+<li><a href="#">Category 7 </a></li>
+<li><a href="#">Category 8  <span class="caret"></span></a>
+<ul class="dropdown-menu">
+  <li><a href="#">Category A</a></li>
+  <li><a href="#">Category B</a></li>
+  <li><a href="#">Category C</a></li>
+</ul>
+</li>
+<li><a href="#">Category 9  <span class="caret"></span></a>
+<ul class="dropdown-menu">
+<li><a href="#">Category A</a></li>
+<li><a href="#">Category B</a></li>
+<li><a href="#">Category C</a></li>
+</ul>
+</li>
+</ul>
+</div><!--/.nav-collapse -->
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- / menu -->
+<!-- Cart view section -->
+<section id="aa-myaccount">
+<!--    <div class="container"> -->
+<div class="row">
+<div class="col-md-12">
+<div class="aa-myaccount-area">
+<div class="row">
+<div class="col-md-5">
+<div class="aa-sidebar-img">
+<img src="img/flag/Rectangle 393.png" style="width:80%;">
+
+</div>
+</div>
+<div class="col-md-4" style="padding-top: 100px;">
+
+<h4>Create an Account</h4>
+<div class="aa-myaccount-login">
+<p class="aa-lost-following" style="text-align:center;"><a href="#">Login with the following</a></p>
+<div class="social-icon">
+<button type="button"><img src="img/flag/google.png"></button>
+
+<button><img src="img/flag/facebook.png"></button>
+<button type="button"><img src="img/flag/apple.png"></button>
+</div>
+<form action="" class="aa-login-form">
+<!--  <label for=""><span></span></label> -->
+<div class="row">
+  <div class="col-md-6">
+    <input type="text" placeholder="First Name*">
+  </div>
+  <div class="col-md-6">
+    <input type="text" placeholder="Last Name*">
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <input type="text" placeholder="Email">
+  </div>
+  <div class="col-md-6">
+    <input type="tel" placeholder="Phone Number">
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="aa-checkout-single-bill">
+      <select>
+        <option value="0">Select Region</option>
+        <option value="1">Australia</option>
+        <option value="2">Afganistan</option>
+        <option value="3">Bangladesh</option>
+        <option value="4">Belgium</option>
+        <option value="5">Brazil</option>
+        <option value="6">Canada</option>
+        <option value="7">China</option>
+        <option value="8">Denmark</option>
+        <option value="9">Egypt</option>
+        <option value="10">India</option>
+        <option value="11">Iran</option>
+        <option value="12">Israel</option>
+        <option value="13">Mexico</option>
+        <option value="14">UAE</option>
+        <option value="15">UK</option>
+        <option value="16">USA</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <input type="text" placeholder="Enter Zip Code">
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    
+    <textarea cols="8" rows="3">Type Address</textarea>
+    
+  </div>
+</div>
+<!--  <label for="">Password<span>*</span></label> -->
+<div class="row">
+  <div class="col-md-6">
+    <input type="password" placeholder="Password">
+  </div>
+  <div class="col-md-6">
+    <input type="confirmpassword" placeholder="Confirm Password">
+  </div>
+</div>
+
+
+<button type="submit" class="aa-browse-btn" href="javascript:void(0)" onclick="call_signup(); return false;">Sign Up</button><br>
+
+
+
+
+
+</form>
+
+
+</div>
+</div>
+<div class="col-md-3">
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- / Cart view section -->
+<!-- footer -->
+<footer id="aa-footer">
+<!-- footer bottom -->
+<div class="aa-footer-top">
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<div class="aa-footer-top-area">
+<div class="row">
+<div class="col-md-4 col-sm-6">
+  <div class="aa-footer-widget">
+    <h3><b>Your Logo</b></h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
+    <div class="aa-subscribe-area">
+      
+      <form action="" class="aa-subscribe-form">
+        <input type="email" name="" id="" placeholder="Enter your Email">
+        <input type="submit" value="Subscribe">
+      </form>
+    </div>
+    <!--  <ul class="aa-footer-nav">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Our Services</a></li>
+      <li><a href="#">Our Products</a></li>
+      <li><a href="#">About Us</a></li>
+      <li><a href="#">Contact Us</a></li>
+    </ul> -->
+  </div>
+</div>
+<div class="col-md-4 col-sm-6">
+  <div class="aa-footer-widget">
+    <div class="aa-footer-widget">
+      <h3>Quicklinks</h3>
+      <ul class="aa-footer-nav">
+        <li><a href="#">Product Catelogue</a></li>
+        <li><a href="#">Categories</a></li>
+        <li><a href="#">Help & Privacy</a></li>
+        <li><a href="#">Refund Option</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="col-md-4 col-sm-6">
+  <div class="aa-footer-widget">
+    <div class="aa-footer-widget">
+      <h3>About us</h3>
+      <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+      standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- footer-bottom -->
+<div class="aa-footer-bottom">
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<div class="col-md-4 col-sm-6">
+<div class="aa-footer-bottom-area">
+<p> <a href="#">Download The App</a></p>
+</div>
+</div>
+<div class="col-md-4 col-sm-6">
+<div class="aa-footer-social">
+<a href="#"><span class="fa fa-facebook"></span></a>
+
+<a href="#"><span class="fa fa-linkedin"></span></a>
+<a href="#"><span class="fa fa-github"></span></a>
+<a href="#"><span class="fa fa-twitter"></span></a>
+</div>
+</div>
+<div class="col-md-4 col-sm-6">
+<address>
+<p><span class="fa fa-envelope"></span>Info@whereicanfindhappiness.com</p>
+<p><span class="fa fa-phone"></span>Call : 04 3440 6192</p>
+</address>
+</div>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<!-- / footer -->
+<!-- Login Modal -->
+<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-body">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h4>Login or Register</h4>
+<form class="aa-login-form" action="">
+<label for="">Username or Email address<span>*</span></label>
+<input type="text" placeholder="Username or email">
+<label for="">Password<span>*</span></label>
+<input type="password" placeholder="Password">
+<button class="aa-browse-btn" type="submit">Login</button>
+<label for="rememberme" class="rememberme"><input type="checkbox" id="rememberme"> Remember me </label>
+<p class="aa-lost-password"><a href="#">Lost your password?</a></p>
+<div class="aa-register-now">
+Don't have an account?<a href="account.html">Register now!</a>
+</div>
+</form>
+</div>
+</div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div>
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.js"></script>
+<!-- SmartMenus jQuery plugin -->
+<script type="text/javascript" src="js/jquery.smartmenus.js"></script>
+<!-- SmartMenus jQuery Bootstrap Addon -->
+<script type="text/javascript" src="js/jquery.smartmenus.bootstrap.js"></script>
+<!-- To Slider JS -->
+<script src="js/sequence.js"></script>
+<script src="js/sequence-theme.modern-slide-in.js"></script>
+<!-- Product view slider -->
+<script type="text/javascript" src="js/jquery.simpleGallery.js"></script>
+<script type="text/javascript" src="js/jquery.simpleLens.js"></script>
+<!-- slick slider -->
+<script type="text/javascript" src="js/slick.js"></script>
+<!-- Price picker slider -->
+<script type="text/javascript" src="js/nouislider.js"></script>
+<!-- Custom js -->
+<script src="js/custom.js"></script>
+
+</body>
+</html>

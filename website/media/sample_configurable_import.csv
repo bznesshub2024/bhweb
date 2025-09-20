@@ -1,0 +1,5 @@
+name,sku,url_key,attribute_set,product_type,categories,short_description,description,mrp,price,tax_class,qty,stock_status,visibility,country_of_manufacture,hsn_code,product_purchase_limit,brand,return_policy,configurable_variations,remarks,youtube_video_link,related_skus,upsell_skus
+T-Shirt - Black,t-shirt-black,t-shirt-black,ad,simple,"Electronics,eqwqwe,Mobile",fefefwefwegwegwegwegwegwegwegwgqwgqwegwegwqegwe,gwegqweeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeewrqwgergfdvdfvdvdvdvdvdvvgwrgwgeg,10,5,ve2,5,In Stock,Search,india,31313,2,All Out,Samsung,,mowe w,,,
+T-Shirt - Red,t-shirt-red,t-shirt-red,ad,simple,mobile,fsaf,wqwgewgew,20,5,ve2,5,Out of Stock,search,india,3123,,All Out,,,,,,
+T-Shirt,t-shirt,t-shirt,ad,configurable,"Electronics,eqwqwe,Mobile",fsf,ggwegwegw,30,5,ve2,2,In Stock,"Catalog, Search",india,312,,ve,,"sku=shirt-black-xl,color=Black,size=xl",,,,
+T-Shirt,t-shirt,t-shirt,ad,configurable,"Electronics,eqwqwe,Mobile",gsdg,gwegwegweg,40,35,ve2,2,In Stock,"Catalog, Search",india,312,,ve,,"sku=shirt-red-xl,color=Red1,size=xl",,,,
