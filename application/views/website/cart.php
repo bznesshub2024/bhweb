@@ -122,6 +122,19 @@ label#Color {
 										<a class="ms-3" href="<?php echo base_url .'product/'. $cart_product['web_url']; ?>"><img src="<?php echo weburl . 'media/' . $cart_product['imgurl']; ?>" alt="<?php echo $cart_product['name']; ?>"  class="product-thumb" /></a>
 										<div class="cart-body">
 
+<a href="javascript:void(0);" class="d-sm-none0" onclick="add_to_wishlist(event,'<?php echo $cart_product['prodid'] ?>','<?php echo $cart_product['sku'] ?>','<?php echo $cart_product['vendor_id'] ?>','<?php echo $this->session->userdata('user_id'); ?>',1,'',2)" style="    float: right;
+    margin-top: 7px;
+    margin-right: 12px;">
+    <?php
+if(check_wishlist($cart_product['prodid'], $this->session->userdata('user_id')))
+{
+	echo '<i class="fa fa-heart"></i>';
+}else{
+	echo '<i class="far fa-heart"></i>';
+}
+?>
+ Add to Wishlist</a>
+
 											<!-- Delete Cart Button -->
 											<a onclick="delete_cart('<?php echo $cart_product['prodid']; ?>','','<?php echo $cart['qoute_id']; ?>')" class="remove d-sm-none0" style="position:relative;top:6px;right:11px;">
 												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="" class="bi bi-trash" viewBox="0 0 16 16">

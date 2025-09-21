@@ -1,6 +1,32 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 
+
+
+if (!function_exists('check_wishlist')) {
+
+   
+    function check_wishlist($product_id, $user_id)
+    {
+        
+        $CI =& get_instance(); // get CodeIgniter instance
+
+        $CI->db->where('user_id', $user_id);
+        $CI->db->where('prod_id', $product_id);
+        $query = $CI->db->get('wishlistdetails'); // table name
+
+        if($query->num_rows() > 0){
+            return 1;
+        } else {
+            return 0;
+        }
+
+        //print_r([$product_id, $user_id]);
+        //return $html;
+    }
+}
+
+
 if ( ! function_exists('manager'))
 {
 	function manager($total_rows, $per_page_item) {
