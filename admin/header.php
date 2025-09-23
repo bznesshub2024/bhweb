@@ -305,6 +305,9 @@
                                         <li class="<?= strpos($_SERVER['PHP_SELF'], 'brand.php') !== false ? "menuitem-active" : "" ?>">
                                             <a href="brand.php"> Brand</a>
                                         </li>
+                                        <li class="<?= strpos($_SERVER['PHP_SELF'], 'coupancode.php') !== false ? "menuitem-active" : "" ?>">
+                                            <a href="coupancode.php"> Coupon Code</a>
+                                        </li>
                                     <?php  //} ?>
                                     <?php /* if ($Common_Function->user_module_premission($_SESSION, $CouponCode)) { ?>
                                         <li class="<?= strpos($_SERVER['PHP_SELF'], 'coupancode.php') !== false ? "menuitem-active" : "" ?>">

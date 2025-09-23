@@ -273,7 +273,8 @@ class Checkout_model extends CI_Model
 				}
 				
 				$total_shipping_fee += $shiping_detail;*/
-				
+							//print_r([ preg_replace('/[^\d]/', '', $product_detail['price1']) , intval($qty),]);die;
+ $product_detail['price1']=preg_replace('/[^\d]/', '', $product_detail['price1']);
 				$shipping_data = $this->calculateShippingFee($seller_pincode, $shipping_pincode, '10', '10','10', '300', $payment_type, $product_detail['price1'] / intval($qty),intval($qty));
 					//print_r($shipping_data);
 					$shipping_data_array[] = array(
@@ -292,13 +293,19 @@ class Checkout_model extends CI_Model
 				
 				
 				// Razorpay API Credentials
+				// $key_id = 'rzp_test_R6HPHmrG7B2oge';
+				// $key_secret = 'VIdcyRcV3TGDVRihpD3A8GYQ';
+					
 				$key_id = 'rzp_live_oVzpJnJRDQttrF';
 				$key_secret = 'j3wOmrEPLY5St6hONRSKTv05';
+
+
+$total_price_value = ($total_price + $shipping - round($coupon_discount, 0)) - round($default_discount,0);
 
 				// Order details
 				$data = [
 					//"amount" => ($product_detail['price1'] + $shipping) * 100, // Amount in paise (e.g., 50000 = ₹500)
-					"amount" => 1 * 100, // Amount in paise (e.g., 50000 = ₹500)
+					"amount" => $total_price_value * 100, // Amount in paise (e.g., 50000 = ₹500)
 					"currency" => "INR",
 					"receipt" => "receipt#1",
 					"payment_capture" => 1 // Capture payment automatically

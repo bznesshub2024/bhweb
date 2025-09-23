@@ -294,14 +294,14 @@
 										<h5 style="color:#438F29;padding-bottom:0;border-bottom:none;">-<span id="default_discount"><?php echo $checkout['default_discount']; ?></span></h5>
 									</li>
 								</ul>
-								<!--<ul class="discount">
+								<ul class="discount">
 									<li>
 										<h6>Coupon Discount</h6>
 									</li>
 									<li>
 										<h6>-<span id="coupo_discount_value"><?php // echo $checkout['coupon_discount']; ?></span></h6>
 									</li>
-								</ul>-->
+								</ul>
 								<ul class="tax">
 									<li>
 										<h6>Tax (Included)</h6>
@@ -318,13 +318,11 @@
 										<h6><span id="shipping_fee" class="text-dark"><?php echo $checkout['shipping_fee']; ?></span></h6>
 									</li>
 								</ul>
-								<form style="display:none;">
 									<div class="input-group">
 										<input type="text" class="form-control" name="coupon_code" id="coupon_code" placeholder="Discount Code" />
 										<span onclick="get_checkout_data()" class="input-group-text btn btn-default btn-radious">Apply</span>
 									</div>
 									<span id="coupon_message" style="color:#438F29;font-weight:600"></span>
-								</form>
 							</div>
 							<ul class="total">
 								<li>
@@ -768,6 +766,7 @@
 
 		function get_checkout_data(user_pincode) {
 			//alert(user_pincode);
+			var user_pincode = $('#pincode').val();
 			$('#coupon_message').html('');
 			var input_code = $('#coupon_code').val();
 			var city = $("#city option:selected").val();
@@ -1057,21 +1056,25 @@ async function place_order_data(ele) {
 					url: site_url + "checkout",
 					data: {
 						language: default_language,
-						coupon_code: '',
+						coupon_code: coupon_code,
 						shipping_pincode: $("#pincode").val(),
 						payment_type: payment_type,
 						payment_method: $('input[name="flexRadioDefault"]:checked').val(),
 						[csrfName]: csrfHash
 					},
 					success: function (response) {
-						if (response.status) {
-							var amount = response.Information.payable_amount_value - $('#default_discount').text();
-							var pay_orderId = response.Information.pay_orderId;
 
+
+						if (response.status) {
+							//var amount = response.Information.payable_amount_value - $('#default_discount').text();
+							var amount = response.Information.total_price_value;
+							var pay_orderId = response.Information.pay_orderId;
+// console.log('response>>>>>>>>>>>>.',response);
+// return ;
 							var options = {
-								//key: 'rzp_test_qYpWkw3GxxEIPA',
+								//key: 'rzp_test_R6HPHmrG7B2oge',
 								key: 'rzp_live_oVzpJnJRDQttrF',
-								amount: 1 * 100, // Amount in paise
+								amount: amount * 100, // Amount in paise
 								currency: 'INR',
 								name: 'Bznesshub',
 								description: 'Place Order',
