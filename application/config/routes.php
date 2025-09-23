@@ -187,6 +187,9 @@ $route['set_language'] = 'Home/set_language';
 $route['myaddress'] = 'Home/myaddress';
 $route['notification'] = 'Home/notification';
 $route['personal_info'] = 'Home/personal_info';
+
+
+
 $route['send_whatsapp_msg'] = 'Home/send_whatsapp_msg';
 $route['thankyou_seller'] = 'Home/thankyou_seller';
 $route['tree_view'] = 'Home/tree_view';
@@ -199,6 +202,10 @@ $route['add_user_details'] = 'Home/add_user_details';
 // User Wallet
 $route['user-wallet'] = 'WalletController/getIndexPage';
 $route['user-wallet-transactions'] = 'WalletController/getuserWalletTransaction';
+$route['add_wallet'] = 'WalletController/add_wallet';
+$route['add_wallet_create'] = 'WalletController/add_wallet_create';
+$route['add_wallet_verify'] = 'WalletController/add_wallet_verify';
+
 $route['user_wallet_transactions/(:any)'] = 'WalletController/user_wallet_transaction/$1';
 $route['withdrow_money'] = 'WalletController/withdrow_money';
 $route['search_wallet_data'] = 'WalletController/search_wallet_data';

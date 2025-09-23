@@ -188,7 +188,7 @@ class Home extends REST_Controller {
 	{
 		$this->load->view('website/personal_info.php',$this->data);
 	}
-	
+
 	public function register_get()
 	{
 		$this->load->view('website/register.php',$this->data);  // ye view/website folder hai

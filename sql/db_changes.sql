@@ -1,0 +1,1 @@
+ALTER TABLE `wallet_transaction_history` CHANGE `payment_type` `payment_type` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '0- prod. commission / 1 - membership reward / 2 - checkout_discount / 3- withdwrowal / 4 - Seller commission,5 add money to wallet';

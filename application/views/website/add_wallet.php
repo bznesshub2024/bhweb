@@ -120,7 +120,7 @@
                             <div class="card-body">
                                 <h4 class="card-title">Wallet Balance
 
-<a class="btn btn-primary btn-xm rounded text-white" href="<?php echo base_url ?>add_wallet"><i class="bx bx-wallet me-2"></i>Add to Wallet</a>
+<a class="btn btn-primary btn-xm rounded text-white" href="<?php echo base_url ?>user-wallet"><i class="bx bx-wallet me-2"></i>Withdrawal Money</a>
 
                                 </h4>
                                 <h3 class="card-title mb-2 fw-bolder">Rs <?php echo round($wallet['amount'],0); ?></h3>
@@ -137,7 +137,7 @@
                     <div class="add_money_box my-4 col-sm-12">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Withdrawal Money to your Account</h4>
+                                <h4 class="card-title">Add Money to your Wallet</h4>
                                 <form id="formoid" action="" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                                     <div class="form-group">
@@ -168,7 +168,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <button class="btn btn-primary btn-lg rounded w-100 my-5" name="submit" type="submit">Withdraw Money</button>
+                                    <button class="btn btn-primary btn-lg rounded w-100 my-5" name="submit" type="submit">Add Money</button>
                                     <span class="text-success"><?= $this->session->flashdata("withdrow_success_msg");  ?></span>
                                 </form>
                             </div>
@@ -231,7 +231,7 @@
 
     <?php include("include/footer.php") ?>
     <?php include("include/script.php") ?>
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
 		function addMoneyToWalletField(amount) {
             let sel = document.getElementById('moneyinputBox');
@@ -245,131 +245,107 @@
             }
         }
 
-        // function makeSameHeight() {
-            // left_box = document.getElementById('left_box')
-            // right_box = document.getElementById('right_box')
 
-            // right_box.style.height = left_box.offsetHeight - 65 + 'px';
-        // }
+var csrfName = $(".txt_csrfname").attr("name"); // CSRF token name
+var csrfHash = $(".txt_csrfname").val();        // CSRF hash
 
-        // window.addEventListener('load', makeSameHeight)
+$("#formoid").submit(function (event) {
+    event.preventDefault(); // stop normal form submission
+    $("#amount_error").empty();
 
-		$("#formoid").submit(function(event) {
-			event.preventDefault();
-			var amount = $("#moneyinputBox").val();
-			var wallet_balance = $("#wallet_balance").val();
-			var bank_details = $("#bank_details").val();
-			var bonus_wallet_balance = $("#bonus_wallet_balance").val();
-			
-			var refer_bonus = 0;
-			if(bonus_wallet_balance != 0)
-			{
-				refer_bonus = wallet_balance - bonus_wallet_balance;
-				
-				if (amount == "" || amount == null) {
-				$("#amount_error").text("Please Add Amount.");
-				}
-				else if (amount == 0) {
-					$("#amount_error").text("Amont Not Be 0");
-				}
-				else if (bank_details == 0 || bank_details == null ) {
-					$("#amount_error").text("Please First Add Your Bank Details.Go to My Profile -> Bank Account ");
-				} 
-				else if (parseInt(refer_bonus) < parseInt(amount)) {
-					$("#amount_error").text("You can withdraw only Rs "+ refer_bonus +" other balance you can use on product purchase.");
-				}
-				else {
-			
+    var amount = $("#moneyinputBox").val();
+    var wallet_balance = $("#wallet_balance").val();
+    var bank_details = $("#bank_details").val();
+    var bonus_wallet_balance = $("#bonus_wallet_balance").val();
+    var refer_bonus = 0;
 
-					$.ajax({
-						method: "get",
-						url: site_url + "withdrow_money",
-						data: {
-							language: default_language,
-							amount: amount,
-							[csrfName]: csrfHash,
-						},
-						success: function(response) {
-								Toastify({
-								text: "Withdrawal Request Add Successfully.",
-								duration: 1500,
-								newWindow: false,
-								close: false,
-								gravity: "top",
-								position: "right",
-								stopOnFocus: true,
-								style: {
-									background: "linear-gradient(to right, #ff6600, #ff6600)",
-								},
-								onClick: function() {
-								//location.reload();
-							}
-							}).showToast();
-							setTimeout(function() {
-								location.reload();
-							}, 2000);
-							
-							//location.reload();
-						},
-					});
-				}
-				
-				
-			}
-			else
-			{
-				if (amount == "" || amount == null) {
-				$("#amount_error").text("Please Add Amount.");
-				}
-				else if (amount == 0) {
-					$("#amount_error").text("Amont Not Be 0");
-				}
-				else if (bank_details == 0 || bank_details == null ) {
-					$("#amount_error").text("Please First Add Your Bank Details.Go to My Profile -> Bank Account");
-				} 
-				else if (parseInt(wallet_balance) <= parseInt(amount)) {
-					$("#amount_error").text("amount should not be more than your wallet balance.");
-				} else {
-			
+    // ✅ Validation
+    if (amount == "" || amount == null) {
+        $("#amount_error").text("Please Add Amount.");
+        return;
+    } else if (amount == 0) {
+        $("#amount_error").text("Amount Cannot Be 0");
+        return;
+    }
 
-					$.ajax({
-						method: "get",
-						url: site_url + "withdrow_money",
-						data: {
-							language: default_language,
-							amount: amount,
-							[csrfName]: csrfHash,
-						},
-						success: function(response) {
-								Toastify({
-								text: "Withdrawal Request Add Successfully.",
-								duration: 1500,
-								newWindow: false,
-								close: false,
-								gravity: "top",
-								position: "right",
-								stopOnFocus: true,
-								style: {
-									background: "linear-gradient(to right, #ff6600, #ff6600)",
-								},
-								onClick: function() {
-								//location.reload();
-							}
-							}).showToast();
-							setTimeout(function() {
-								location.reload();
-							}, 2000);
-							
-							//location.reload();
-						},
-					});
-				}
-			}
+    // ✅ Create Razorpay Order (via CodeIgniter Controller)
+    $.ajax({
+        url: "<?php echo base_url('add_wallet_create'); ?>",
+        type: "POST",
+        data: {
+            amount: amount,
+            [csrfName]: csrfHash // send CSRF
+        },
+        dataType: "json",
+        success: function (order) {
+            // update CSRF token for next request
+var csrfName = $(".txt_csrfname").attr("name"); // CSRF token name
+var csrfHash = $(".txt_csrfname").val();        // CSRF hash
 
-			
-		});
+            var options = {
+                //"key": "rzp_test_qYpWkw3GxxEIPA", 
+                "key": "rzp_live_oVzpJnJRDQttrF",
+                "amount": amount * 100, // Amount in paise
+                "currency": "INR",
+                "name": "Bznesshub",
+                "description": "Wallet Topup",
+                "order_id": order.id, // Razorpay order_id from backend
+                "handler": function (response) {
+                    console.log(response);
 
-    </script>
+                    // ✅ Verify Payment
+                     $.ajax({
+                        url: "<?php echo base_url('add_wallet_verify'); ?>",
+                        type: "POST",
+                        data: {
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            //razorpay_order_id: response.razorpay_order_id,
+                            //razorpay_signature: response.razorpay_signature,
+                            //full_razorpay_response: JSON.stringify(response),
+                            amount: amount,
+                            [csrfName]: csrfHash
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data.status === "success") {
+                                alert("Successful Add Money to your Wallet!");
+                            } else {
+                                alert("Failed!");
+                            }
+                            location.reload();
+
+                            // refresh CSRF token
+                            $(".txt_csrfname").val(data.csrfHash);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Verify Error:", error);
+                        }
+                    });
+                },
+                "prefill": {
+                    "name": "<?php echo $this->session->userdata('user_name') ?>",
+                    "email": "<?php echo $this->session->userdata('user_email') ?>",
+                    "contact": "<?php echo $this->session->userdata('user_phone') ?>",
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        },
+        error: function (xhr, status, error) {
+            console.error("Order creation failed:", error);
+        }
+    });
+});
+
+</script>
+
+	
+
+
 
 </body>
 
