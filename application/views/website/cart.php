@@ -128,12 +128,12 @@ label#Color {
     <?php
 if(check_wishlist($cart_product['prodid'], $this->session->userdata('user_id')))
 {
-	echo '<i class="fa fa-heart"></i>';
+	//echo '<i class="fa fa-heart"></i>';
 }else{
-	echo '<i class="far fa-heart"></i>';
+	//echo '<i class="far fa-heart"></i>';
 }
 ?>
- Add to Wishlist</a>
+ Save for later</a>
 
 											<!-- Delete Cart Button -->
 											<a onclick="delete_cart('<?php echo $cart_product['prodid']; ?>','','<?php echo $cart['qoute_id']; ?>')" class="remove d-sm-none0" style="position:relative;top:6px;right:11px;">

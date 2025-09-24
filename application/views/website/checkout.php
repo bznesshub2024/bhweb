@@ -318,12 +318,81 @@
 										<h6><span id="shipping_fee" class="text-dark"><?php echo $checkout['shipping_fee']; ?></span></h6>
 									</li>
 								</ul>
-									<div class="input-group">
-										<input type="text" class="form-control" name="coupon_code" id="coupon_code" placeholder="Discount Code" />
-										<span onclick="get_checkout_data()" class="input-group-text btn btn-default btn-radious">Apply</span>
-									</div>
-									<span id="coupon_message" style="color:#438F29;font-weight:600"></span>
-							</div>
+<div class="input-group" style="display: flex; align-items: center; width: 100%; ">
+<input type="text" id="coupon_code"  placeholder="Discount Code"  />
+
+<span onclick="get_checkout_data()" style="cursor: pointer; color: #000000; font-weight: 500; padding-left: 10px;">
+Apply
+</span>
+</div>
+<style>
+#coupon_code {
+	    font-size: 18px;
+  height: 25px;
+  border-radius: 0 !important;
+  flex: 1;
+  border: none !important;                 /* removes all borders */
+  border-bottom: 2px solid #ccc !important; /* default bottom border */
+  outline: none !important;                /* removes focus outline */
+  box-shadow: none !important;             /* removes browser-specific shadows */
+  background: transparent !important;      /* keeps background clean */
+  transition: border-color 0.3s ease;      /* smooth highlight effect */
+}
+
+#coupon_code:focus {
+  border-bottom: 2px solid #438F29 !important;
+   color: #438F29 !important;
+}
+
+</style>
+
+<span id="coupon_message" style="color:#438F29;font-weight:600"></span>
+<span id="coupon_message_invalid" style="color:#ff1832;font-weight:600"></span>
+
+						
+
+
+<?php
+$total_bonus = 0;
+foreach($wallet_bonus as $wallet_bonus)
+{
+	if($wallet_bonus->payment_type == '1')
+	{
+		$total_bonus = $total_bonus + $wallet_bonus->amount;
+	}
+}
+
+$new_user_bonus=$total_bonus;
+$virtual_partner=0;
+if($total_bonus != 0)
+{
+	$virtual_partner = $wallet['amount'] - $total_bonus;
+}else{
+	$virtual_partner = $wallet['amount'];
+}
+
+?>							
+<div style="font-size: 14px;">
+<br/>
+<label
+<?php if($new_user_bonus <= 0){?>
+ style=" pointer-events: none; color: #aaa; "
+<?php }?>
+><input type="radio" name="wallet_money" value="1"><b> <?php echo $new_user_bonus;?> New User Bonus</b> </label>
+<br/><br/>
+<label
+<?php if($virtual_partner <= 0){?>
+ style=" pointer-events: none; color: #aaa; "
+<?php }?>
+><input type="radio" name="wallet_money" value="2"> <b> <?php echo $virtual_partner;?> Virtual Partner/Order Commission </b></label>
+
+
+</div>
+
+
+	</div>
+
+
 							<ul class="total">
 								<li>
 									<h5>Total Amount</h5>
@@ -768,6 +837,7 @@
 			//alert(user_pincode);
 			var user_pincode = $('#pincode').val();
 			$('#coupon_message').html('');
+			$('#coupon_message_invalid').html('');
 			var input_code = $('#coupon_code').val();
 			var city = $("#city option:selected").val();
 			var payment_type = $('input[name="flexRadioDefault"]:checked').val();
@@ -790,7 +860,8 @@
 					$(".paymentMethod").empty();
 					$('#total_discount_data').text();
 					if (response.status == 2) {
-						$('#coupon_message').html(response.msg);
+						//console.log('>>>>>>>>>>>>>',response)
+						$('#coupon_message_invalid').html(response.msg);
 						/*Swal.fire({
 							position: "center",
 							//icon: "success",
@@ -807,6 +878,7 @@
 						$('#shipping_fee').text(this.shipping_fee);
 						$('#total_val').text(this.payable_amount);
 						$('#coupon_message').html();
+						$('#coupon_message_invalid').html();
 						//alert(this.shipping_fee);
 						if (this.coupon_discount != '') {
 							$('#total_discount_data').text('Total Savings :' + this.coupon_discount_text);
@@ -815,7 +887,7 @@
 						}
 						else if(this.coupon_discount == 0)
 						{
-							$('#coupon_message').html('Invalid Coupon.');	
+							$('#coupon_message_invalid').html('Invalid Coupon.');	
 						}
 							
 						$(".paymentMethodBtn").prop('disabled', false);

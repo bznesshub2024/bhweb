@@ -120,7 +120,7 @@
                             <div class="card-body">
                                 <h4 class="card-title">Wallet Balance
 
-<a class="btn btn-primary btn-xm rounded text-white" href="<?php echo base_url ?>add_wallet"><i class="bx bx-wallet me-2"></i>Add to Wallet</a>
+<a class="btn btn-success btn-xm rounded text-white" style="float:right" href="<?php echo base_url ?>add_wallet"><i class="bx bx-wallet me-2"></i>Add to Wallet</a>
 
                                 </h4>
                                 <h3 class="card-title mb-2 fw-bolder">Rs <?php echo round($wallet['amount'],0); ?></h3>
@@ -204,8 +204,16 @@
                                         <img src="<?php echo base_url; ?>assets_web/images/<?= $transaction_img ?>.png" class="money_cards">
                                     </div>
                                     <div class="col-8 p-0">
-                                        <span class="fw-bolder"><?php echo $wallet_summery_data->remark; ?></span>
-                                        <p class="text-muted"><?php echo date('d M Y h:i A', strtotime($wallet_summery_data->created_at)); ?><span class="display_data"><?php echo $display_data; ?><span></p>
+                                        <span class="fw-bolder"><?php echo $wallet_summery_data->remark; ?>
+                                        	
+                                        </span>
+                                        <p class="text-muted"><?php echo date('d M Y h:i A', strtotime($wallet_summery_data->created_at)); ?><span class="display_data"><?php echo $display_data; ?></span>
+<br/>
+<span>
+Transaction ID : <?php echo $wallet_summery_data->transaction_id; ?>
+</span>
+                                        </p>
+                                        	
                                     </div>
                                     <div class="col-2 p-0 justify-content-end">
                                         <span class="fw-bolder <?php echo $transaction_class; ?>"><?php echo $transaction_type . ' Rs ' . round($wallet_summery_data->amount); ?></span>

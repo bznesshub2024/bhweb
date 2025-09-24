@@ -1513,12 +1513,41 @@ class Common_Function
 
 	//send email for seller
 
+
+	function send_password_email($conn, $to_email, $sellername, $new_passwords)
+	{
+
+		$message  = "<html><body>";
+		$message .= "<table width='500px;' align='center' border='1' cellpadding='0' cellspacing='0' style='font-family: sans-serif;background: rgba(220, 220, 220, 0.17);font-size: 14px;'>";
+
+		$message .= "<tbody>
+						<tr>
+							<td colspan='2'>Dear " . $sellername . ", </td>
+							
+						</tr>
+						
+						<tr>
+							<td style='padding: 10px;font-weight: 600;' colspan='2'>Your new password : <b>".$new_passwords."</b> </td>
+						</tr>
+						
+					</tbody>";
+
+		$message .= "</table>";
+		$message .= "</body></html>";
+		$this->smtp_email($conn, $to_email, 'Forgot Password', $message);
+
+	}
+
+
+function generateRandomCode($length = 10) {
+    return substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), 0, $length);
+}
+
 	function send_email_forgot_password($conn, $to_email, $sellername, $checksum, $base_url, $subject)
 	{
 
 		$link = $base_url . "admin/change_password.php?checksum=" . $checksum;
 		$message  = "<html><body>";
-
 		$message .= "<table width='500px;' align='center' border='1' cellpadding='0' cellspacing='0' style='font-family: sans-serif;background: rgba(220, 220, 220, 0.17);font-size: 14px;'>";
 
 		$message .= "<tbody>

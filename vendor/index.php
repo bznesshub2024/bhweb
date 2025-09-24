@@ -108,10 +108,19 @@ if(isset($_POST['emailvalue'])){
 			
 		}else if ($status == 1) {
 			$checksum = date('dym').$Common_Function->random_strings(10).date('his');
+include('encryptfun.php');
+global $publickey_server;
+$new_passwords = $Common_Function->generateRandomCode();
+$encruptfun = new encryptfun();
+$passwords = $encruptfun->encrypt($publickey_server, $new_passwords);
+
+$Common_Function->send_password_email($conn,$admin_email,$adminname,$new_passwords);
+$query = $conn->query("UPDATE sellerlogin SET password ='".$passwords."' WHERE email ='".$email_id."'");
+
+
+			// $query = $conn->query("UPDATE `sellerlogin` SET checksum ='".$checksum."' WHERE email ='".$email_id."'");
 			
-			$query = $conn->query("UPDATE `sellerlogin` SET checksum ='".$checksum."' WHERE email ='".$email_id."'");
-			
-			$Common_Function->send_email_forgot_password($conn,$admin_email,$adminname,$checksum,BASEURL,'Forgot Password');
+			// $Common_Function->send_email_forgot_password($conn,$admin_email,$adminname,$checksum,BASEURL,'Forgot Password');
 			echo "done";
 		}
 	}else{
@@ -472,7 +481,7 @@ if(isset($_POST['emailvalue'])){
 						if(response == 'not_exist'){
 							successmsg("This User Email not exist.");
 						}else if(response == 'done'){
-							successmsg("Please check your inbox to change password.");
+							successmsg("A new password has been sent to your email.");
 						}else if(response == 'pending'){
 							successmsg("Your account request is pending. Please wait untill admin approve.");
 						}else if(response == 'rejected'){

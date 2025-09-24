@@ -212,7 +212,7 @@ function hideloader() {
 		<div class="clearfix"> </div>
 		<div class="clearfix"> </div>
 		<!--footer-->
-            <?php include("footernew.php"); ?>
+            <?php //include("footernew.php"); ?>
 <!--//footer-->
 
 

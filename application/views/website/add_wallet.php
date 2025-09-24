@@ -120,7 +120,7 @@
                             <div class="card-body">
                                 <h4 class="card-title">Wallet Balance
 
-<a class="btn btn-primary btn-xm rounded text-white" href="<?php echo base_url ?>user-wallet"><i class="bx bx-wallet me-2"></i>Withdrawal Money</a>
+<a class="btn btn-primary btn-xm rounded text-white" style="float:right" href="<?php echo base_url ?>user-wallet"><i class="bx bx-wallet me-2"></i>Withdrawal Money</a>
 
                                 </h4>
                                 <h3 class="card-title mb-2 fw-bolder">Rs <?php echo round($wallet['amount'],0); ?></h3>
@@ -168,7 +168,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <button class="btn btn-primary btn-lg rounded w-100 my-5" name="submit" type="submit">Add Money</button>
+                                    <button class="btn btn-success btn-lg rounded w-100 my-5 text-white" name="submit" type="submit"><i class="bx bx-wallet me-2"></i> Add Money</button>
                                     <span class="text-success"><?= $this->session->flashdata("withdrow_success_msg");  ?></span>
                                 </form>
                             </div>
@@ -205,7 +205,12 @@
                                     </div>
                                     <div class="col-8 p-0">
                                         <span class="fw-bolder"><?php echo $wallet_summery_data->remark; ?></span>
-                                        <p class="text-muted"><?php echo date('d M Y h:i A', strtotime($wallet_summery_data->created_at)); ?><span class="display_data"><?php echo $display_data; ?><span></p>
+                                        <p class="text-muted"><?php echo date('d M Y h:i A', strtotime($wallet_summery_data->created_at)); ?><span class="display_data"><?php echo $display_data; ?></span>
+<br/>
+<span>
+Transaction ID : <?php echo $wallet_summery_data->transaction_id; ?>
+</span>
+                                     </p>       
                                     </div>
                                     <div class="col-2 p-0 justify-content-end">
                                         <span class="fw-bolder <?php echo $transaction_class; ?>"><?php echo $transaction_type . ' Rs ' . round($wallet_summery_data->amount); ?></span>

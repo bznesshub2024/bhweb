@@ -255,7 +255,13 @@
                                             </div>
                                             <div class="col-6 p-0">
                                                 <span class="fw-bolder transac_remarks"><?php echo $wallet_summery_data->remark; ?></span>
-                                                <p class="text-muted"><?php echo date('d M Y h:i A', strtotime($wallet_summery_data->created_at)); ?><span class="display_data"><?php echo $display_data; ?><span></p>
+                                                <p class="text-muted"><?php echo date('d M Y h:i A', strtotime($wallet_summery_data->created_at)); ?><span class="display_data"><?php echo $display_data; ?></span>
+
+<br/>
+<span>
+Transaction ID : <?php echo $wallet_summery_data->transaction_id; ?>
+</span>
+                                                </p>
                                             </div>
                                             <div class="col-3 p-0 text-end">
                                                 <span class="fw-bolder text-success">+ Rs <?php echo $transaction_type . ' ' . $wallet_summery_data->amount; ?></span>

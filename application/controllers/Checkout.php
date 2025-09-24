@@ -14,6 +14,7 @@ class Checkout extends REST_Controller {
         $this->load->model('address_model');
 		 $this->load->model('delivery_model');
 		 $this->load->model('home_model');
+		 $this->load->model('wallet_model');
     }
 	public function send_email_get()
 	{	echo "hi";
@@ -34,6 +35,12 @@ class Checkout extends REST_Controller {
 		}
 		$this->data['address'] = $this->address_model->get_user_address_details_full($user_id);
 		$this->data['get_city'] = $this->delivery_model->get_delivery_city_request();
+
+		$this->data['wallet'] = $this->wallet_model->get_wallet_data();
+        $this->data['wallet_summery'] = $this->wallet_model->get_wallet_summery($this->data['wallet']['wallet_id']);
+        $this->data['wallet_bonus'] = $this->wallet_model->get_wallet_bonus($this->data['wallet']['wallet_id']);
+
+
 		$this->load->view('website/checkout.php',$this->data);  // ye view/website folder hai
 	
 	}
