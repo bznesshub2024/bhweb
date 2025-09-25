@@ -13,11 +13,12 @@ class Checkout_model extends CI_Model
 		$this->load->model('address_model');
 		$this->date_time = date('Y-m-d H:i:s');
 		$this->date = date('Y-m-d');
+		$this->load->model('wallet_model');
 	}
 
 
 
-	function get_checkout_full_details($user_id, $quote_id, $shipping_city = '', $shipping_pincode = '', $coupon_code = '',$payment_type = '')
+	function get_checkout_full_details($user_id, $quote_id, $shipping_city = '', $shipping_pincode = '', $coupon_code = '',$payment_type = '',$wallet_money=0,$globalJson='')
 	{
 
 		$validate_coupon = $this->Validate_coupon_code($user_id, $coupon_code, '');
@@ -302,6 +303,18 @@ class Checkout_model extends CI_Model
 
 $total_price_value = ($total_price + $shipping - round($coupon_discount, 0)) - round($default_discount,0);
 
+if(!empty($globalJson)){
+if (is_string($globalJson)) {
+    $globalJson = json_decode($globalJson);
+}
+
+if (isset($globalJson->Information)) {
+    $info = $globalJson->Information;
+    $total_price_value = str_replace(['₹', ' ', ','], '', $info->payable_amount);
+}
+}
+
+
 				// Order details
 				$data = [
 					//"amount" => ($product_detail['price1'] + $shipping) * 100, // Amount in paise (e.g., 50000 = ₹500)
@@ -399,10 +412,82 @@ $total_price_value = ($total_price + $shipping - round($coupon_discount, 0)) - r
 		//$coupon_code = '';
 		//$coupon_discount = 0;
 
+		$bonus_virtual_price=0;
+		$bonus_virtual=0;
+		if(!empty($wallet_money)){
+			$bonus_virtual=$wallet_money;
+		}
+		$wallet = $this->wallet_model->get_wallet_data();
+        $wallet_summery = $this->wallet_model->get_wallet_summery($wallet['wallet_id']);
+        $wallet_bonus = $this->wallet_model->get_wallet_bonus($wallet['wallet_id']);
+	
+
+        $total_bonus = 0;
+		foreach($wallet_bonus as $wallet_bonus)
+		{
+			if($wallet_bonus->payment_type == '1')
+			{
+				$total_bonus = $total_bonus + $wallet_bonus->amount;
+			}
+		}
+
+		$new_user_bonus=$total_bonus;
+		$virtual_partner=0;
+		if($total_bonus != 0)
+		{
+			$virtual_partner = $wallet['amount'] - $total_bonus;
+		}else{
+			$virtual_partner = $wallet['amount'];
+		}
+		
+		$total_price_value=($total_price
+		                                
+		                                - round($coupon_discount, 0))
+		                                - round($default_discount, 0);
+		$payable_amount=($total_price
+		                                )
+		                                - round($coupon_discount, 0)
+		                                - round($default_discount, 0)
+		                             ;
+		if($bonus_virtual == 1){
+			$bonus_virtual_price=$new_user_bonus;
+		}elseif($bonus_virtual == 2){
+			$bonus_virtual_price=$virtual_partner;
+		}
+
+		$total_price_value = ($total_price_value - min($bonus_virtual_price, $total_price_value))+ $shipping_fee;
+		$payable_amount = ($payable_amount - min($bonus_virtual_price, $payable_amount))+ $shipping_fee;
+
+
+		
+
+
+
+
 		return array(
-			'user_address' => $user_address, 'total_mrp' => price_format($total_mrp), 'total_discount' => price_format($total_mrp - $total_price), 'total_price' => price_format($total_price - round($default_discount,0)),
-			'total_item' => $total_item,'pay_orderId' => $pay_orderId, 'tax_payable' => $total_tax, 'coupon_code' => $coupon_code, 'coupon_discount' => round($coupon_discount, 0), 'shipping_fee' => $shipping_fee, 'payable_amount' => price_format($total_price + $shipping_fee - round($coupon_discount, 0) - round($default_discount,0)), 'payable_amount_value' => $total_price + $shipping_fee - round($coupon_discount, 0), 'total_price_value' => ($total_price + $shipping_fee - round($coupon_discount, 0)) - round($default_discount,0), 'seller_pincode' => $seller_pincode, 'imgurl' => $imgurl,'default_discount' => round($default_discount,0)
+		    'user_address'         => $user_address,
+		    'total_mrp'            => price_format($total_mrp),
+		    'total_discount'       => price_format($total_mrp - $total_price),
+		    'total_price'          => price_format($total_price - round($default_discount, 0)),
+		    'total_item'           => $total_item,
+		    'pay_orderId'          => $pay_orderId,
+		    'tax_payable'          => $total_tax,
+		    'coupon_code'          => $coupon_code,
+		    'coupon_discount'      => round($coupon_discount, 0),
+		    'shipping_fee'         => $shipping_fee,
+		    'payable_amount'       => price_format($payable_amount),
+		    'payable_amount_value' => $total_price
+		                                + $shipping_fee
+		                                - round($coupon_discount, 0),
+		    'total_price_value'    => price_format($total_price_value),
+		    'seller_pincode'       => $seller_pincode,
+		    'imgurl'               => $imgurl,
+		    'default_discount'     => round($default_discount, 0),
+		    'bonus_virtual'     => $bonus_virtual,
+		    'bonus_virtual_price'     => $bonus_virtual_price,
+
 		);
+
 	}
 	
 	private function nimbuspostLogin()
@@ -514,7 +599,7 @@ $total_price_value = ($total_price + $shipping - round($coupon_discount, 0)) - r
 	
 	//function for place order
 
-	function place_order_details($user_id, $qouteid, $fullname, $mobile, $locality, $fulladdress, $city, $state, $pincode, $addresstype, $email, $payment_id, $payment_mode, $coupon_code, $coupon_value, $city_id)
+	function place_order_details($user_id, $qouteid, $fullname, $mobile, $locality, $fulladdress, $city, $state, $pincode, $addresstype, $email, $payment_id, $payment_mode, $coupon_code, $coupon_value, $city_id,$wallet_money=0)
 	{
 		$status = array('status' => '');
 		$delivery_array = $order = array();
@@ -1051,13 +1136,85 @@ $total_price_value = ($total_price + $shipping - round($coupon_discount, 0)) - r
 				}
 			}
 
+$base_price=$total_price;
+$bonus_virtual_price=0;
+$wallet = $this->wallet_model->get_wallet_data();
+$wallet_summery = $this->wallet_model->get_wallet_summery($wallet['wallet_id']);
+$wallet_bonus = $this->wallet_model->get_wallet_bonus($wallet['wallet_id']);
+
+$total_bonus = 0;
+foreach($wallet_bonus as $wallet_bonus)
+{
+if($wallet_bonus->payment_type == '1')
+{
+$total_bonus = $total_bonus + $wallet_bonus->amount;
+}
+}
+
+$new_user_bonus=$total_bonus;
+$virtual_partner=0;
+if($total_bonus != 0)
+{
+$virtual_partner = $wallet['amount'] - $total_bonus;
+}else{
+$virtual_partner = $wallet['amount'];
+}
+
+if($wallet_money == 1){
+$bonus_virtual_price=$new_user_bonus;
+}elseif($wallet_money == 2){
+$bonus_virtual_price=$virtual_partner;
+}
+
+
+ $bonus_virtual_price = min($bonus_virtual_price, $base_price);
+// $total_price    = $base_price - $bonus_virtual_price;
+
+
+
+
+			$order['bonus_virtual'] = $wallet_money;
+			$order['bonus_virtual_price'] = $bonus_virtual_price;
 			$order['total_price'] = $total_price;
 			$order['discount'] = $total_discount;
 			$order['total_qty'] = $total_item;
+
 			/*$order['coupon_value'] = $coupon_discount;*/
+
+//print_r($order);die;
 
 			$this->db->where(array('order_id' => $order_id));
 			$queryup = $this->db->update('orders', $order);
+
+
+
+$user_id=$this->session->userdata('user_id');
+$final_wallet_amount = $wallet['amount'] - $bonus_virtual_price;
+$walletupdate['amount'] = $final_wallet_amount;
+$this->db->where(array('user_id' => $user_id));
+$queryup = $this->db->update('wallet_summery', $walletupdate);
+
+$transaction_id = 'txt'.$this->random_strings_digit(3).date('dmYHi');
+$wallet_txn['wallet_id']=$wallet['wallet_id'];
+$wallet_txn['payment_type']=6;
+$wallet_txn['transaction_id']=$transaction_id;
+$wallet_txn['transaction_type']='debit';
+$wallet_txn['amount']=$bonus_virtual_price;
+$wallet_txn['balance']=$final_wallet_amount;
+$wallet_txn['product_id']='';
+$wallet_txn['order_id']=$order_id;
+$wallet_txn['user_id']=$user_id;
+$wallet_txn['created_at']=date('Y-m-d H:i:s');
+$wallet_txn['remark']='Deduct from New User Bonus/Virtual Partner/Order Commission';
+if($wallet_money == 1){
+$wallet_txn['remark']='Deduct from New User Bonus';
+}elseif($wallet_money == 2){
+$wallet_txn['remark']='Deduct from Virtual Partner/Order Commission';
+}
+$this->db->insert('wallet_transaction_history', $wallet_txn);
+
+
+
 
 			$status['order_detail'] = $order;
 			$status['order_id'] = $order_id;

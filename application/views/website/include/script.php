@@ -1175,6 +1175,9 @@
 				onClick: function() {}
 			}).showToast();
 		}
+
+     location.reload();
+
 	
       }
 

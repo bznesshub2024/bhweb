@@ -199,16 +199,21 @@
     <main>
         <section class="px-sm-0 px-md-4">
 			<div class="back_arrow">
-				<a href="javascript:history.go(-1)"><i class="fa-solid fa-arrow-left mb-5 5x" style="font-size:18px" style="color: #ff6600;"></i> Back</a>
+				<!-- <a href="javascript:history.go(-1)"><i class="fa-solid fa-arrow-left mb-5 5x" style="font-size:18px" style="color: #ff6600;"></i> Back</a> -->
 			</div>
             <div class="col-sm-12 col-md-12 mt-7">
                 <div class="mt-11 px-2">
 					
                     <div class="row mx-1 mt-0">
 						
-						
+						<div class="col-md-1 col-sm-12 px-1">
 
-                        <div class="col-md-7 col-sm-12 px-1">
+<a class="btn btn-default btn-radious w-100 py-1 mt-2 mt-md-0 mt-sm-2" href="javascript:history.go(-1)"  ><i class="fa-solid fa-arrow-left " style="font-size:18px" style="color: #ff6600;"></i> Back</a>
+
+                            <!-- <a href="javascript:history.go(-1)" class="btn btn-default btn-radious w-100 py-1 mt-2 mt-md-0 mt-sm-2"><i class="fa-solid fa-arrow-left mb-5 5x" style="font-size:18px" style="color: #ff6600;"></i> Back</a> -->
+                        </div>
+
+                        <div class="col-md-6 col-sm-12 px-1">
                             <div class="searc-container mb-5 d-flex">
                                 <input type="text" class="search-input w-100" name="title" id="title" placeholder="Search" style="border:none;">
                                 <!-- <i class="fa-solid fa-magnifying-glass search-icon"></i> -->

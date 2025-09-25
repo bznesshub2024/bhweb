@@ -180,7 +180,16 @@
                     <div class="card h-91" id="">
 					<?php if(count($wallet_summery) > 0) { ?>
                         <div class="card-body px-3 py-0">
-                            <h4 class="card-title p-2">Previous Transactions</h4>
+                            <!-- <h4 class="card-title p-2">Previous Transactions</h4> -->
+<div class="row d-flex">
+<div class="col-10">
+<h4 class="card-title p-2">Previous Transactions</h4>
+</div>
+<div class="col-2 p-0">
+<h4 class="card-title pt-2">	Round off</h4>
+</div>
+</div>
+
                             <?php foreach ($wallet_summery as $wallet_summery_data) {
                                 if ($wallet_summery_data->transaction_type == 'credit') {
                                     $transaction_type = '+';

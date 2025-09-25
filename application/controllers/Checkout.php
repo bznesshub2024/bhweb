@@ -128,16 +128,21 @@ class Checkout extends REST_Controller {
 		$coupon_code = removeSpecialCharacters($this->post('coupon_code'));	
 		$shipping_city = removeSpecialCharacters($this->post('shipping_city'));	
 		$shipping_pincode = removeSpecialCharacters($this->post('shipping_pincode'));	
-		$payment_type = removeSpecialCharacters($this->post('payment_type'));	
-			
-		
+		$payment_type = removeSpecialCharacters($this->post('payment_type'));
+
+		$wallet_money = removeSpecialCharacters($this->post('wallet_money'));
+
+$bonus_virtual_price = removeSpecialCharacters($this->post('bonus_virtual_price'));
+
+$globalJson = removeSpecialCharacters($this->post('globalJson'));
 		
 		$validation = $this->parameterValidation($requiredparameters,$this->post()); //$this->post() holds post values
 		
     	if($validation=='valid') {
 			if($qouteid != '' || $user_id != '') 
 			{
-				$cart_detail = $this->checkout_model->get_checkout_full_details($user_id,$qouteid,$shipping_city,$shipping_pincode,$coupon_code,$payment_type);
+				$cart_detail = $this->checkout_model->get_checkout_full_details($user_id,$qouteid,$shipping_city,$shipping_pincode,$coupon_code,$payment_type,$wallet_money,$globalJson);
+
 				if($cart_detail == 'invalid')
 				{
 					$this->response([
@@ -149,12 +154,13 @@ class Checkout extends REST_Controller {
 							], self::HTTP_OK);
 				}
 				if($cart_detail >0){	
+
 					$validate_coupon = '';
 					$coupon_discount = ''; 
 					/*if(trim($coupon_code)){*/
 					if(($cart_detail['coupon_discount1']))	{
 						$validate_coupon = $this->checkout_model->Validate_coupon_code($user_id,$coupon_code,'');
-						
+								
 						if($validate_coupon =='invalid'){
 							$this->response([
 								$this->config->item('rest_status_field_name') => 2,
@@ -210,12 +216,13 @@ class Checkout extends REST_Controller {
 						
 					}
 					else
-					{
+					{		
 						if($coupon_discount>0){
 							$msgs = get_phrase('coupon_applied_successfully',$language_code);
 							}else{
 								$msgs = get_phrase('checkout_details',$language_code);
 							}
+
 								$this->response([
 								$this->config->item('rest_status_field_name') => 1,	
 								$this->config->item('rest_message_field_name') => $msgs,
@@ -267,7 +274,7 @@ class Checkout extends REST_Controller {
 		
 			}else{
 				$user_address = array("address_id" =>'',"fullname"=>'',"mobile"=>'',"locality"=>'',"fulladdress"=>'',"city"=>'',"state"=>'',"pincode"=>'',"email"=>'',"addresstype"=>'');
-		
+
 				$res = array('user_address' =>$user_address, 'total_mrp' =>0, 'total_discount' =>0,'total_price'=>0,
 			'total_item'=>0, 'tax_payable'=>0, 'coupon_code'=>$coupon_code,'coupon_discount'=>0, 'shipping_fee'=>0, 'payable_amount'=>0,'payable_amount_value'=>0,'total_price_value'=>0);
 				$this->response([
@@ -393,7 +400,6 @@ class Checkout extends REST_Controller {
 	// function for placeOrder
 	public function placeOrder_post(){
 		$requiredparameters = array('language','fullname','mobile','locality','fulladdress','city','state','addresstype','email','payment_id','payment_mode','city_id');
-		
 		$language_code = removeSpecialCharacters($this->post('language'));	
 		$user_id = removeSpecialCharacters($this->session->userdata('user_id'));	
 		$qouteid = removeSpecialCharacters($this->session->userdata('qoute_id'));	
@@ -412,13 +418,18 @@ class Checkout extends REST_Controller {
 		$coupon_value = removeSpecialCharacters($this->post('coupon_value'));
 		$city_id = removeSpecialCharacters($this->post('city_id'));
 		
-		
+
+		$wallet_money = removeSpecialCharacters($this->post('wallet_money'));
+		$bonus_virtual_price = removeSpecialCharacters($this->post('bonus_virtual_price'));
+
+		$globalJson = removeSpecialCharacters($this->post('globalJson'));
+
 		$validation = $this->parameterValidation($requiredparameters,$this->post()); //$this->post() holds post values
 		
     	if($validation=='valid') {
 			if(($user_id || $qouteid) && $fullname && $mobile && $fulladdress && $city && $state && $addresstype && $payment_id && $payment_mode){
 				
-				$order_detail = $this->checkout_model->place_order_details($user_id,$qouteid,$fullname,$mobile,$locality,$fulladdress,$city,$state,$pincode,$addresstype,$email,$payment_id,$payment_mode,$coupon_code,$coupon_value,$city_id);
+				$order_detail = $this->checkout_model->place_order_details($user_id,$qouteid,$fullname,$mobile,$locality,$fulladdress,$city,$state,$pincode,$addresstype,$email,$payment_id,$payment_mode,$coupon_code,$coupon_value,$city_id,$wallet_money);
 				
 				
 				if($order_detail['status'] == 'update'){						
@@ -428,6 +439,12 @@ class Checkout extends REST_Controller {
 					$order_details['total_item'] = $order_detail['order_detail']['total_qty'];
 					$order_details['order_msg'] = get_phrase('success_order',$language_code);
 					
+
+					$save_order['globalJson'] = $globalJson;
+					$this->db->where(array('order_id' => $order_details['order_id']));
+					$queryup = $this->db->update('orders', $save_order);
+
+
 					$this->checkout_model->empty_cart($user_id, $qouteid);
 					
 					$this->response([

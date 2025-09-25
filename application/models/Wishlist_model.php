@@ -7,7 +7,10 @@ class Wishlist_model extends CI_Model {
 		
 		$this->date_time = date('Y-m-d H:i:s');
     }
-
+ function del_pro($prod_id,$user_id){
+		$this->db->where(array('prod_id' => $prod_id,'user_id'=>$user_id));
+		$query = $this->db->delete('cartdetails');
+	}
     //Functiofor for add product into cart
     function add_product_cart($prod_id,$sku,$sid,$user_id,$qty,$referid){
 		$this->db->select("id");

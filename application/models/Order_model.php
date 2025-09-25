@@ -176,7 +176,7 @@ class Order_model extends CI_Model
 
 	function get_order_track_details($language, $order_id, $prod_id)
 	{
-		$this->db->select("o.order_id,o.status, o.total_price,o.payment_mode,o.create_date,
+		$this->db->select("o.order_id,o.status, o.total_price,o.payment_mode,o.create_date,o.globalJson,
 							o.discount,o.total_qty, o.fullname, o.mobile,o.locality, o.fulladdress,o.city,o.state,o.pincode,o.addresstype,o.email,o.coupon_value,st.name as state_name,order_product.prod_attr,order_product.default_discount");
 
 
@@ -189,7 +189,9 @@ class Order_model extends CI_Model
 		$order_summery = array('order_id' => '', 'status' => '', 'payment_mode' => '', 'create_date' => '', 'total_qty' => '', 'total_price' => '', 'discount' => '', 'ordered_products' => []);
 		$shipping_address = array('fullname' => '', 'mobile' => '', 'locality' => '', 'fulladdress' => '', 'city' => '', 'state' => '', 'pincode' => '', 'addresstype' => '', 'email' => '','coupon_value' => '','default_discount' => '');
 
-		$ordered_products = $this->db->select("op.prod_id,op.prod_sku,op.prod_name, op.prod_name_ar,op.prod_img,op.prod_attr,op.qty,op.prod_price,op.shipping,op.discount,op.status,op.tracking_id")->get_where('order_product op', array('op.order_id' => $order_id))->result_array();
+		$ordered_products = $this->db
+		//->select("op.prod_id,op.prod_sku,op.prod_name, op.prod_name_ar,op.prod_img,op.prod_attr,op.qty,op.prod_price,op.shipping,op.discount,op.status,op.tracking_id")
+		->get_where('order_product op', array('op.order_id' => $order_id))->result_array();
 
 		$order_product_array = array();
 		$orders = $shipping = array();
@@ -197,6 +199,7 @@ class Order_model extends CI_Model
 		if ($query->num_rows() > 0) {
 			$order_result = $query->result_object();
 			$order_detail = $order_result[0];
+			//echo '<pre>';print_r($order_detail);die;	
 			$orders['order_id'] = $order_detail->order_id;
 			$orders['status'] = $order_detail->status;
 			$orders['payment_mode'] = $order_detail->payment_mode;
@@ -209,8 +212,14 @@ class Order_model extends CI_Model
 			$orders['default_discount'] = $order_detail->default_discount;
 			$orders['ordered_products'] = $ordered_products;
 			$orders['prod_attr'] = json_decode($order_detail->prod_attr);
-			
+			$default_discount=0;
+			foreach ($ordered_products as $this_del) {
+				$default_discount +=$this_del['default_discount'];
+			}
+			$orders['default_discount'] = $default_discount;
+				//echo '<pre>';print_r($default_discount);die;	
 
+			$orders['globalJson'] = $order_detail->globalJson;
 			$order_summery = $orders;
 
 			$shipping['fullname'] = $order_detail->fullname;
@@ -261,6 +270,7 @@ class Order_model extends CI_Model
 					$order_product['tracking_id'] = $order_prod_detail->tracking_id;
 					$order_product['tracking_url'] = $order_prod_detail->tracking_url;
 					$order_product['pickup_type'] = $order_prod_detail->pickup_type;
+
 					$order_product['total_gst'] = price_format($order_prod_detail->cgst + $order_prod_detail->sgst + $order_prod_detail->igst);
 					if ($order_prod_detail->prod_attr) {
 						$attr = json_decode($order_prod_detail->prod_attr);

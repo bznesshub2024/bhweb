@@ -321,7 +321,7 @@
 <div class="input-group" style="display: flex; align-items: center; width: 100%; ">
 <input type="text" id="coupon_code"  placeholder="Discount Code"  />
 
-<span onclick="get_checkout_data()" style="cursor: pointer; color: #000000; font-weight: 500; padding-left: 10px;">
+<span onclick="get_checkout_data()" style="cursor: pointer; color: #e01616; font-weight: 500; padding-left: 10px;">
 Apply
 </span>
 </div>
@@ -374,17 +374,21 @@ if($total_bonus != 0)
 ?>							
 <div style="font-size: 14px;">
 <br/>
-<label
+<label 
 <?php if($new_user_bonus <= 0){?>
  style=" pointer-events: none; color: #aaa; "
 <?php }?>
-><input type="radio" name="wallet_money" value="1"><b> <?php echo $new_user_bonus;?> New User Bonus</b> </label>
+><input type="radio" 	onclick="get_checkout_data()"  name="wallet_money" value="1"><b> <?php echo $new_user_bonus;?> New User Bonus</b> </label>
+<input type="hidden" name="wallet_money_amount1" value="<?php echo $new_user_bonus;?>">
 <br/><br/>
 <label
 <?php if($virtual_partner <= 0){?>
  style=" pointer-events: none; color: #aaa; "
 <?php }?>
-><input type="radio" name="wallet_money" value="2"> <b> <?php echo $virtual_partner;?> Virtual Partner/Order Commission </b></label>
+
+><input type="radio" 	onclick="get_checkout_data()" name="wallet_money" value="2"> <b> <?php echo $virtual_partner;?> Virtual Partner/Order Commission </b></label>
+
+<input type="hidden" name="wallet_money_amount2" value="<?php echo $virtual_partner;?>">
 
 
 </div>
@@ -832,14 +836,22 @@ if($total_bonus != 0)
 				}
 			});
 		}
+var globalJson = null; // global variable
+
 
 		function get_checkout_data(user_pincode) {
+$("#paymentMethodBtn").attr("disabled", "disabled").css({
+  "pointer-events": "none",
+  "opacity": "0.5",
+  "cursor": "not-allowed"
+});
 			//alert(user_pincode);
 			var user_pincode = $('#pincode').val();
 			$('#coupon_message').html('');
 			$('#coupon_message_invalid').html('');
 			var input_code = $('#coupon_code').val();
 			var city = $("#city option:selected").val();
+			var wallet_money = $('input[name="wallet_money"]:checked').val();
 			var payment_type = $('input[name="flexRadioDefault"]:checked').val();
 			$(".paymentMethodBtn").prop('disabled', true);
 			$.ajax({
@@ -851,10 +863,13 @@ if($total_bonus != 0)
 					shipping_city: city,
 					shipping_pincode: user_pincode,
 					payment_type: payment_type,
+					wallet_money: wallet_money,
 					[csrfName]: csrfHash
 				},
 				success: function(response) {
-
+					 globalJson = response; // set global variable
+// console.log('response>>>>>>>>>>>>.',response);
+//  return ;
 					var parsedJSON = response.Information;
 					var product_html = "";
 					$(".paymentMethod").empty();
@@ -896,6 +911,11 @@ if($total_bonus != 0)
 						$(".paymentMethod").html(product_html);
 						alert(this.payable_amount);*/
 					});
+$("#paymentMethodBtn").removeAttr("disabled").css({
+  "pointer-events": "auto",
+  "opacity": "1",
+  "cursor": "pointer"
+});
 					//alert(response);
 				}
 			});
@@ -1089,12 +1109,28 @@ async function place_order_data(ele) {
         form_data.append('coupon_value', coupon_value);
         form_data.append('kyc_document', null);
         form_data.append([csrfName], csrfHash);
+
+        form_data.append('globalJson', JSON.stringify(globalJson));
+				
 		
+		var wallet_money = $('input[name="wallet_money"]:checked').val();
+		var bonus_virtual_price = '';
+
+		// if (wallet_money && wallet_money >= 1) {
+		// 	bonus_virtual_price = $("input[name='wallet_money_amount" + wallet_money + "']").val();
+		// }
+
 		
+		form_data.append('bonus_virtual_price', bonus_virtual_price);
+
+		form_data.append('wallet_money', wallet_money);
+
+$("#paymentMethodBtn").attr("disabled", "disabled").css({
+  "pointer-events": "none",
+  "opacity": "0.5",
+  "cursor": "not-allowed"
+});
 		
-		
-		
-					
 			if ($('input[name="flexRadioDefault"]:checked').val() === 'cod') {
 				$.ajax({
 					method: "post",
@@ -1131,7 +1167,10 @@ async function place_order_data(ele) {
 						coupon_code: coupon_code,
 						shipping_pincode: $("#pincode").val(),
 						payment_type: payment_type,
+						wallet_money:wallet_money,
+						bonus_virtual_price:bonus_virtual_price,
 						payment_method: $('input[name="flexRadioDefault"]:checked').val(),
+						globalJson: JSON.stringify(globalJson),
 						[csrfName]: csrfHash
 					},
 					success: function (response) {

@@ -110,16 +110,19 @@ label#Color {
 
 			<!--Start: Cart Section -->
 			<section class="mt-5">
+
 				<div class="container" style="max-width:1344px;">
 
-					<div class="row">
+					<div class="row" >
+
 						<div class="col-lg-8">
+							<div >
 							<div class="left-block box-shadow">
 								<h5 class="title">Your cart is ready (<?php echo $cart['total_item']; ?>)</h5>
 
 								<?php foreach ($cart['cart_full'] as $cart_product) { ?>
 									<div class="cart-details mb-2 mb-lg-0 bg-white">
-										<a class="ms-3" href="<?php echo base_url .'product/'. $cart_product['web_url']; ?>"><img src="<?php echo weburl . 'media/' . $cart_product['imgurl']; ?>" alt="<?php echo $cart_product['name']; ?>"  class="product-thumb" /></a>
+										<a class="ms-3 card_update" href="<?php echo base_url .'product/'. $cart_product['web_url']; ?>"><img src="<?php echo weburl . 'media/' . $cart_product['imgurl']; ?>" alt="<?php echo $cart_product['name']; ?>"  class="product-thumb" /></a>
 										<div class="cart-body">
 
 <a href="javascript:void(0);" class="d-sm-none0" onclick="add_to_wishlist(event,'<?php echo $cart_product['prodid'] ?>','<?php echo $cart_product['sku'] ?>','<?php echo $cart_product['vendor_id'] ?>','<?php echo $this->session->userdata('user_id'); ?>',1,'',2)" style="    float: right;
@@ -196,6 +199,7 @@ if(check_wishlist($cart_product['prodid'], $this->session->userdata('user_id')))
 									</div>
 								<?php } ?>
 							</div>
+						</div>
 						</div>
 						<div class="right_div col-lg-4">
 							<?php if (empty($cart['cart_full'])) { ?>
