@@ -90,6 +90,7 @@
 	
 	<?php
 	$total_bonus = 0;
+    $deduct_wallet=0;
 	foreach($wallet_bonus as $wallet_bonus)
 	{
 		
@@ -97,7 +98,12 @@
 		{
 			$total_bonus = $total_bonus + $wallet_bonus->amount;
 		}
+        if($wallet_bonus->payment_type == '6')
+        {
+            $deduct_wallet = $deduct_wallet + $wallet_bonus->amount;
+        }
 	}
+    $total_bonus=$total_bonus-$deduct_wallet;
 	$unwithdraw_amount = '';
 	if($total_bonus != 0)
 	{
@@ -107,6 +113,7 @@
 	else
 	{
 		$amount = $wallet['amount'];
+        $unwithdraw_amount = " (".$total_bonus." New User Bonus + ".round($amount,2)." Virtual Partner/Order Commission)";
 	}
 	?>
 	
@@ -297,7 +304,7 @@ var csrfName = $(".txt_csrfname").attr("name"); // CSRF token name
 var csrfHash = $(".txt_csrfname").val();        // CSRF hash
 
             var options = {
-                //"key": "rzp_test_qYpWkw3GxxEIPA", 
+                "key": "rzp_test_qYpWkw3GxxEIPA", 
                 "key": "rzp_live_oVzpJnJRDQttrF",
                 "amount": amount * 100, // Amount in paise
                 "currency": "INR",

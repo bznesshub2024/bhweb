@@ -1,6 +1,30 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 
+if (!function_exists('get_profile_image')) {
+    function get_profile_image($user_id = null)
+    {
+        $CI =& get_instance();
+        $CI->load->database();
+
+        // if no user id passed, use session
+        if ($user_id === null) {
+            $user_id = $CI->session->userdata('user_id');
+        }
+
+        if (!$user_id) {
+            return base_url('assets_web/images/icons/userprofile.png'); // fallback
+        }
+
+        $user = $CI->db->get_where('appuser_login', ['user_unique_id' => $user_id])->row();
+
+        if (!empty($user) && !empty($user->profile_pic)) {
+            return base_url('media/profile_pictures/'.$user->profile_pic);  // full path to stored image
+        } else {
+            return base_url('assets_web/images/icons/userprofile.png'); // fallback
+        }
+    }
+}
 
 
 if (!function_exists('check_wishlist')) {

@@ -2,7 +2,74 @@
 	<div class="right-block p-0">
 		<div class="wrap box-shadow">
 			<div class="wrap-block align-items-center">
-				<img src="<?php echo base_url; ?>/assets_web/images/icons/userprofile.png" class="" style="height: 45px; width: 45px;"/>
+
+
+<div class="text-center position-relative d-inline-block">
+  <!-- Profile picture -->
+
+  <img id="profileImage" 
+
+       src="<?= get_profile_image(); ?>" 
+
+       alt="Profile Picture" 
+       class="rounded-circle border"
+       style="width: 80px; height: 80px; cursor: pointer; object-fit: cover;">
+
+  <!-- Pencil icon overlay -->
+  <span id="editIcon"
+        class="position-absolute top-0 end-0 bg-white rounded-circle p-1 border"
+        style="cursor: pointer;">
+    <i class="fas fa-pencil-alt"></i>
+  </span>
+
+  <!-- Hidden file input -->
+  <input type="file" id="profileInput" accept="image/*" style="display: none;">
+</div>
+
+<script>
+$(document).ready(function(){
+  // Click on image OR pencil icon → open file chooser
+  $("#profileImage, #editIcon").click(function(){
+    $("#profileInput").click();
+  });
+
+  // Preview + Upload selected image
+  $("#profileInput").change(function(event){
+    let file = event.target.files[0];
+    if(file){
+      // Show preview immediately
+      let reader = new FileReader();
+      reader.onload = function(e){
+        $("#profileImage").attr("src", e.target.result);
+      }
+      reader.readAsDataURL(file);
+
+      // Upload to server via AJAX
+      let formData = new FormData();
+      formData.append("profileImage", file);
+formData.append("<?php echo $this->security->get_csrf_token_name(); ?>", 
+                "<?php echo $this->security->get_csrf_hash(); ?>");
+      $.ajax({
+		url: "<?= base_url('userAddress/upload_profile_image') ?>",
+		type: "POST",  // must be POST
+		data: formData,
+		processData: false,
+		contentType: false,
+        success: function(response){
+          console.log("Upload Success:", response);
+          // Optionally show success message
+        },
+        error: function(){
+          alert("Failed to upload profile picture.");
+        }
+      });
+    }
+  });
+});
+</script>
+
+
+				<!-- <img src="<?php echo base_url; ?>/assets_web/images/icons/userprofile.png" class="" style="height: 45px; width: 45px;"/> -->
 				<div class="wrap-details">
 					<p class="mb-1 text-blue">Hello! <b><?php echo $this->session->userdata("user_name") ?></b></p>
 					<p class="text-blue"><b>Refer Code : </b><span class="text-orange"><?php echo $this->session->userdata("referral_code") ?></span>
@@ -20,6 +87,10 @@
 				</div>
 			</div>
 		</div>
+
+
+
+
 		<div class="wrap box-shadow">
 			<div class="wrap-block">
 				<img src="<?php echo base_url; ?>/assets_web/images/icons/userprofile.png" class="" style="height: 27px;" />

@@ -20,6 +20,36 @@ class UserAddress extends REST_Controller {
 		$this->responses(1,'Server OK');
 	}
 	
+
+	public function upload_profile_image_post() {
+
+    if (!empty($_FILES['profileImage']['name'])) {
+        $config['upload_path']   = './media/profile_pictures/';
+        $config['allowed_types'] = 'jpg|jpeg|png|gif';
+        $config['max_size']      = 2048; // 2MB
+        $config['file_name']     = time() . '_' . $_FILES['profileImage']['name'];
+
+        $this->load->library('upload', $config);
+
+        if ($this->upload->do_upload('profileImage')) {
+            $uploadData = $this->upload->data();
+
+            // Save to DB (example: user table)
+            $fileName = $uploadData['file_name'];
+            $userId   = $this->session->userdata('user_id');
+
+            $this->db->where('user_unique_id', $userId);
+            $this->db->update('appuser_login', ['profile_pic' => $fileName]);
+
+            echo json_encode(['status' => 'success', 'file' => $fileName]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => $this->upload->display_errors()]);
+        }
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'No file uploaded']);
+    }
+}
+
 	public function addUserAddress_post(){
 		$requiredparameters = array('language','username','mobile','locality','fulladdress','state','city','addresstype','email','city_id','pincode');
 		

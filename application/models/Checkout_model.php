@@ -1187,7 +1187,7 @@ $bonus_virtual_price=$virtual_partner;
 			$queryup = $this->db->update('orders', $order);
 
 
-
+if($wallet_money > 0){
 $user_id=$this->session->userdata('user_id');
 $final_wallet_amount = $wallet['amount'] - $bonus_virtual_price;
 $walletupdate['amount'] = $final_wallet_amount;
@@ -1212,7 +1212,7 @@ $wallet_txn['remark']='Deduct from New User Bonus';
 $wallet_txn['remark']='Deduct from Virtual Partner/Order Commission';
 }
 $this->db->insert('wallet_transaction_history', $wallet_txn);
-
+}
 
 
 

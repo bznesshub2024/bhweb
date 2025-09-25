@@ -102,6 +102,8 @@ $route['app/getProductWishlist'] = 'Wishlist/getProductWishlist';
 $route['app/getWishlistCount'] = 'Wishlist/getWishlistCount';
 
 //user address
+$route['userAddress/upload_profile_image'] = 'UserAddress/upload_profile_image';
+
 $route['app/addUserAddress'] = 'UserAddress/addUserAddress';
 $route['app/updateUserAddress'] = 'UserAddress/updateUserAddress';
 $route['app/deleteUserAddress'] = 'UserAddress/deleteUserAddress';

@@ -313,19 +313,59 @@
 								<ul class="discount">
 									<li>
 										<h6>Delivery Charges</h6>
+										
 									</li>
 									<li>
 										<h6><span id="shipping_fee" class="text-dark"><?php echo $checkout['shipping_fee']; ?></span></h6>
 									</li>
 								</ul>
-<div class="input-group" style="display: flex; align-items: center; width: 100%; ">
+								<br/>		
+<p style="color: #e01616; text-align: center;   font-size: ;
+    font-weight: 500;font-weight: bold; margin: 0;">Delivery Charges will not be applicable</p>
+
+
+	
+<div style="    border-top: 0.5px solid #424242; width: 100%;" ></div>
+<br/>	
+
+
+<div class="">
+  <div class="input-group" style="    margin: 0;border: 1px solid #b7b7b7;border-radius: 8px;">
+    <input type="text" class="form-control"  id="coupon_code" placeholder="Enter coupon code" style="  height: auto;
+    border: 0 !important;    font-size: inherit;">
+    <button class="btn btn-success text-white"  onclick="get_checkout_data()" type="button" id="applyCoupon">Apply</button>
+    <button class="btn btn-danger text-white" type="button" onclick="clear_coupon()" id="clearCoupon">Clear</button>
+  </div>
+
+
+<span id="coupon_message" class="form-text text-success mt-1"></span>
+<span id="coupon_message_invalid" class="form-text text-danger mt-1"></span>
+
+  <!-- <div id="couponFeedback" class="form-text text-success mt-1"></div> -->
+</div>
+<style>
+	#coupon_code:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+
+}
+
+</style>
+
+
+
+<!-- <div class="" style="display: flex; align-items: center; width: 100%; ">
 <input type="text" id="coupon_code"  placeholder="Discount Code"  />
 
 <span onclick="get_checkout_data()" style="cursor: pointer; color: #e01616; font-weight: 500; padding-left: 10px;">
 Apply
 </span>
-</div>
-<style>
+</div> -->
+
+<!-- <br/>			
+<div style="    border-top: 0.5px solid #424242; width: 100%;" ></div>
+<br/>	 -->
+<!-- <style>
 #coupon_code {
 	    font-size: 18px;
   height: 25px;
@@ -345,9 +385,7 @@ Apply
 }
 
 </style>
-
-<span id="coupon_message" style="color:#438F29;font-weight:600"></span>
-<span id="coupon_message_invalid" style="color:#ff1832;font-weight:600"></span>
+ -->
 
 						
 
@@ -360,8 +398,12 @@ foreach($wallet_bonus as $wallet_bonus)
 	{
 		$total_bonus = $total_bonus + $wallet_bonus->amount;
 	}
+	if($wallet_bonus->payment_type == '6')
+        {
+            $deduct_wallet = $deduct_wallet + $wallet_bonus->amount;
+        }
 }
-
+$total_bonus=$total_bonus-$deduct_wallet;
 $new_user_bonus=$total_bonus;
 $virtual_partner=0;
 if($total_bonus != 0)
@@ -407,7 +449,7 @@ if($total_bonus != 0)
 							</ul>
 
 							<div class="continue paymentMethod0">
-								<h6>You will save <?php echo $checkout['total_discount']; ?> on this order</h6>
+								<h6 id="you_save">You will save  ₹ <?php echo str_replace(['₹'], '', $checkout['total_discount'])+str_replace(['₹'], '', $checkout['default_discount']); ?> on this order</h6>
 								<?php
 								$str_result = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz';
 								?>
@@ -838,6 +880,12 @@ if($total_bonus != 0)
 		}
 var globalJson = null; // global variable
 
+function clear_coupon(){
+	get_checkout_data();
+	$('#coupo_discount_value').html('');
+	$('#coupon_code').val('');
+	
+}
 
 		function get_checkout_data(user_pincode) {
 $("#paymentMethodBtn").attr("disabled", "disabled").css({
@@ -868,15 +916,36 @@ $("#paymentMethodBtn").attr("disabled", "disabled").css({
 				},
 				success: function(response) {
 					 globalJson = response; // set global variable
-// console.log('response>>>>>>>>>>>>.',response);
 //  return ;
+
+
 					var parsedJSON = response.Information;
+
+let total_discount = parsedJSON.total_discount;
+let clean =0;
+if(total_discount){
+	let clean = total_discount.replace(/₹|\s/g, '');
+}
+
+
+ // console.log('response>>>>>>>>>>>>.',parsedJSON.coupon_discount , clean , parsedJSON.default_discount);
+	let coupon_discount   = parseFloat(parsedJSON.coupon_discount) || 0;
+let clean_value       = parseFloat(clean) || 0;
+let default_discount  = parseFloat(parsedJSON.default_discount) || 0;
+// Sum them
+let totalSave = coupon_discount + clean_value + default_discount;
+// Show in element
+$("#you_save").html('You will save ₹ ' + totalSave + ' on this order');
+
 					var product_html = "";
 					$(".paymentMethod").empty();
 					$('#total_discount_data').text();
 					if (response.status == 2) {
-						//console.log('>>>>>>>>>>>>>',response)
+						//console.log('response>>>>>>>>>>>>234567.');
 						$('#coupon_message_invalid').html(response.msg);
+						$('#coupo_discount_value').html('');
+						$('#coupon_code').val('');
+
 						/*Swal.fire({
 							position: "center",
 							//icon: "success",
@@ -898,11 +967,20 @@ $("#paymentMethodBtn").attr("disabled", "disabled").css({
 						if (this.coupon_discount != '') {
 							$('#total_discount_data').text('Total Savings :' + this.coupon_discount_text);
 							$('#coupo_discount_value').text(this.coupon_discount);
+							
+
+						
+
+							//$('#you_save').text(this.coupon_discount + this.tax_payable + this.default_discount);
+
 							$('#coupon_message').html('Coupon applied successfully.');
 						}
 						else if(this.coupon_discount == 0)
 						{
-							$('#coupon_message_invalid').html('Invalid Coupon.');	
+							if(input_code){
+								$('#coupon_message_invalid').html('Invalid Coupon.');	
+							}
+							
 						}
 							
 						$(".paymentMethodBtn").prop('disabled', false);
