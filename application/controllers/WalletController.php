@@ -38,6 +38,7 @@ class WalletController extends REST_Controller
 		$this->data['wallet'] = $this->wallet_model->get_wallet_data();
         $this->data['wallet_summery'] = $this->wallet_model->get_wallet_summery($this->data['wallet']['wallet_id']);
         $this->data['wallet_bonus'] = $this->wallet_model->get_wallet_bonus($this->data['wallet']['wallet_id']);
+        //print_r($this->data['wallet']['wallet_id']);die;
 		$this->load->view('website/add_wallet.php',$this->data);
 	}
 

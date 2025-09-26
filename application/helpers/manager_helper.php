@@ -1,6 +1,87 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 
+
+
+
+if (!function_exists('wallet_calc')) {
+    function wallet_calc($user_id = null)
+    {
+
+        $CI =& get_instance();
+        $CI->load->database();
+        $CI->load->model('wallet_model'); // make sure the model is loaded
+
+        // if no user id passed, use session
+        if ($user_id === null) {
+            $user_id = $CI->session->userdata('user_id');
+        }
+
+        $wallet = $CI->wallet_model->get_wallet_data($user_id); 
+		$wallet_summery = $CI->wallet_model->get_wallet_summery($wallet['wallet_id']);
+		$wallet_bonus   = $CI->wallet_model->get_wallet_bonus($wallet['wallet_id']);
+
+		$total_bonus = 0;
+		$deduct_wallet=0;
+		$return_wallet=0;
+		$deduct_virtual_wallet=0;
+		$return_virtual_wallet=0;
+
+		foreach($wallet_bonus as $wallet_bonus)
+		{
+			
+			if($wallet_bonus->payment_type == '1')
+			{
+				$total_bonus = $total_bonus + $wallet_bonus->amount;
+			}
+	        if($wallet_bonus->payment_type == '6')
+	        {
+	            $deduct_wallet = $deduct_wallet + $wallet_bonus->amount;
+	        }
+	        if($wallet_bonus->payment_type == '8')
+	        {
+	            $return_wallet = $return_wallet + $wallet_bonus->amount;
+	        }
+	        if($wallet_bonus->payment_type == '7')
+	        {
+	            $deduct_virtual_wallet = $deduct_virtual_wallet + $wallet_bonus->amount;
+	        }
+	        if($wallet_bonus->payment_type == '9')
+	        {
+	            $return_virtual_wallet = $return_virtual_wallet + $wallet_bonus->amount;
+	        }
+		}
+		$total_bonus=($total_bonus+$return_wallet)-$deduct_wallet;
+		$unwithdraw_amount = '';
+	    $total_virtual_amount=0;
+	    if($wallet['amount'] > 0){
+	    	if($total_bonus != 0)
+	    	{
+	    		$amount = $wallet['amount'] - $total_bonus;
+	            $total_virtual_amount = ($amount+$return_virtual_wallet) - $deduct_virtual_wallet;
+	    		
+	    	}
+	    	else
+	    	{
+	    		$amount = $wallet['amount'];
+	            $total_virtual_amount = ($amount+$return_virtual_wallet) - $deduct_virtual_wallet;
+	    	}
+	    }
+	    $both_message = " (".$total_bonus." New User Bonus + ".round($total_virtual_amount,2)." Virtual Partner/Order Commission)";
+
+	    $array=[
+	    	'total_wallet_balance'=>round($wallet['amount'],0),
+	    	'newUserBonus'=>$total_bonus,
+	    	'virtualPartner'=>$total_virtual_amount,
+	    	'both_message'=>$both_message,
+
+	    ];
+	    return $array;
+
+    }
+}
+
+
 if (!function_exists('get_profile_image')) {
     function get_profile_image($user_id = null)
     {

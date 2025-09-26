@@ -801,10 +801,24 @@
                             <input type="text" class="form-control border-top-0 border-end-0 border-start-0 border-bottom " id="log_mobileno1" onkeypress="return AllowOnlyNumbers(event);" maxlength="10" placeholder="Enter Phone Number" aria-label="Enter Phone Number">
                         </div>
                         <span id="phonevl_errors" style="color:red;"></span>
-                        <a class="input-group-text text-primary text-decoration-none bg-transparent border-0 mb-2" onclick="call_login_mob(); return false;" id="otp-with-change-addon">Send OTP ?</a>
-
+                        <a class="input-group-text text-primary text-decoration-none bg-transparent border-0 mb-2" onclick="call_login_mob(); return false;" id="otp-with-change-addon">Get OTP ?</a>
+<style>
+  .otp-box {
+    height: 33px;
+    text-align: center;
+        font-size: 20px;
+    margin: 0 5px;
+  }
+</style>
                         <div class="input-group">
-                            <input class="form-control border-top-0 border-end-0 border-start-0 border-bottom" type="text" id="otp_login1" placeholder="Enter OTP Sent to Mobile" aria-label="Enter OTP Sent to Mobile">
+<input type="text" maxlength="1" class="form-control otp-box" id="otp1">
+<input type="text" maxlength="1" class="form-control otp-box" id="otp2">
+<input type="text" maxlength="1" class="form-control otp-box" id="otp3">
+<input type="text" maxlength="1" class="form-control otp-box" id="otp4">
+<input type="text" maxlength="1" class="form-control otp-box" id="otp5">
+<input type="text" maxlength="1" class="form-control otp-box" id="otp6">
+
+                            <!-- <input class="form-control border-top-0 border-end-0 border-start-0 border-bottom" type="text" id="otp_login1" placeholder="Enter OTP Sent to Mobile" aria-label="Enter OTP Sent to Mobile"> -->
                         </div>
                         <a class="input-group-text text-primary text-decoration-none bg-transparent border-0"><span style="color:red" id="error_msg1"></span></a>
 
@@ -844,10 +858,21 @@
                         <input class="form-control border  mt-2 w-100 " onkeypress="return AllowOnlyNumbers(event);" maxlength="10" type="text" id="mobileno" placeholder="Enter Mobile Number" aria-label="Enter Phone Number">
                         <span id="phonev_error" style="color:red;text-align:left"></span>
                         <input class="form-control border  mt-2 w-100 mb-2" type="text" id="refer_code" placeholder="Refer code" aria-label="Enter Refer code">
+<label>Enter OTP Sent to Mobile</label>
+ <div class="input-group">
+<input type="text" maxlength="1" class="form-control otp-box si_otp" id="otp1">
+<input type="text" maxlength="1" class="form-control otp-box si_otp" id="otp2">
+<input type="text" maxlength="1" class="form-control otp-box si_otp" id="otp3">
+<input type="text" maxlength="1" class="form-control otp-box si_otp" id="otp4">
+<input type="text" maxlength="1" class="form-control otp-box si_otp" id="otp5">
+<input type="text" maxlength="1" class="form-control otp-box si_otp" id="otp6">
+
+                         
+                        </div>
+
+                        <!-- <input type="text" class="form-control border-top-0 border-end-0 border-start-0 border-bottom" id="otp" placeholder="Enter OTP Sent to Mobile" aria-label="OPT Sent to Mobile" aria-describedby="otp-with-change-addon"> -->
 
 
-
-                        <input type="text" class="form-control border-top-0 border-end-0 border-start-0 border-bottom" id="otp" placeholder="Enter OTP Sent to Mobile" aria-label="OPT Sent to Mobile" aria-describedby="otp-with-change-addon">
                         <span style="color:red" id="error_msg_reg"></span>
                         <a class="input-group-text text-primary text-decoration-none bg-transparent border-0" onclick="call_register(); return false;" id="otp-with-change-addon">Get OTP ?</a>
 
@@ -967,7 +992,7 @@
                                     <input type="text" class="form-control border-top-0 border-end-0 border-start-0 border-bottom  me-4" id="log_mobileno" onkeypress="return AllowOnlyNumbers(event);" maxlength="10" placeholder="Enter Phone Number" aria-label="Enter Phone Number">
                                 </div>
                                 <span id="phonev_errors0" style="color:red;"></span>
-                                <a class="input-group-text text-primary text-decoration-none bg-transparent border-0 mb-2" onclick="call_login(); return false;" id="otp-with-change-addon">Send OTP ?</a>
+                                <a class="input-group-text text-primary text-decoration-none bg-transparent border-0 mb-2" onclick="call_login(); return false;" id="otp-with-change-addon">Get OTP ?</a>
 
                                 <div class="input-group">
                                     <input class="form-control border-top-0 border-end-0 border-start-0 border-bottom  me-4" type="text" id="otp_login" placeholder="Enter OTP Sent to Mobile" aria-label="Enter OTP Sent to Mobile">

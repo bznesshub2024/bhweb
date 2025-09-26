@@ -294,6 +294,7 @@ class Order_model extends CI_Model
 
 	function change_order_status_details($order_id, $pid, $status1)
 	{
+
 		$msg = "";
 		$this->db->select("op.prod_id,op.status,op.prod_name,o.user_id,op.prod_price,ul.level_1");
 
@@ -304,7 +305,7 @@ class Order_model extends CI_Model
 		$this->db->JOIN('appuser_login ul', 'ul.user_unique_id = o.user_id', 'INNER');
 
 		$query_prod = $this->db->get('order_product op');
-
+	
 		if ($query_prod->num_rows() > 0) {
 			$order_prod_result = $query_prod->result_object();
 
@@ -340,14 +341,60 @@ class Order_model extends CI_Model
 					$old_balance = $get_wallet->balance;
 				}
 
-				$this->db->select('*');
+				
+
+$this->db->select('*');
+$this->db->where(array('order_id' => $order_id));
+$query_orders = $this->db->get('orders');
+$get_orders = $query_orders->result_object()[0];
+
+$bonus_virtual=$get_orders->bonus_virtual;
+$bonus_virtual_price=$get_orders->bonus_virtual_price;
+if($bonus_virtual > 0){
+
+$this->db->select('*');
+$this->db->where(array('user_id' => $user_id));
+$query_or_wallet = $this->db->get('wallet_summery');
+$get_wallet_or = $query_or_wallet->result_object()[0];
+$old_amount_or = $get_wallet_or->amount + $bonus_virtual_price;
+$this->db->where(array('user_id'=>$user_id));
+$walet_history_upd['amount'] = $old_amount_or;
+$this->db->update('wallet_summery', $walet_history_upd);	
+
+
+
+$data_wallet_history['wallet_id'] = $get_wallet_or->wallet_id;
+if($bonus_virtual == 1){
+$data_wallet_history['remark']='Return New User Bonus';
+$data_wallet_history['payment_type']=8;
+}elseif($bonus_virtual == 2){
+$data_wallet_history['remark']='Return Virtual Partner/Order Commission';
+$data_wallet_history['payment_type']=9;
+}
+$data_wallet_history['transaction_id'] = $transaction_id;
+$data_wallet_history['transaction_type'] = 'credit';
+$data_wallet_history['amount'] = $bonus_virtual_price;
+$data_wallet_history['balance'] = $old_amount_or;
+$data_wallet_history['product_id'] = $pid;
+$data_wallet_history['order_id'] = $order_id;
+$data_wallet_history['user_id'] = $user_id;
+$data_wallet_history['created_at'] = $this->date_time;
+
+$this->db->insert('wallet_transaction_history',$data_wallet_history);
+
+}
+
+		$this->db->select('*');
 				$this->db->where(array('user_id' => admin_user_id));
 				$query_wallet = $this->db->get('wallet_summery');
 				
 				$get_wallet = $query_wallet->result_object()[0];
 				
-				
 				$old_amount = $get_wallet->amount;
+	$transaction_id = 'txt'.$this->random_strings_digit(3).date('dmYHi');
+
+				
+				
 				$walet_history_upd['amount'] = $old_amount - $prod_commision_admin;
 			
 				$this->db->where(array('user_id'=>admin_user_id));

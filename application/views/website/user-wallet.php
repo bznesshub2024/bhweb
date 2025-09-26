@@ -89,32 +89,43 @@
 	<?php if($this->session->userdata("user_name") == '') { redirect('', 'refresh'); } ?>
 	
 	<?php
-	$total_bonus = 0;
-	$deduct_wallet=0;
-	foreach($wallet_bonus as $wallet_bonus)
-	{
+	// $total_bonus = 0;
+    // $deduct_wallet=0;
+    // $deduct_virtual_wallet=0;
+	// foreach($wallet_bonus as $wallet_bonus)
+	// {
 		
-		if($wallet_bonus->payment_type == '1')
-		{
-			$total_bonus = $total_bonus + $wallet_bonus->amount;
-		}
-		if($wallet_bonus->payment_type == '6')
-        {
-            $deduct_wallet = $deduct_wallet + $wallet_bonus->amount;
-        }
-	}
-	$total_bonus=$total_bonus-$deduct_wallet;
-	$unwithdraw_amount = '';
-	if($total_bonus != 0)
-	{
-		$amount = $wallet['amount'] - $total_bonus;
-		$unwithdraw_amount = " (".$total_bonus." New User Bonus + ".round($amount,2)." Virtual Partner/Order Commission)";
-	}
-	else
-	{
-		$amount = $wallet['amount'];
-		$unwithdraw_amount = " (".$total_bonus." New User Bonus + ".round($amount,2)." Virtual Partner/Order Commission)";
-	}
+	// 	if($wallet_bonus->payment_type == '1')
+	// 	{
+	// 		$total_bonus = $total_bonus + $wallet_bonus->amount;
+	// 	}
+    //     if($wallet_bonus->payment_type == '6')
+    //     {
+    //         $deduct_wallet = $deduct_wallet + $wallet_bonus->amount;
+    //     }
+    //     if($wallet_bonus->payment_type == '7')
+    //     {
+    //         $deduct_virtual_wallet = $deduct_virtual_wallet + $wallet_bonus->amount;
+    //     }
+	// }
+
+    // $total_bonus=$total_bonus-$deduct_wallet;
+	// $unwithdraw_amount = '';
+    // $total_virtual_amount=0;
+    // if($wallet['amount'] > 0){
+    // 	if($total_bonus != 0)
+    // 	{
+    // 		$amount = $wallet['amount'] - $total_bonus;
+    //         $total_virtual_amount = $amount - $deduct_virtual_wallet;
+    		
+    // 	}
+    // 	else
+    // 	{
+    // 		$amount = $wallet['amount'];
+    //         $total_virtual_amount = $amount - $deduct_virtual_wallet;
+    // 	}
+    // }
+    // $unwithdraw_amount = " (".$total_bonus." New User Bonus + ".round($total_virtual_amount,2)." Virtual Partner/Order Commission)";
 	?>
 	
 	<input type="hidden" id="bank_details" value="<?php echo $bank_details['id']; ?>" >
@@ -130,9 +141,16 @@
 <a class="btn btn-success btn-xm rounded text-white" style="float:right" href="<?php echo base_url ?>add_wallet"><i class="bx bx-wallet me-2"></i>Add to Wallet</a>
 
                                 </h4>
-                                <h3 class="card-title mb-2 fw-bolder">Rs <?php echo round($wallet['amount'],0); ?></h3>
-								<b><span class="unwithdraw_amount"><?php echo $unwithdraw_amount; ?></span></b>
-                               <input type="hidden" id="wallet_balance" value="<?php echo round($wallet['amount'],0); ?>" >
+                                 <h3 class="card-title mb-2 fw-bolder">Rs <?php 
+print_r(wallet_calc()['total_wallet_balance']);
+                                //echo round($wallet['amount'],0); ?></h3>
+								<b><span class="unwithdraw_amount"><?php 
+                                print_r(wallet_calc()['both_message']);
+                                //echo $unwithdraw_amount;
+                                 ?></span></b>
+								
+								
+                               <input type="hidden" id="wallet_balance" value="<?php print_r(wallet_calc()['total_wallet_balance']); ?>" >
                                <input type="hidden" id="bonus_wallet_balance" value="<?php echo round($total_bonus,0); ?>" >
                                 <p class="card-text">
 									Use your Wallet amount to purchase the products and avail awesome discounts and offers.

@@ -389,48 +389,66 @@ Apply
 
 						
 
-
 <?php
-$total_bonus = 0;
-foreach($wallet_bonus as $wallet_bonus)
-{
-	if($wallet_bonus->payment_type == '1')
-	{
-		$total_bonus = $total_bonus + $wallet_bonus->amount;
-	}
-	if($wallet_bonus->payment_type == '6')
-        {
-            $deduct_wallet = $deduct_wallet + $wallet_bonus->amount;
-        }
-}
-$total_bonus=$total_bonus-$deduct_wallet;
-$new_user_bonus=$total_bonus;
-$virtual_partner=0;
-if($total_bonus != 0)
-{
-	$virtual_partner = $wallet['amount'] - $total_bonus;
-}else{
-	$virtual_partner = $wallet['amount'];
-}
+	// $total_bonus = 0;
+  //   $deduct_wallet=0;
+  //   $deduct_virtual_wallet=0;
+	// foreach($wallet_bonus as $wallet_bonus)
+	// {
+		
+	// 	if($wallet_bonus->payment_type == '1')
+	// 	{
+	// 		$total_bonus = $total_bonus + $wallet_bonus->amount;
+	// 	}
+  //       if($wallet_bonus->payment_type == '6')
+  //       {
+  //           $deduct_wallet = $deduct_wallet + $wallet_bonus->amount;
+  //       }
+  //       if($wallet_bonus->payment_type == '7')
+  //       {
+  //           $deduct_virtual_wallet = $deduct_virtual_wallet + $wallet_bonus->amount;
+  //       }
+	// }
 
-?>							
+  // $total_bonus=$total_bonus-$deduct_wallet;
+	// $unwithdraw_amount = '';
+	// $total_virtual_amount=0;
+  //  if($wallet['amount'] > 0){
+	// if($total_bonus != 0)
+	// {
+	// 	$amount = $wallet['amount'] - $total_bonus;
+  //   $total_virtual_amount = $amount - $deduct_virtual_wallet;
+	// 	//$unwithdraw_amount = " (".$total_bonus." New User Bonus + ".round($total_virtual_amount,2)." Virtual Partner/Order Commission)";
+	// }
+	// else
+	// {
+	// 	$amount = $wallet['amount'];
+  //   $total_virtual_amount = $amount - $deduct_virtual_wallet;
+  //   //$unwithdraw_amount = " (".$total_bonus." New User Bonus + ".round($total_virtual_amount,2)." Virtual Partner/Order Commission)";
+	// }
+	// }
+
+
+	?>
+
+					
 <div style="font-size: 14px;">
 <br/>
 <label 
-<?php if($new_user_bonus <= 0){?>
+<?php if(wallet_calc()['newUserBonus'] <= 0){?>
  style=" pointer-events: none; color: #aaa; "
 <?php }?>
-><input type="radio" 	onclick="get_checkout_data()"  name="wallet_money" value="1"><b> <?php echo $new_user_bonus;?> New User Bonus</b> </label>
-<input type="hidden" name="wallet_money_amount1" value="<?php echo $new_user_bonus;?>">
+><input type="radio" 	onclick="get_checkout_data()"  name="wallet_money" value="1"><b> <?php echo wallet_calc()['newUserBonus'];?> New User Bonus</b> </label>
+<input type="hidden" name="wallet_money_amount1" value="<?php echo wallet_calc()['newUserBonus'];?>">
 <br/><br/>
 <label
-<?php if($virtual_partner <= 0){?>
+<?php if(wallet_calc()['virtualPartner'] <= 0){?>
  style=" pointer-events: none; color: #aaa; "
 <?php }?>
 
-><input type="radio" 	onclick="get_checkout_data()" name="wallet_money" value="2"> <b> <?php echo $virtual_partner;?> Virtual Partner/Order Commission </b></label>
+><input type="radio" 	onclick="get_checkout_data()" name="wallet_money" value="2"> <b> <?php echo wallet_calc()['virtualPartner'];?> Virtual Partner/Order Commission </b></label>
 
-<input type="hidden" name="wallet_money_amount2" value="<?php echo $virtual_partner;?>">
+<input type="hidden" name="wallet_money_amount2" value="<?php echo wallet_calc()['virtualPartner'];?>">
 
 
 </div>
@@ -922,19 +940,20 @@ $("#paymentMethodBtn").attr("disabled", "disabled").css({
 					var parsedJSON = response.Information;
 
 let total_discount = parsedJSON.total_discount;
+
 let clean =0;
-if(total_discount){
-	let clean = total_discount.replace(/₹|\s/g, '');
+if (total_discount) {
+    clean = total_discount.replace(/₹|\s/g, ''); // Remove ₹ and spaces
 }
 
-
- // console.log('response>>>>>>>>>>>>.',parsedJSON.coupon_discount , clean , parsedJSON.default_discount);
 	let coupon_discount   = parseFloat(parsedJSON.coupon_discount) || 0;
 let clean_value       = parseFloat(clean) || 0;
 let default_discount  = parseFloat(parsedJSON.default_discount) || 0;
 // Sum them
 let totalSave = coupon_discount + clean_value + default_discount;
 // Show in element
+//console.log('response>>>>>>>>>>>>.',coupon_discount , clean_value , default_discount,parsedJSON);
+
 $("#you_save").html('You will save ₹ ' + totalSave + ' on this order');
 
 					var product_html = "";

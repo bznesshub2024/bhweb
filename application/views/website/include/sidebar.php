@@ -56,7 +56,8 @@ formData.append("<?php echo $this->security->get_csrf_token_name(); ?>",
 		processData: false,
 		contentType: false,
         success: function(response){
-          console.log("Upload Success:", response);
+        	 alert("Upload Success.");
+          //console.log("Upload Success:", response);
           // Optionally show success message
         },
         error: function(){

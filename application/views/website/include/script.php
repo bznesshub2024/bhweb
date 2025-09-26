@@ -591,6 +591,10 @@
   }
 
   function call_register() {
+
+ 
+
+
     // alert("call");
     var phonev = $("#mobileno").val();
     var fullname = $("#fullname").val();
@@ -759,10 +763,20 @@
 
   function verify_otp() {
 
+
     var phonev = $("#mobileno").val();
     var fullname = $("#fullname").val();
     var refer_code = $("#refer_code").val();
-    var otpv = $("#otp").val();
+    //var otpv = $("#otp").val();
+
+    const inputs = document.querySelectorAll('.si_otp');
+
+
+  var otpv = '';
+    inputs.forEach(input => {
+        otpv += input.value;
+    });
+
     var qouteidv = "";
     //alert("phone  "+phonev+"---"+namev+ "===="+phonev.length);
     if (fullname == "" || fullname == null) {
@@ -924,11 +938,38 @@
   }
 
 
-  function call_login_otp_mob() {
-    var phonev = $("#log_mobileno1").val();
-    var otp_login = $("#otp_login1").val();
-    var pass = $("#password").val();
+const inputs = document.querySelectorAll('.otp-box');
+inputs.forEach((input, index) => {
+  input.addEventListener('input', () => {
+    if (input.value.length === 1 && index < inputs.length - 1) {
+      inputs[index + 1].focus();
+    }
+  });
 
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !input.value && index > 0) {
+      inputs[index - 1].focus();
+    }
+  });
+});
+
+// function submitOTP() {
+//   let otp = '';
+//   inputs.forEach(input => otp += input.value);
+//   alert("OTP Entered: " + otp);
+// }
+
+  function call_login_otp_mob() {
+  const inputs = document.querySelectorAll('.otp-box');
+
+    var phonev = $("#log_mobileno1").val();
+
+    var otp_login = '';
+    inputs.forEach(input => {
+        otp_login += input.value;
+    });
+    var pass = $("#password").val();
+// console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',otp_login)
     var qouteid = '';
 
     if (phonev == "" || phonev == null) {

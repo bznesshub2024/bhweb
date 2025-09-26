@@ -429,7 +429,7 @@ $globalJson = removeSpecialCharacters($this->post('globalJson'));
     	if($validation=='valid') {
 			if(($user_id || $qouteid) && $fullname && $mobile && $fulladdress && $city && $state && $addresstype && $payment_id && $payment_mode){
 				
-				$order_detail = $this->checkout_model->place_order_details($user_id,$qouteid,$fullname,$mobile,$locality,$fulladdress,$city,$state,$pincode,$addresstype,$email,$payment_id,$payment_mode,$coupon_code,$coupon_value,$city_id,$wallet_money);
+				$order_detail = $this->checkout_model->place_order_details($user_id,$qouteid,$fullname,$mobile,$locality,$fulladdress,$city,$state,$pincode,$addresstype,$email,$payment_id,$payment_mode,$coupon_code,$coupon_value,$city_id,$wallet_money,$globalJson);
 				
 				
 				if($order_detail['status'] == 'update'){						

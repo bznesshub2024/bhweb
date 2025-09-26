@@ -301,6 +301,8 @@ class Checkout_model extends CI_Model
 				$key_secret = 'j3wOmrEPLY5St6hONRSKTv05';
 
 
+
+
 $total_price_value = ($total_price + $shipping - round($coupon_discount, 0)) - round($default_discount,0);
 
 if(!empty($globalJson)){
@@ -313,6 +315,25 @@ if (isset($globalJson->Information)) {
     $total_price_value = str_replace(['₹', ' ', ','], '', $info->payable_amount);
 }
 }
+
+$bonus_virtual=0;
+if(!empty($wallet_money)){
+$bonus_virtual=$wallet_money;
+}
+$bonus_virtual_price=0;
+if(!empty($bonus_virtual) && $bonus_virtual > 0){
+if($bonus_virtual == 1){
+$bonus_virtual_price=wallet_calc()['newUserBonus'];
+}elseif($bonus_virtual == 2){
+$bonus_virtual_price=wallet_calc()['virtualPartner'];
+}
+}
+
+$bonus_virtual_price=min($bonus_virtual_price, $total_price_value);
+$total_price_value = ($total_price_value - $bonus_virtual_price)+ $shipping;
+
+
+
 
 
 				// Order details
@@ -412,34 +433,21 @@ if (isset($globalJson->Information)) {
 		//$coupon_code = '';
 		//$coupon_discount = 0;
 
-		$bonus_virtual_price=0;
-		$bonus_virtual=0;
-		if(!empty($wallet_money)){
-			$bonus_virtual=$wallet_money;
-		}
-		$wallet = $this->wallet_model->get_wallet_data();
-        $wallet_summery = $this->wallet_model->get_wallet_summery($wallet['wallet_id']);
-        $wallet_bonus = $this->wallet_model->get_wallet_bonus($wallet['wallet_id']);
-	
-
-        $total_bonus = 0;
-		foreach($wallet_bonus as $wallet_bonus)
-		{
-			if($wallet_bonus->payment_type == '1')
-			{
-				$total_bonus = $total_bonus + $wallet_bonus->amount;
-			}
-		}
-
-		$new_user_bonus=$total_bonus;
-		$virtual_partner=0;
-		if($total_bonus != 0)
-		{
-			$virtual_partner = $wallet['amount'] - $total_bonus;
-		}else{
-			$virtual_partner = $wallet['amount'];
-		}
+$bonus_virtual=0;
+if(!empty($wallet_money)){
+$bonus_virtual=$wallet_money;
+}
+$bonus_virtual_price=0;
+if(!empty($bonus_virtual) && $bonus_virtual > 0){
+if($bonus_virtual == 1){
+$bonus_virtual_price=wallet_calc()['newUserBonus'];
+}elseif($bonus_virtual == 2){
+$bonus_virtual_price=wallet_calc()['virtualPartner'];
+}
+}
 		
+
+
 		$total_price_value=($total_price
 		                                
 		                                - round($coupon_discount, 0))
@@ -449,14 +457,15 @@ if (isset($globalJson->Information)) {
 		                                - round($coupon_discount, 0)
 		                                - round($default_discount, 0)
 		                             ;
-		if($bonus_virtual == 1){
-			$bonus_virtual_price=$new_user_bonus;
-		}elseif($bonus_virtual == 2){
-			$bonus_virtual_price=$virtual_partner;
-		}
+		
 
-		$total_price_value = ($total_price_value - min($bonus_virtual_price, $total_price_value))+ $shipping_fee;
-		$payable_amount = ($payable_amount - min($bonus_virtual_price, $payable_amount))+ $shipping_fee;
+//print_r(min($bonus_virtual_price, $total_price_value));die;
+
+		$bonus_virtual_price=min($bonus_virtual_price, $total_price_value);
+
+		$total_price_value = ($total_price_value - $bonus_virtual_price)+ $shipping_fee;
+
+		$payable_amount = ($payable_amount - $bonus_virtual_price)+ $shipping_fee;
 
 
 		
@@ -599,7 +608,7 @@ if (isset($globalJson->Information)) {
 	
 	//function for place order
 
-	function place_order_details($user_id, $qouteid, $fullname, $mobile, $locality, $fulladdress, $city, $state, $pincode, $addresstype, $email, $payment_id, $payment_mode, $coupon_code, $coupon_value, $city_id,$wallet_money=0)
+	function place_order_details($user_id, $qouteid, $fullname, $mobile, $locality, $fulladdress, $city, $state, $pincode, $addresstype, $email, $payment_id, $payment_mode, $coupon_code, $coupon_value, $city_id,$wallet_money=0,$globalJson='')
 	{
 		$status = array('status' => '');
 		$delivery_array = $order = array();
@@ -1136,39 +1145,51 @@ if (isset($globalJson->Information)) {
 				}
 			}
 
-$base_price=$total_price;
+
+
+
+
+
+$bonus_virtual=0;
+if(!empty($wallet_money)){
+$bonus_virtual=$wallet_money;
+}
 $bonus_virtual_price=0;
-$wallet = $this->wallet_model->get_wallet_data();
-$wallet_summery = $this->wallet_model->get_wallet_summery($wallet['wallet_id']);
-$wallet_bonus = $this->wallet_model->get_wallet_bonus($wallet['wallet_id']);
-
-$total_bonus = 0;
-foreach($wallet_bonus as $wallet_bonus)
-{
-if($wallet_bonus->payment_type == '1')
-{
-$total_bonus = $total_bonus + $wallet_bonus->amount;
+if(!empty($bonus_virtual) && $bonus_virtual > 0){
+if($bonus_virtual == 1){
+$bonus_virtual_price=wallet_calc()['newUserBonus'];
+}elseif($bonus_virtual == 2){
+$bonus_virtual_price=wallet_calc()['virtualPartner'];
 }
 }
 
-$new_user_bonus=$total_bonus;
-$virtual_partner=0;
-if($total_bonus != 0)
-{
-$virtual_partner = $wallet['amount'] - $total_bonus;
-}else{
-$virtual_partner = $wallet['amount'];
+if(!empty($globalJson)){
+if (is_string($globalJson)) {
+    $globalJson = json_decode($globalJson);
 }
 
-if($wallet_money == 1){
-$bonus_virtual_price=$new_user_bonus;
-}elseif($wallet_money == 2){
-$bonus_virtual_price=$virtual_partner;
+if (isset($globalJson->Information)) {
+    $info = $globalJson->Information;
+    $total_price = $info->bonus_virtual_price + str_replace(['₹', ' ', ','], '', $info->payable_amount);
+
+	$bonus_virtual_price = $info->bonus_virtual_price;
+
+
+
+}
 }
 
+// print_r([$total_price_value
+// ]);die;
 
- $bonus_virtual_price = min($bonus_virtual_price, $base_price);
-// $total_price    = $base_price - $bonus_virtual_price;
+// $total_price = ($total_price + $shipping - round($coupon_discount, 0)) - round($default_discount,0);
+// print_r([$globalJson,
+// $total_price , $shipping , round($coupon_discount, 0) , round($default_discount,0)
+// ]);die;
+
+// $bonus_virtual_price=min($bonus_virtual_price, $total_price);
+
+
 
 
 
@@ -1186,7 +1207,7 @@ $bonus_virtual_price=$virtual_partner;
 			$this->db->where(array('order_id' => $order_id));
 			$queryup = $this->db->update('orders', $order);
 
-
+$wallet = $this->wallet_model->get_wallet_data();
 if($wallet_money > 0){
 $user_id=$this->session->userdata('user_id');
 $final_wallet_amount = $wallet['amount'] - $bonus_virtual_price;
@@ -1196,7 +1217,14 @@ $queryup = $this->db->update('wallet_summery', $walletupdate);
 
 $transaction_id = 'txt'.$this->random_strings_digit(3).date('dmYHi');
 $wallet_txn['wallet_id']=$wallet['wallet_id'];
+
+if($wallet_money == 1){
+$wallet_txn['remark']='Deduct from New User Bonus';
 $wallet_txn['payment_type']=6;
+}elseif($wallet_money == 2){
+$wallet_txn['remark']='Deduct from Virtual Partner/Order Commission';
+$wallet_txn['payment_type']=7;
+}
 $wallet_txn['transaction_id']=$transaction_id;
 $wallet_txn['transaction_type']='debit';
 $wallet_txn['amount']=$bonus_virtual_price;
@@ -1205,12 +1233,6 @@ $wallet_txn['product_id']='';
 $wallet_txn['order_id']=$order_id;
 $wallet_txn['user_id']=$user_id;
 $wallet_txn['created_at']=date('Y-m-d H:i:s');
-$wallet_txn['remark']='Deduct from New User Bonus/Virtual Partner/Order Commission';
-if($wallet_money == 1){
-$wallet_txn['remark']='Deduct from New User Bonus';
-}elseif($wallet_money == 2){
-$wallet_txn['remark']='Deduct from Virtual Partner/Order Commission';
-}
 $this->db->insert('wallet_transaction_history', $wallet_txn);
 }
 
