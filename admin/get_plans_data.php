@@ -38,10 +38,10 @@ if($code == $_SESSION['_token']){
         
         // echo "class id is  ".$class_id;     
         $inactive = "active";
-           $stmt = $conn->prepare("SELECT plan_id, plan_name, plan_value FROM plans  ORDER BY plan_id ASC LIMIT  ".$start.", ".$limit."");
+           $stmt = $conn->prepare("SELECT plan_id, plan_name, duration, plan_value FROM plans  ORDER BY plan_id ASC LIMIT  ".$start.", ".$limit."");
     	   //$stmt->bind_param( s,  $inactive );
     	   $stmt->execute();	 
-     	   $data = $stmt->bind_result( $col1, $col2, $col3);
+     	   $data = $stmt->bind_result( $col1, $col2, $col3, $col4);
            $return = array();
     	   $i =0;
        	   while ($stmt->fetch()) { 
@@ -49,7 +49,7 @@ if($code == $_SESSION['_token']){
         	   	$return[$i] = 
         					array(	
         					    'id' => $col1,
-        						'plan_name' => $col2,'plan_value' => $col3);
+        						'plan_name' => $col2,'duration' => $col3,'plan_value' => $col4);
               		   $i = $i+1;  	
               	$status = 1;
                 $msg = "Details here";

@@ -27,18 +27,65 @@ if (isset($_POST['submit']) ) {
         $encryptedpassword = $encruptfun->encrypt($publickey_server, $password);
 		
 		$status ='99';
+		$seller_unique_id ='';
       // echo "email is ".$notExist;
         $stmt = $conn->prepare("SELECT seller_unique_id,companyname,fullname,email,phone,status,pincode, address, state, city FROM sellerlogin WHERE email=? AND password=?");
         $stmt->bind_param("ss", $email, $encryptedpassword);
         $stmt->execute();
+
         $stmt->store_result();
         $stmt->bind_result($col1,$col2,$col3,$col4,$col5,$col6,$col7, $col8, $col9, $col10 );
-        
+         
         while ($stmt->fetch()) {
            $status = $col6;
+           $seller_unique_id = $col1;
         }
-				
-		if($status ==0){
+
+       
+		$stmt = $conn->prepare("
+			SELECT * 
+			FROM seller_plan_payment 
+			WHERE seller_id = ? 
+			ORDER BY id DESC 
+			LIMIT 1
+			");
+		$stmt->bind_param("s", $seller_unique_id);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$current_date=strtotime(date('Y-m-d'));
+		if ($row = $result->fetch_assoc()) {
+			$plan_end_date=$row['plan_end_date'];
+			if(!empty($plan_end_date)){
+				if(strtotime($plan_end_date) < $current_date){
+					//print_r(12345);die;
+$update = $conn->prepare("UPDATE seller_plan_payment SET current_plan = ? WHERE id = ?");
+$current_plan = 0; // integer
+$id = $row['id'];  // integer from DB
+
+$update->bind_param("ii", $current_plan, $id);
+$update->execute();
+
+$update1 = $conn->prepare("UPDATE sellerlogin SET status = ? WHERE seller_unique_id = ?");
+
+$status = 3; // integer
+// $seller_unique_id already defined
+
+$update1->bind_param("is", $status, $seller_unique_id);
+$update1->execute();
+				$status = "payment_issue";
+				}elseif($row['current_plan'] == 0){
+				$status = "payment_issue";
+				}
+
+			}
+		}
+
+
+
+
+		if($status == 'payment_issue'){
+			$error = "Your current plan has been deactivated. Please purchase a new plan to continue enjoying our services.";
+		}else if($status ==0){
 			$error = "Your account request is pending. Please wait untill admin approve.";
 		}else if($status ==2){
 			$error = "Your account is rejected. Please contact administrator.";
@@ -83,6 +130,10 @@ if (isset($_POST['submit']) ) {
             $error = "Email or Password is invalid";
           //  echo $error;
         }
+
+
+
+
       //  mysql_close($conn); // Closing Connection
     }
 } 

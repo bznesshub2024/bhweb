@@ -30,7 +30,6 @@ class SellerController extends REST_Controller
 		$this->data['get_city'] = $this->sellerProduct_model->get_city();
 		$this->data['get_plans'] = $this->sellerProduct_model->get_plans();
 
-
 		$this->load->view('website/become_seller.php', $this->data);  // ye view/website folder hai
 	}
 

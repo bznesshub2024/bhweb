@@ -56,13 +56,13 @@ function getAttribute(pagenov, rownov) {
 
 			$(data).each(function () {
 
-				var html = '<tr id="tr' + this.id + '"> <td>' + count + '</td><td > ' + this.plan_name + '</td><td > ' + this.plan_value + '</td>';
+				var html = '<tr id="tr' + this.id + '"> <td>' + count + '</td><td > ' + this.plan_name + '</td><td > ' + this.duration + '</td><td > ' + this.plan_value + '</td>';
 
 				html += '<td> <button type="submit" class= "btn btn-danger waves-effect waves-light btn-sm pull-left" name="delete" onclick="deletebrand(' + this.id + ');">DELETE</button>';
 
 
 
-				html += '<button  style=" margin-left: 10px;" type="submit" class="btn btn-dark waves-effect waves-light btn-sm pull-left" name="edit" onclick=\'editbrand("' + this.id + '","' + this.plan_name + '","' + this.plan_value + '")\';>EDIT</button></td></tr>';
+				html += '<button  style=" margin-left: 10px;" type="submit" class="btn btn-dark waves-effect waves-light btn-sm pull-left" name="edit" onclick=\'editbrand("' + this.id + '","' + this.plan_name + '","' + this.plan_value+ '","' + this.duration + '")\';>EDIT</button></td></tr>';
 
 				$("#cat_list").append(html);
 
@@ -203,7 +203,8 @@ $(document).ready(function () {
 
 			form_data.append('namevalue', namevalue);
 			form_data.append('plan_value', plan_value);
-
+			let duration = document.getElementById("duration").value;
+			form_data.append('duration', duration);
 			form_data.append('code', code_ajax);
 
 
@@ -284,6 +285,8 @@ $(document).ready(function () {
 			form_data.append('namevalue', namevalue);
 
 			form_data.append('plan_id', plan_id);
+			let duration = document.getElementById("update_duration").value;
+			form_data.append('duration', duration);
 
 			form_data.append('plan_value', plan_value);
 
@@ -420,13 +423,15 @@ function perpage_filter() {
 
 
 
-function editbrand(id, name, plan_value) {
+function editbrand(id, name, plan_value, duration='') {
 
 	$("#myModalupdate").modal('show');
 
 	$("#plan_id").val(id);
 
 	$("#update_name").val(name);
+	$("#update_duration").val(duration).change(); 
+	//$("#update_duration").val(duration);
 
 	$("#update_plan_value").val(plan_value);
 

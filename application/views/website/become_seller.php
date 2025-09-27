@@ -123,17 +123,35 @@
 
 								<div class="col-md-6" id="plan_div">
 									<label class="form-label">Select Plans:</label>
-									<select name="selectplan" id="selectplan" class="form-control" onchange="show_data()">
 
-										<option value="">Select Plans</option>
+<input type="hidden" name="plan_price" id="plan_price">
 
-										<?php foreach ($get_plans as $plans_data) { ?>
-											<option data-plan_value="<?php echo $plans_data['plan_value']; ?>" value="<?php echo $plans_data['plan_id']; ?>"><?php echo $plans_data['plan_name'] . ' (' . $plans_data['plan_value'] . ')'; ?></option>
+<select name="selectplan" id="selectplan" class="form-control" onchange="show_data()">
 
-											
-										<?php } ?>
+<!-- <option value="">Select Plans</option> -->
 
-									</select>
+<?php foreach ($get_plans as $plans_data) { ?>
+<option data-plan_value="<?php echo $plans_data['plan_value']; ?>" value="<?php echo $plans_data['plan_id']; ?>">
+
+
+<?php echo $plans_data['plan_name']?>
+
+<?php 
+if($plans_data['plan_value'] > 0){
+echo' (Price: ' . $plans_data['plan_value'] . ')';
+}else{
+echo '(Free)';
+}
+ ?>
+
+
+(Duration : <?php echo $plans_data['duration']; ?> Days)
+</option>
+
+
+<?php } ?>
+
+</select>
 									<span id="error"></span>
 								</div>
 								
@@ -346,17 +364,28 @@
 			window.onload = getStatedata();
 			window.onload = getCitydata(0);
 		});
-        
+       	show_data();
+
         function show_data1()
         {
             plan_value = $('#selectplan1 option:selected').data('plan_value');
             plan_name = $('#selectplan1 option:selected').text();
            
-           plan_gst = (plan_value * 18) / 118;
-           
-           plan_amount = plan_value - plan_gst;
-           
-           plan_total_amount = plan_value
+
+			$("#plan_price").val(plan_value);
+			plan_gst=0;
+			plan_amount=0;
+			plan_total_amount=0;
+
+			if(plan_value > 0){
+			plan_gst = (plan_value * 18) / 118;
+            plan_amount = plan_value - plan_gst;
+            plan_total_amount = plan_value;
+			}
+
+           // plan_gst = (plan_value * 18) / 118;
+           // plan_amount = plan_value - plan_gst;
+           // plan_total_amount = plan_value
            
            $('#plan_name').html(plan_name);
            $('#plan_amount').html(plan_amount.toFixed(2));
@@ -364,18 +393,22 @@
            $('#plan_total_amount').html('₹ '+plan_total_amount);
            
         }
-        
          function show_data()
         {
             plan_value = $('#selectplan option:selected').data('plan_value');
             plan_name = $('#selectplan option:selected').text();
+			$("#plan_price").val(plan_value);
+			plan_gst=0;
+			plan_amount=0;
+			plan_total_amount=0;
+
+			if(plan_value > 0){
+			plan_gst = (plan_value * 18) / 118;
+			plan_amount = plan_value - plan_gst;
+			plan_total_amount = plan_value;
+			}
            
-           plan_gst = (plan_value * 18) / 118;
-           
-           plan_amount = plan_value - plan_gst;
-           
-           plan_total_amount = plan_value
-           
+           //console.log('>>>>>>>>>>>>>>>>>',plan_gst,plan_amount,plan_total_amount);
            $('#plan_name').html(plan_name);
            $('#plan_amount').html(plan_amount.toFixed(2));
            $('#plan_gst').html(plan_gst.toFixed(2));
@@ -616,8 +649,28 @@
 				}*/
 				
 				form_data.append('plan_value', plan_value);
-				
+				var plan_value = $("#plan_price").val(); 
+
 				var amount = plan_value;
+
+if(amount == 0){
+
+$.ajax({
+method: 'post',
+url: site_url + 'add_seller',
+cache: false,
+contentType: false,
+processData: false,
+data: form_data,
+success: function(response) {
+window.location.href = site_url + 'thankyou_seller';
+}
+});
+return ;
+}
+
+
+
 
 							var options = {
 								key: 'rzp_live_oVzpJnJRDQttrF',

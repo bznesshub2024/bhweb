@@ -299,6 +299,7 @@ class SellerProduct_model extends CI_Model
 		$plan_result1 = $plan_query->result_object()[0];
 
 		$plan_value = $plan_result1->plan_value;
+
 		$admin_commision = ($plan_value * seleer_add_admin_commission) / 100;
 		$level_1_commision = ($plan_value * seller_level_1_commission) / 100;
 		$level_2_commision = ($plan_value * seller_level_2_commission) / 100;
@@ -342,13 +343,30 @@ class SellerProduct_model extends CI_Model
 		
 		$query = $this->db->insert('sellerlogin', $seller_array);
 		
-		
+		$plan_duration = $plan_result1->duration;
+		$plan_start_date = date('Y-m-d');
+		$plan_end_date = date('Y-m-d', strtotime($plan_start_date . " +$plan_duration days"));
+
 		$seller_pay_array['plan_id'] = $plan_id;
 		$seller_pay_array['plan_value'] = $plan_value;
 		$seller_pay_array['payment_id'] = $payment_id;
+		if($plan_value == 0){
+			$seller_pay_array['payment_id'] = 'Free Plan';
+		}
+		
+
 		$seller_pay_array['seller_id'] = $seller_unique_id;
+
+		$seller_pay_array['plan_duration'] = $plan_duration;
+		$seller_pay_array['plan_start_date'] = $plan_start_date;
+		$seller_pay_array['plan_end_date'] = $plan_end_date;
 		
 		$query = $this->db->insert('seller_plan_payment', $seller_pay_array);
+
+		if($plan_value == 0){
+			return 'Add Seller Successfully';
+		}
+
 
 		$this->db->select('*');
 		$this->db->where(array('phone' => $phone));
@@ -845,8 +863,8 @@ class SellerProduct_model extends CI_Model
 	{
 		$plan_result = array();
 
-		$this->db->select('plan_id, plan_name,plan_value');
-		$this->db->order_by('plan_id', 'ASC');
+		$this->db->select('*');
+		$this->db->order_by('plan_value', 'ASC');
 
 
 		$query = $this->db->get('plans');
@@ -858,6 +876,7 @@ class SellerProduct_model extends CI_Model
 				$plan_response['plan_id'] = $delivery_details->plan_id;
 				$plan_response['plan_name'] = $delivery_details->plan_name;
 				$plan_response['plan_value'] = $delivery_details->plan_value;
+				$plan_response['duration'] = $delivery_details->duration;
 
 				$plan_result[] = $plan_response;
 			}
