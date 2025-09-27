@@ -42,6 +42,49 @@ if (!isset($_SESSION['admin'])) {
 			<!-- end page title -->
 			<div class="row">
 
+<?php
+$plan = $conn->prepare("
+SELECT * 
+FROM seller_plan_payment 
+WHERE seller_id = ? 
+ORDER BY id DESC 
+LIMIT 1
+");
+$plan->bind_param("s", $_SESSION['admin']);
+$plan->execute();
+$plan_result = $plan->get_result();
+$srow = $plan_result->fetch_assoc();
+?>
+	<div class="col-12">
+<div class="card">
+				<div class="card-body">
+<h4 class="widget-title">Current Plan Details</h4>		
+				<div class="row">		
+<div class="col-md-4 col-xl-3">
+	<b>Plan Duration:</b> <?php echo $srow['plan_duration'];?> Days
+</div>
+<div class="col-md-4 col-xl-3">
+	<b>Plan Start Date:</b>  <?php echo date('d/m/Y',strtotime($srow['plan_start_date']));?>
+</div>
+<div class="col-md-4 col-xl-3">
+	<b>Plan End Date:</b> <?php echo date('d/m/Y',strtotime($srow['plan_end_date']));?>
+</div>
+<div class="col-md-4 col-xl-3">
+	<b>Plan :</b> 
+	<?php 
+	if($srow['plan_value'] == 0){
+		echo 'Free Plan';
+	}else{
+		echo $srow['plan_value'];
+	}
+	?>
+</div>
+</div>
+
+
+				</div>
+			</div>
+	</div>
 				<a class="col-md-4 col-xl-3" onclick="redirect_page('wallet_summery.php')">
 					<div class="widget-rounded-circle card-box">
 						<div class="row align-items-center">
@@ -55,31 +98,7 @@ if (!isset($_SESSION['admin'])) {
 									<h3 class="mt-1">
 										<span>Rs. </span>
 										<span data-plugin="counterup">
-											<?php
-
-											$stmt_user = $conn->prepare("SELECT user_id FROM `sellerlogin` WHERE seller_unique_id= '" . $_SESSION['admin'] . "'");
-											$stmt_user->execute();
-											$data = $stmt_user->bind_result($col1);
-											$seller_user_id = '';
-											while ($stmt_user->fetch()) {
-												$seller_user_id = $col1;
-												
-											}
-											$_SESSION['seller_user_id'] = $seller_user_id; 
 											
-											
-											$stmt_user = $conn->prepare("SELECT amount,wallet_id FROM `wallet_summery` WHERE user_id= '" . $seller_user_id . "'");
-											$stmt_user->execute();
-											$data = $stmt_user->bind_result($col1,$col2);
-											$wallet_amount = 0;
-											while ($stmt_user->fetch()) {
-												$wallet_amount = $col1;
-												$wallet_id = $col2;
-											}
-											$_SESSION['wallet_id'] = $wallet_id; 
-											echo round($wallet_amount,0);
-
-											?>
 										</span>
 									</h3>
 									<p class="text-muted mb-1 text-truncate">Wallet</p>
