@@ -772,10 +772,10 @@
     const inputs = document.querySelectorAll('.si_otp');
 
 
-  var otpv = '';
-    inputs.forEach(input => {
-        otpv += input.value;
-    });
+var otpv = '';
+inputs.forEach(input => {
+    otpv += input.value;
+});
 
     var qouteidv = "";
     //alert("phone  "+phonev+"---"+namev+ "===="+phonev.length);
