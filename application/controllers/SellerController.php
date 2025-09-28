@@ -33,6 +33,30 @@ class SellerController extends REST_Controller
 		$this->load->view('website/become_seller.php', $this->data);  // ye view/website folder hai
 	}
 
+	public function upgrade_plan_get()
+	{
+		$this->data['get_plans'] = $this->sellerProduct_model->get_plans();
+
+		$this->data['current_plans'] = $this->sellerProduct_model->current_plans();
+		//print_r($this->data['current_plans']);die;
+		$this->load->view('website/upgrade_plan.php', $this->data);
+	}
+	public function planupgrade_post()
+	{
+$plan_id=$_POST['plan_id'];
+$plan_value=$_POST['amount'];
+$payment_id=$_POST['payment_id'];
+
+$seller_array = $this->sellerProduct_model->planupgrade($plan_id,$plan_value,$payment_id);
+$this->session->set_flashdata('seller_form_msg', $seller_array);
+return $seller_array;
+print_r($seller_array);die;
+
+
+
+	}
+
+
 	public function thankyouseller_get()
 	{
 		$this->load->view('website/thankyouseller.php', $this->data);  // ye view/website folder hai

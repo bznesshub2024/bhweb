@@ -244,7 +244,8 @@ $route['high_discount'] = 'Home/high_discount';
 $route['regarding_price'] = 'Home/regarding_price';
 
 
-
+$route['upgrade_plan'] = 'SellerController/upgrade_plan';
+$route['planupgrade'] = 'SellerController/planupgrade';
 $route['become-seller'] = 'SellerController/seller_form';
 $route['add_seller'] = 'SellerController/add_sellers';
 $route['thankyouseller'] = 'SellerController/thankyouseller';

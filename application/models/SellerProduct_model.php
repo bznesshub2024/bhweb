@@ -233,6 +233,55 @@ class SellerProduct_model extends CI_Model
 	}
 
 
+function planupgrade($plan_id,$plan_value,$payment_id){
+
+$seller_unique_id=0;
+$this->db->select('*');
+$this->db->from('sellerlogin');
+$this->db->where('user_id', $this->session->userdata('user_id'));
+$this->db->limit(1);
+$query = $this->db->get();   // run query
+
+$result = $query->row_array();  // single row as array
+if(isset($result['seller_unique_id'])){
+$seller_unique_id=$result['seller_unique_id'];
+}else{
+	echo 'No seller_unique_id found';die;
+}
+$this->db->select('*');
+$this->db->where(array('plan_id' => $plan_id));
+$plan_query = $this->db->get('plans');
+$plan_result1 = $plan_query->result_object()[0];
+$plan_duration = $plan_result1->duration;
+$plan_name = $plan_result1->plan_name;
+$plan_start_date = date('Y-m-d');
+$plan_end_date = date('Y-m-d', strtotime($plan_start_date . " +$plan_duration days"));
+
+$this->db->where('seller_id', $seller_unique_id);
+$this->db->update('seller_plan_payment', ['current_plan' => 0]);
+
+$seller_pay_array['plan_id'] = $plan_id;
+$seller_pay_array['plan_value'] = $plan_value;
+$seller_pay_array['payment_id'] = $payment_id;
+$seller_pay_array['seller_id'] = $seller_unique_id;
+$seller_pay_array['plan_duration'] = $plan_duration;
+$seller_pay_array['plan_start_date'] = $plan_start_date;
+$seller_pay_array['plan_end_date'] = $plan_end_date;
+$query = $this->db->insert('seller_plan_payment', $seller_pay_array);
+
+
+$this->db->where('seller_unique_id', $seller_unique_id);
+$this->db->update('sellerlogin', 
+	[
+'status' => 1,
+'plan_id' => $plan_name,
+'plan_value' => $plan_value,
+'plan_id' => $plan_name,
+]
+);
+return 'Success';
+}
+
 
 
 	function add_seller($seller_name, $business_name, $website, $business_address, $business_details, $gst, $pan_number, $selectcountry, $selectstate, $selectcity, $pincode,$no_of_products, $phone, $email, $password, $plan_id, $refer_code, $seller_type,$payment_id, $_files)
@@ -363,9 +412,9 @@ class SellerProduct_model extends CI_Model
 		
 		$query = $this->db->insert('seller_plan_payment', $seller_pay_array);
 
-		if($plan_value == 0){
-			return 'Add Seller Successfully';
-		}
+		// if($plan_value == 0){
+		// 	return 'Add Seller Successfully';
+		// }
 
 
 		$this->db->select('*');
@@ -859,6 +908,31 @@ class SellerProduct_model extends CI_Model
 		return $delivery_result;
 	}
 
+	function current_plans()
+	{
+		$seller_unique_id=0;
+$this->db->select('*');
+$this->db->from('sellerlogin');
+$this->db->where('user_id', $this->session->userdata('user_id'));
+$this->db->limit(1);
+$query = $this->db->get();   // run query
+
+$result = $query->row_array();  // single row as array
+if(isset($result['seller_unique_id'])){
+	$this->db->select('*');
+	$this->db->from('seller_plan_payment');
+	$this->db->where('seller_id', $result['seller_unique_id']);
+	$this->db->where('current_plan', 1);
+	$this->db->order_by('id', 'DESC');
+	$this->db->limit(1);
+	$query = $this->db->get();
+	$result = $query->row();  // single row
+
+}
+		
+return $result;
+
+	}
 	function get_plans()
 	{
 		$plan_result = array();
