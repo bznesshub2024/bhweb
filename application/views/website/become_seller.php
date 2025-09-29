@@ -178,7 +178,7 @@ echo '(Free)';
 								</div>
 
 							</div>
-							<a href="#" class="seller_form btn btn-default btn-radious">Next</a>
+							<a href="#" class="seller_form btn btn-default ">Next</a>
 						</fieldset>
 						<fieldset>
 							<div class="row g-3" id="seller_desc">
@@ -232,7 +232,7 @@ echo '(Free)';
 
 							</div>
 							<a href="#" class="previous btn btn-secondary btn-radious btn-radious btn-radious">Previous</a>
-							<a href="#" class="seller_desc btn btn-default btn-radious btn-radious btn-radious">Next</a>
+							<a href="#" class="seller_desc btn btn-default  ">Next</a>
 						</fieldset>
 						<fieldset>
 							<div class="row g-3" id="seller_info">
@@ -261,7 +261,7 @@ echo '(Free)';
 
 							</div>
 							<a href="#" class="previous btn btn-secondary btn-radious">Previous</a>
-							<a href="#" class="seller_info btn btn-default btn-radious">Next</a>
+							<a href="#" class="seller_info btn btn-default ">Next</a>
 
 						</fieldset>
 						<fieldset>
@@ -322,7 +322,7 @@ echo '(Free)';
 								
 							</div>
 							<a href="#" class="previous btn btn-secondary btn-radious">Previous</a>
-							<button onclick="form_send()" class="btn btn-default btn-radious sendBtn seller_doc" name="submit" type="submit">Submit</button>
+							<button onclick="form_send()" class="btn btn-default  sendBtn seller_doc" name="submit" type="submit">Submit</button>
 
 						</fieldset>
 						<fieldset>
