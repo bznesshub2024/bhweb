@@ -40,10 +40,10 @@ if($code==$_SESSION['_token'] && isset($coupancode)   && !empty($coupancode)&& i
     	// echo " insert done ";
     	 $rows=$stmt11->affected_rows;
     	 if($rows>0){
-    	     echo "Coupan Added Successfully. ";
+    	     echo "Coupon Added Successfully. ";
     	     
     	 }else{
-    	     echo "failed to add Coupan";
+    	     echo "failed to add Coupon";
     	 }	
     	 
     }else{

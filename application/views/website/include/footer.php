@@ -16,18 +16,7 @@
                     has simplified the shopping experience for its value-conscious buyers. Shop now on our online store and 
                     and bring the world at your doorsteps.
                 </p>
-                <h4 class="fw-bold mb-3">
-                    Accepted Payments
-                </h4>
-                <div>
-                    <div class="footer_payment_logo">
-                        <!-- <img src="<?php echo base_url; ?>assets_web/images/svgs/stripe.svg" class="mb-2 mb-xl-0" alt="Stripe"> -->
-                        <img src="<?php echo base_url; ?>assets_web/images/svgs/mastercard.svg" class="mb-2 mb-xl-0" alt="Mastercard">
-                        <img src="<?php echo base_url; ?>assets_web/images/svgs/visa.svg" class="mb-2 mb-xl-0" alt="Visa">
-                        <img src="<?php echo base_url; ?>assets_web/images/svgs/gpay.svg" class="mb-2 mb-xl-0" alt="Google Pay">
-                        <!-- <img src="<?php echo base_url; ?>assets_web/images/svgs/applepay.svg" class="mb-2 mb-xl-0" alt="Apple Pay"> -->
-                    </div>
-                </div>
+                
             </div>
 
             <div class="col mt-4 mt-md-4 mt-lg-4">
@@ -62,6 +51,35 @@
                 </ul>
             </div>
         </div>
+
+                <div style="    padding-left: 30px;">
+
+<h4 class="fw-bold mb-3">
+                    Accepted Payments
+                </h4>             
+                    <div class="footer_payment_logo">
+                        <!-- <img src="<?php echo base_url; ?>assets_web/images/svgs/stripe.svg" class="mb-2 mb-xl-0" alt="Stripe"> -->
+                        <img src="<?php echo base_url; ?>assets_web/master.jpeg" class="mb-2 mb-xl-0" alt="Mastercard"  style="
+background: #fff;
+border: 1px solid #ccc;
+border-radius: 4px;
+padding: 2px;">
+                        <img src="<?php echo base_url; ?>assets_web/images/svgs/visa.svg" class="mb-2 mb-xl-0" alt="Visa">
+                        <img src="<?php echo base_url; ?>assets_web/images/svgs/gpay.svg" class="mb-2 mb-xl-0" alt="Google Pay">
+<img src="<?php echo base_url; ?>assets_web/rupay.jpeg" class="mb-2 mb-xl-0" alt="Rupay" style="
+background: #fff;
+border: 1px solid #ccc;
+border-radius: 4px;
+padding: 2px;">
+                        <img src="<?php echo base_url; ?>assets_web/paytm.jpeg" class="mb-2 mb-xl-0" alt="Paytm"  style="
+background: #fff;
+border: 1px solid #ccc;
+border-radius: 4px;
+padding: 2px;">
+                        <!-- <img src="<?php echo base_url; ?>assets_web/images/svgs/applepay.svg" class="mb-2 mb-xl-0" alt="Apple Pay"> -->
+                    </div>
+                </div>
+
         <hr>
         <p class="mb-0 fw-semibold text-center">&copy; <?php echo Date("Y") ?> - Copyright BznessHub All Right Reserved</p>
     </div>
