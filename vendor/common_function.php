@@ -1360,8 +1360,8 @@ function generateRandomCode($length = 10) {
 		$mail->SMTPAuth = true;
 		$mail->Username = $smtp_user;
 		$mail->Password = $smtp_password;
-		$mail->SMTPSecure = 'ssl'; // or 'ssl' if required
-		$mail->Port = $smtp_port; //465;        
+		$mail->SMTPSecure = 'null'; // or 'ssl' if required
+		$mail->Port = 587; //465;        
 
 		$mail->setFrom($smtp_user, 'no-reply');
 		$mail->addAddress($to_email);

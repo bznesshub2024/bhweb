@@ -144,7 +144,17 @@
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <?php $data_txt = 'hi'; 
-$share_code = 'Hey, I am using BznessHub App.  Use my Refer code to get 💯CASHBACK on every order 🛍.  🎁Code: '.$this->session->userdata("referral_code").'   📲Download the BznessHub App from Google Play Store:  https://play.google.com/store/apps/details?id=com.bussinesshub   Happy Shopping with Us.'; ?>
+//$share_code = 'Hey, I am using BznessHub App.  Use my Refer code to get 💯CASHBACK on every order 🛍.  🎁Code: '.$this->session->userdata("referral_code").'   📲Download the BznessHub App from Google Play Store:  https://play.google.com/store/apps/details?id=com.bussinesshub   Happy Shopping with Us.'; 
+
+$share_code = 'Hey, I am using BznessHub App.
+ Use my Refer code to get 💯CASHBACK on every order 🛍. 
+
+🎁Code: '.$this->session->userdata("referral_code").'
+📲Download the BznessHub App from Google Play Store:
+https://bussinesshub.page.link/'.$this->session->userdata("referral_code").'
+
+Happy Shopping with Us.'; 
+?>
 <div class="modal-body">
 <div class="d-flex flex-wrap justify-content-center post_social">
 <i onclick="copy_code_link()" class="fa-solid fa-link fa-3x pe-2" style="color: #ff6600;font-size:2.5rem"></i>
@@ -816,7 +826,9 @@ Contact Us
 <input type="text" class="form-control border-top-0 border-end-0 border-start-0 border-bottom " id="log_mobileno1" onkeypress="return AllowOnlyNumbers(event);" maxlength="10" placeholder="Enter Phone Number" aria-label="Enter Phone Number">
 </div>
 <span id="phonevl_errors" style="color:red;"></span>
-<a class="input-group-text text-primary text-decoration-none bg-transparent border-0 mb-2" onclick="call_login_mob(); return false;" id="otp-with-change-addon">Get OTP ?</a>
+<br/>
+<a style="float: left;" class="input-group-text text-primary text-decoration-none bg-transparent border-0 mb-2" onclick="call_login_mob(); return false;" id="otp-with-change-addon">Get OTP ?</a>
+
 <style>
 .otp-box {
 height: 33px;
@@ -825,6 +837,7 @@ font-size: 20px;
 margin: 0 5px;
 }
 </style>
+<div id="login_ver" style="display:none">
 <div class="input-group">
 <input type="text" maxlength="1" class="form-control otp-box" id="otp1">
 <input type="text" maxlength="1" class="form-control otp-box" id="otp2">
@@ -839,15 +852,18 @@ margin: 0 5px;
 
 <button class="btn btn-primary mt-6 mt-lg-4 w-90 fw-bold text-light btn-radious" onclick="call_login_otp_mob(); return false;" id="sendOtpLogInBtn" >Verify</button>
 <p class="text-muted mt-5 mt-lg-10 mb-0">By continue, you agree to <a href="" class="text-decoration-none">BznessHub Terms of Use</a> and <a href="" class="text-decoration-none">Privacy Policy</a>.</p>
+</div>
 </form>
 </div>
 
 <!-- Register Box -->
 <div id="register" class="px-3">
-<h1>Create Account</h1>
+<h1 style="padding-bottom: 0;">Create Account</h1>
 <form action="" class="my-3">
 <input class="form-control border" type="text" id="fullname" placeholder="Enter Full Name" aria-label="Enter Full Name" required>
 <span id="fullname_error" style="color:red;"></span>
+
+<input class="form-control border  mt-2 w-100 mb-2" type="text" id="refer_code" placeholder="Refer code" aria-label="Enter Refer code">
 <select id="country" name="country" class="form-control mt-2 border">
 <option value="OMN">Oman (+968)</option>
 <option value="CA">Canada (+1)</option>
@@ -872,8 +888,13 @@ margin: 0 5px;
 </select>
 <input class="form-control border  mt-2 w-100 " onkeypress="return AllowOnlyNumbers(event);" maxlength="10" type="text" id="mobileno" placeholder="Enter Mobile Number" aria-label="Enter Phone Number">
 <span id="phonev_error" style="color:red;text-align:left"></span>
-<input class="form-control border  mt-2 w-100 mb-2" type="text" id="refer_code" placeholder="Refer code" aria-label="Enter Refer code">
-<label>Enter OTP Sent to Mobile</label>
+
+<a class="input-group-text text-primary text-decoration-none bg-transparent border-0" style="float:left;" onclick="call_register(); return false;" id="otp-with-change-addon">Get OTP ?</a>
+
+<br/>
+<div id="reg_ver" style="display:none">
+
+<label style="    float: left;">Enter OTP Sent to Mobile</label>
 <div class="input-group">
 <input type="text" maxlength="1" class="form-control otp-box si_otp" id="otp1">
 <input type="text" maxlength="1" class="form-control otp-box si_otp" id="otp2">
@@ -881,18 +902,20 @@ margin: 0 5px;
 <input type="text" maxlength="1" class="form-control otp-box si_otp" id="otp4">
 <input type="text" maxlength="1" class="form-control otp-box si_otp" id="otp5">
 <input type="text" maxlength="1" class="form-control otp-box si_otp" id="otp6">
-
-
 </div>
 
 <!-- <input type="text" class="form-control border-top-0 border-end-0 border-start-0 border-bottom" id="otp" placeholder="Enter OTP Sent to Mobile" aria-label="OPT Sent to Mobile" aria-describedby="otp-with-change-addon"> -->
 
 
 <span style="color:red" id="error_msg_reg"></span>
-<a class="input-group-text text-primary text-decoration-none bg-transparent border-0" onclick="call_register(); return false;" id="otp-with-change-addon">Get OTP ?</a>
+<br>
 
-<p class="text-muted mt-lg-2 mb-0">By continue, you agree to <a href="" class="text-decoration-none">BznessHub Terms of Use</a> and <a href="" class="text-decoration-none">Privacy Policy</a>.</p>
+
+
+<p class="text-muted mt-lg-2 mb-0" style="padding:0">By continue, you agree to <a href="" class="text-decoration-none">BznessHub Terms of Use</a> and <a href="" class="text-decoration-none">Privacy Policy</a>.</p>
 <button onclick="verify_otp(); return false;" class="btn btn-primary  mt-2 mt-lg-1 w-100 fw-bold text-light btn-radious" id="sendOtpSignUpBtn">Continue</button>
+</div>
+
 </form>
 </div>
 </div>

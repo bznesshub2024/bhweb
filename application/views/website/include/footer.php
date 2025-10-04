@@ -53,29 +53,34 @@
         </div>
 
                 <div style="    padding-left: 30px;">
-
+<style>
+    .payment_ico{
+        background: #fff;
+border: 1px solid #ccc;
+border-radius: 4px;
+padding: 2px;
+    }
+</style>
 <h4 class="fw-bold mb-3">
                     Accepted Payments
                 </h4>             
                     <div class="footer_payment_logo">
                         <!-- <img src="<?php echo base_url; ?>assets_web/images/svgs/stripe.svg" class="mb-2 mb-xl-0" alt="Stripe"> -->
-                        <img src="<?php echo base_url; ?>assets_web/master.jpeg" class="mb-2 mb-xl-0" alt="Mastercard"  style="
-background: #fff;
-border: 1px solid #ccc;
-border-radius: 4px;
-padding: 2px;">
-                        <img src="<?php echo base_url; ?>assets_web/images/svgs/visa.svg" class="mb-2 mb-xl-0" alt="Visa">
-                        <img src="<?php echo base_url; ?>assets_web/images/svgs/gpay.svg" class="mb-2 mb-xl-0" alt="Google Pay">
-<img src="<?php echo base_url; ?>assets_web/rupay.jpeg" class="mb-2 mb-xl-0" alt="Rupay" style="
-background: #fff;
-border: 1px solid #ccc;
-border-radius: 4px;
-padding: 2px;">
-                        <img src="<?php echo base_url; ?>assets_web/paytm.jpeg" class="mb-2 mb-xl-0" alt="Paytm"  style="
-background: #fff;
-border: 1px solid #ccc;
-border-radius: 4px;
-padding: 2px;">
+ <img src="<?php echo base_url; ?>assets_web/upi.jpeg" class="mb-2 mb-xl-0 payment_ico" alt="UPI" >
+
+
+ <img src="<?php echo base_url; ?>assets_web/phonepay.jpeg" class="mb-2 mb-xl-0 payment_ico" alt="Phone Pay" >
+
+ <img src="<?php echo base_url; ?>assets_web/paytm.jpeg" class="mb-2 mb-xl-0 payment_ico" alt="Paytm" >
+
+<img src="<?php echo base_url; ?>assets_web/images/svgs/visa.svg" class="mb-2 mb-xl-0" alt="Visa">
+
+
+<img src="<?php echo base_url; ?>assets_web/master.jpeg" class="mb-2 mb-xl-0 payment_ico" alt="Mastercard" >
+     <img src="<?php echo base_url; ?>assets_web/rupay.jpeg" class="mb-2 mb-xl-0 payment_ico" alt="Rupay" >                   
+<img src="<?php echo base_url; ?>assets_web/images/svgs/gpay.svg" class="mb-2 mb-xl-0" alt="Google Pay">
+
+                       
                         <!-- <img src="<?php echo base_url; ?>assets_web/images/svgs/applepay.svg" class="mb-2 mb-xl-0" alt="Apple Pay"> -->
                     </div>
                 </div>

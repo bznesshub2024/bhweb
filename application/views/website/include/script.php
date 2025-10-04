@@ -594,7 +594,7 @@
 
  
 
-
+$("#reg_ver").hide();
     // alert("call");
     var phonev = $("#mobileno").val();
     var fullname = $("#fullname").val();
@@ -659,6 +659,7 @@
           ////alert("status is " + abc.msg);
           if (abc.status == 1) {
             // show otp verify div
+            $("#reg_ver").show();
             $('.aa-myaccount-login').hide();
             $('.aa-myaccount-otp').show();
 
@@ -1079,6 +1080,8 @@ inputs.forEach((input, index) => {
     var phonev = $("#log_mobileno1").val();
     var pass = $("#password").val();
 
+    $("#login_ver").hide();
+
     var qouteid = '';
 
     if (phonev == "" || phonev == null) {
@@ -1110,6 +1113,7 @@ inputs.forEach((input, index) => {
           if (response.msg == 'User not exist') {
             $("#phonevl_errors").html('Please Signup');
           } else {
+            $("#login_ver").show();
             /*$("#enterNumberLogin").removeClass("d-flex");
               $("#enterNumberLogin").addClass("d-none");
               $("#enterOtpLogin").removeClass("d-none");
