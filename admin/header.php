@@ -218,7 +218,7 @@
                                     <div class="logo-box">
                                         <a href="" class="logo logo-light text-center">
                                             <span class="logo-large">
-                                                <img src="images/Bussinesshub_logo_new.png" class="mb-1" alt="" height="50">
+                                                <img src="logo_white.png" class="mb-1" alt="" height="50">
                                             </span>
                                         </a>
                                     </div>

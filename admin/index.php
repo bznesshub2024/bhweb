@@ -77,6 +77,12 @@ if (isset($_POST['submit']) ) {
       //  mysql_close($conn); // Closing Connection
     }
 }
+
+
+include('encryptfun.php');
+ global $publickey_server;
+
+
 if(isset($_POST['emailvalue'])){
 	$email_id = trim($_POST['emailvalue']);
 	
@@ -89,323 +95,241 @@ if(isset($_POST['emailvalue'])){
 		
 		$checksum = date('dym').$Common_Function->random_strings(10).date('his');
 		
-		$query = $conn->query("UPDATE `admin_login` SET checksum ='".$checksum."' WHERE email ='".$email_id."'");
-		
-		$Common_Function->send_email_forgot_password($conn,$admin_email,$adminname,$checksum,BASEURL,'Forgot Password');
-		echo "done";
+		//$query = $conn->query("UPDATE `admin_login` SET checksum ='".$checksum."' WHERE email ='".$email_id."'");
+
+		$new_passwords = $Common_Function->generateRandomCode();
+		$encruptfun = new encryptfun();
+		$passwords = $encruptfun->encrypt($publickey_server, $new_passwords);
+
+		$Common_Function->send_password_email($conn,$admin_email,$adminname,$new_passwords);
+
+		$query = $conn->query("UPDATE `admin_login` SET password ='".$passwords."' WHERE email ='".$email_id."'");
+
+		//$Common_Function->send_email_forgot_password($conn,$admin_email,$adminname,$checksum,BASEURL,'Forgot Password');
+		$message ="Mail sent successfully";
 	}else{
-		echo "not_exist";
+		$error = "User Not Exist";
 	}
-	die();
+	
 }
+
+
 ?>
-<!DOCTYPE html>
-<!-- saved from url=(0014)about:internet -->
+
+
+<!doctype html>
 <html lang="en">
-   <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-      <title>Admin Login</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="icon" type="image/png" href="">
-      <!-- Bootstrap Core CSS -->
-      <link href="<?php echo BASEURL; ?>assets/css/bootstrap.css" rel='stylesheet' type='text/css' />
-	  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bzness Hub — Auth UI (HTML + CSS)</title>
+  <style>
+    :root{
+      --brand-orange: #FF6A00;
+      --brand-navy: #05204A;
+      --bg: #f8fafc; /* gray-50 */
+      --card-radius: 18px;
+      --max-width: 1100px;
+      --glass: rgba(255,255,255,0.9);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:#0f172a}
 
-      <!-- font-awesome icons CSS-->
-      <link href="<?php echo BASEURL; ?>assets/css/font-awesome.css" rel="stylesheet">
-	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
-      <!-- //font-awesome icons CSS-->
-      <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>assets/login/animate.css">
-      <link rel="stylesheet" type="text/css" href="<?php echo BASEURL; ?>assets/login/main.css">
-      <meta name="robots" content="noindex, follow">
-   </head>
-   
-    <style>
-    .login_body {
-        width: 100%;
-		height: 100%;
-        border: 1px solid blue;
-        background-color: #ff6600;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .layout{width:100%;max-width:var(--max-width);display:grid;grid-template-columns:1fr;gap:28px;align-items:center}
+
+    /* show two-column on larger screens */
+    @media(min-width:1024px){
+      .layout{grid-template-columns: 1fr 520px}
     }
 
-    .vendor_login {
-        color: #ffffff !important;
-        font-weight: 100;
-		font-size: 20px;
+    /* left marketing panel */
+    .panel{
+      display:none;border-radius:var(--card-radius);padding:40px;color:white;background:linear-gradient(180deg,var(--brand-navy),#0b3461);
     }
+    @media(min-width:1024px){.panel{display:block}}
+    .panel h1{font-size:32px;margin:0 0 12px}
+    .panel p{opacity:.92;margin:0 0 20px}
+    .feature{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+    .feature .icon{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:18px}
+    .feature .meta{line-height:1}
+    .feature .meta .label{font-size:12px;opacity:.85}
+    .feature .meta .title{font-weight:600}
 
-    .form_text {
-        color: #ffffff !important;
-        font-size: 16px !important;
-        font-weight: 400 !important;
-    }
+    /* card */
+    .card{background:white;border-radius:var(--card-radius);box-shadow:0 8px 30px rgba(2,6,23,0.06);padding:28px;border-top:6px solid var(--brand-orange)}
+    .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .card-head h2{margin:0;font-size:20px;color:var(--brand-navy)}
+    .card-head p{margin:4px 0 0;font-size:12px;color:#6b7280}
 
-    .remeber_checkbox {
-        position: absolute;
-        border-radius: 0px !important;
-    }
+    .view-toggle{display:flex;gap:8px}
+    .view-toggle button{padding:6px 12px;border-radius:999px;border:1px solid transparent;background:transparent;font-weight:600;cursor:pointer}
+    .view-toggle button.active{background:var(--brand-orange);color:white;border-color:var(--brand-orange)}
 
-    .vendor_login_btn {
-        background-color: blue;
-        color: #ffffff;
-        border-radius: 0px;
-    }
-	
-	.vendor_login_btn:hover {
-        background-color: blue;
-        color: #ffffff;
-        border-radius: 0px;
-    }
-	
-	.vendor-login-icons{
-		margin-top: 15px;
-	}
+    form{margin-top:6px}
+    .field{margin-bottom:12px}
+    label{display:block;font-size:13px;margin-bottom:6px;color:#374151}
+    input[type=text],input[type=email],input[type=password]{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #e6e9ef;font-size:14px}
+    input:focus{outline:none;box-shadow:0 0 0 4px rgba(255,106,0,0.09);border-color:var(--brand-orange)}
 
-    .vendor_login_box {
-        border: 0px;
-		color: white !important;
-		font-size: 14px;
-        border-bottom: 1px solid white;
-        background-color: transparent;
-        border-radius: 0px !important;
-		margin-left: 10px;
-    }
+    .row{display:flex;align-items:center;justify-content:space-between}
+    .btn{display:inline-block;padding:12px 16px;border-radius:14px;border:none;cursor:pointer;font-weight:700}
+    .btn.primary{width:100%;background:var(--brand-orange);color:#fff}
+    .btn.ghost{background:white;border:1px solid #e6e9ef}
 
-	.vendor_login_box::placeholder{
-		color: #ffffffcf !important;
-	}
-	
-	.vendor_login_box:focus{
-		border-bottom: 1px solid white !important;
-	}
+    .alt-auth{margin-top:14px}
+    .hr-line{position:relative;margin-top:10px;margin-bottom:10px}
+    .hr-line:before{content:'';position:absolute;left:0;right:0;height:1px;background:#e6e9ef;top:50%}
+    .hr-line span{position:relative;padding:0 8px;background:white;font-size:12px;color:#6b7280}
 
-	.login100-form-title {
-		font-family: 'Poppins-Regular' !important;
-	}
-	
-	.error_msg{
-		color: red;
-		font-size: 18px;
-	}
-	
-	.wrap-login100{
-		background: transparent !important;
-		border: 1px solid white !important;
-		padding: 50px !important;
-	}
-	
-	.container-login100{
-		background-color: #ff6600 !important;
-	}
-	
-	.login100-form-btn {
-		border-radius: 5px !important;
-		background: transparent !important;
-		border: 1px solid white !important;
-		font-family: Montserrat !important;
-	}
-	
-	.login100-form-btn:hover{
-		background: #162b75 !important;
-		border: 1px solid white !important;
-	}
-	
-	.login100-form {
-		width: 400px;
-	}
+    .socials{display:flex;gap:10px;margin-top:10px}
+    .socials button{flex:1;padding:10px;border-radius:8px;border:1px solid #e6e9ef;background:white}
 
+    .tiny{font-size:12px;color:#6b7280;text-align:center;margin-top:10px}
 
+    .small-card{margin-top:14px;text-align:center}
+    .link-btn{background:transparent;border:none;color:var(--brand-orange);font-weight:700;cursor:pointer}
 
-    @media (max-width: 576px) and (min-width: 250px) {
-        .form_text {
-            color: #ffffff !important;
-            font-size: 12px !important;
-            font-weight: 200 !important;
-        }
-		
-		.vendor_login_box{
-			font-size: 12px !important;
-		}
-		
-		.error_msg{
-			font-size: 12px;
-		}
-		
-		.vendor_login {
-			font-size: 14px;
-		}
+    /* utility */
+    .muted{color:#6b7280}
 
-        .login_sub_body {
-            width: 80% !important;
-        }
-    }
-	
-	@media (min-width: 991px){
-		.login_sub_body{
-			width: 30%!important;
-		}
-	}
-	
-	@media (min-width: 576px) and (max-width: 767px){
-		.login100-form{
-			width: 100%!important;
-		}
-	}
-	
-	
-</style>
-   
-   <body>
-      <div class="limiter">
-         <div class="container-login100">
-            <div class="wrap-login100">
-               <div class="login100-pic js-tilt" data-tilt="" style="will-change: transform; transform: perspective(300px) rotateX(-1.61deg) rotateY(-4.28deg) scale3d(1.1, 1.1, 1.1);">
-                  <img src="<?php echo BASEURL; ?>assets/login/img-01.png" alt="IMG">
-               </div>
-               <!--
-			   <form class="login100-form validate-form" method="post" id="login_form">
-                  <span class="login100-form-title text-blue">
-                  Admin Login
-                  </span>
-                  <span style="color:red;"><?php echo $error; ?></span>
-                  <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
-                     <input class="input100" type="email" id="user_name" name="email" placeholder="Enter Your Email" required="">
-                     <span class="focus-input100"></span>
-                     <span class="symbol-input100">
-                     <i class="fa fa-envelope" aria-hidden="true"></i>
-                     </span>
-                  </div>
-                  <div class="wrap-input100 validate-input" data-validate="Password is required">
-                     <input class="input100" type="password" name="password" id="password" placeholder="Password" required="">
-                     <span class="focus-input100"></span>
-                     <span class="symbol-input100">
-                     <i class="fa fa-lock" aria-hidden="true"></i>
-                     </span>
-                  </div>
-                   <div class="wrap-input200" >
-                    
-                  </div>
-                  <div class="container-login100-form-btn">
-                     <button class="login100-form-btn" id="login_btn" name="submit">
-                     Login
-                     </button>
-                  </div>
-					<br><a class="text-orange" href="forget_password.php">Forgot Password</a>
-               </form>
-			   -->
-			   
-			   
-			   
-			   <form class="login100-form validate-form" method="post" id="login_form">
-			   
-			   <span class="login100-form-title vendor_login text-blue">
-					Admin Login
-                  </span>
-                  <span style="color:red;"><?php echo $error; ?></span>
-                  
-					<div class="form-group my-1 mb-5 d-flex validate-input" data-validate="Valid email is required: ex@abc.xyz">
-						<i class="fa-solid fa-envelope fa-2xl vendor-login-icons" style="color: #ffffff;"></i>
-						<input type="email" id="user_name" name="email" class="my-1 vendor_login_box w-100" placeholder="Email ID">
-					</div>
-					
-					<div class="form-group my-1 mt-5 d-flex">
-						<i class="fa-solid fa-lock fa-2xl vendor-login-icons" style="color: #ffffff;"></i>
-						<input type="password" name="password" id="password" class="my-1 vendor_login_box w-100" placeholder="Password">
-					</div>
-					
-					<div class="d-flex justify-content-between align-items-center my-4">
-							<div class="form-check pt-3">
-								<input type="checkbox" class="form-check-input remeber_checkbox" <?php if($_COOKIE['checkbox'] ==1){ echo "checked";} ?> value="1">
-								<label class="form-check-label form_text">Remember Me</label>
-							</div>
-							<a href="forget_password.php" class="link form_text">Forget Password?</a>
-					</div>
-                   <div class="wrap-input100" >
-                    
-                  </div>
-                  <div class="container-login100-form-btn">
-                     <button class="login100-form-btn" id="login_btn" name="submit">
-                     Login
-                     </button>
-                  </div>
-                
-               </form>
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="layout">
+
+      <!-- Left: Marketing panel (hidden on small screens) -->
+      <aside class="panel" aria-hidden="false">
+        <h1>Welcome to Bzness Hub</h1>
+        <p>Launching soon — get your virtual store, refer & earn ₹50 per referral. Clean, fast and secure.</p>
+
+        <div class="feature">
+          <div class="icon">🚀</div>
+          <div class="meta"><div class="label">Feature</div><div class="title">Easy store setup</div></div>
+        </div>
+
+        <div class="feature">
+          <div class="icon">🔗</div>
+          <div class="meta"><div class="label">Refer</div><div class="title">₹50 per referral</div></div>
+        </div>
+      </aside>
+
+      <!-- Right: Auth card -->
+      <main>
+        <div class="card" id="authCard">
+          <div class="card-head">
+            <div>
+              <h2 id="cardTitle">Sign in to your account</h2>
+              <p>Use your email and password to continue</p>
+              <span style="color:red;"><?php echo $error; ?></span>
+              <span style="color:green;"><?php echo $message; ?></span>
             </div>
-         </div>
-      </div>
+            <div class="view-toggle" role="tablist" aria-label="Auth views">
+              <button id="btnLogin" class="active" data-view="login">Login</button>
+              <!-- <button id="btnSignup" data-view="signup">Sign up</button> -->
+            </div>
 
- <!-- js-->
-<script src="<?php echo BASEURL; ?>assets/js/jquery-1.11.1.min.js"></script>
+          </div>
 
-<script src="<?php echo BASEURL; ?>assets/login/popper.js"></script>
- <script src="<?php echo BASEURL; ?>assets/js/bootstrap.js"> </script>
- 
- <script src="<?php echo BASEURL; ?>assets/login/tilt.jquery.min.js"></script>
-<script>
-		$('.js-tilt').tilt({
-			scale: 1.1
-		})
-	</script>
+          <!-- Forms: login / signup / forgot -->
 
-	
-<script>
-		
-$(document).ready(function() {
-  
-	
-	$("#login_btn").click(function(event){
-		//event.preventDefault();			
-		var emailvalue = $('#user_name').val();
+          <section id="viewLogin">
+            <form  method="post" id="login_form">
+
+              <div class="field">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="user_name" name="email" class="" placeholder="you@example.com" required="">
+
+                <!-- <input id="loginEmail" type="email" placeholder="you@example.com" required /> -->
+              </div>
+              <div class="field">
+                <label for="loginPass">Password</label>
+
+                <input type="password" name="password" id="password" placeholder="Enter password" required>
+
+                <!-- <input id="loginPass" type="password" placeholder="Enter password" required /> -->
+              </div>
+
+              <div class="row" style="margin-bottom:12px">
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px"><input type="checkbox" /> <span class="muted">Remember me</span></label>
+                <button type="button" class="link-btn" id="linkForgot">Forgot?</button>
+              </div>
+
+              <button class="btn primary" type="submit"  name="submit">Continue</button>
+
+             <!--  <div class="alt-auth">
+                <div class="hr-line"><span>Or sign in with</span></div>
+                <div class="socials">
+                  <button type="button" class="btn ghost">Google</button>
+                  <button type="button" class="btn ghost">Phone</button>
+                </div>
+              </div> -->
+            </form>
+          </section>
+
           
-		var passwords = $('#password').val();
-           
-		if (emailvalue == '') {
-			successmsg("Please enter user name");
-		}else if (validate_email(emailvalue) == 'invalid') {
-			successmsg("User name Email id is invalid");
-		}else if(passwords =="" || passwords == null){
-            successmsg("Password is empty"); 
-		}else{
-			$("#login_form").submit(); 
-        }
-	});	
-	
 
-  
-});
-function validate_email(email) {
-    var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
-    if (!pattern.test(email)) {
-        return 'invalid';
-    } else {
-        return 'valid';
-    }
-}
-function successmsg(msg) {
-    xdialog.confirm(msg, function() {
-        // do work here if ok/yes selected...
-            
-    }, {
-        style: 'width:420px;font-size:0.8rem;',
-        buttons: {
-             ok: 'OK'
-         },
-        oncancel: function() {
-             // console.warn('Cancelled!');
-         }
- });
-}
+          <section id="viewForgot" hidden>
+            <form method="post" id="login_form">
+              <div class="field">
+                <label for="forgotEmail">Email</label>
+                 <!-- <input type="email" id="user_name" name="emailvalue" class="my-1 vendor_login_box w-100" placeholder="Enter your Email" required> -->
+                <input id="forgotEmail" type="email" name="emailvalue" placeholder="you@example.com" required />
+              </div>
+              <button class="btn primary" type="submit">Continue</button>
+              <!-- <div class="tiny">Remembered? <button class="link-btn" id="toLoginFromForgot">Sign in</button></div> -->
+            </form>
+          </section>
 
+          <!-- <div class="tiny">By continuing you agree to our <strong style="color:var(--brand-navy)">Terms</strong> and <strong style="color:var(--brand-navy)">Privacy</strong>.</div> -->
+        </div>
 
-	
-	</script>
-	
-	
-   <link href="<?php echo BASEURL; ?>assets/css/xdialog.min.css" rel="stylesheet" />
-<script src="<?php echo BASEURL; ?>assets/js/xdialog.min.js"></script>
+     <!--    <div class="small-card">
+          <div class="muted">Need help? <button class="link-btn" id="forgotFooter">Forgot password</button></div>
+        </div> -->
 
+      </main>
 
-</body></html>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const btnLogin = document.getElementById('btnLogin');
+     // const btnSignup = document.getElementById('btnSignup');
+      const viewLogin = document.getElementById('viewLogin');
+      const viewSignup = document.getElementById('viewSignup');
+      const viewForgot = document.getElementById('viewForgot');
+      const cardTitle = document.getElementById('cardTitle');
+
+      function setView(v){
+        // buttons
+        btnLogin.classList.toggle('active', v === 'login');
+       // btnSignup.classList.toggle('active', v === 'signup');
+
+        // sections
+        viewLogin.hidden = v !== 'login';
+       // viewSignup.hidden = v !== 'signup';
+        viewForgot.hidden = v !== 'forgot';
+
+        // title
+        if(v === 'login') cardTitle.textContent = 'Sign in to your account';
+      //  else if(v === 'signup') cardTitle.textContent = 'Create your account';
+        else if(v === 'forgot') cardTitle.textContent = 'Reset your password';
+      }
+
+      btnLogin.addEventListener('click', ()=> setView('login'));
+     // btnSignup.addEventListener('click', ()=> setView('signup'));
+
+      document.getElementById('linkForgot').addEventListener('click', ()=> setView('forgot'));
+      document.getElementById('toLoginFromSignup').addEventListener('click', ()=> setView('login'));
+      document.getElementById('toLoginFromForgot').addEventListener('click', ()=> setView('login'));
+      document.getElementById('forgotFooter').addEventListener('click', ()=> setView('forgot'));
+
+      // initial
+      setView('login');
+    })();
+  </script>
+</body>
+</html>

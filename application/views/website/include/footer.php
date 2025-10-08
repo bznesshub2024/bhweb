@@ -5,7 +5,7 @@
             <div class="col">
                 <div class="footer_logo">
                     <a href="/">
-                        <img src="<?php echo base_url; ?>assets_web/images/BusinessHub_footer_new.png" class="img-fluid footer_logo_image" alt="Footer Logo" style="height: 48px">
+                        <img src="<?php echo base_url; ?>logo_color.png" class="img-fluid footer_logo_image" alt="Footer Logo" style="height: 48px">
                     </a>
                 </div>
                 <p class="fw-semibold fs-xl-6 mb-3">

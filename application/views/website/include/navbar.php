@@ -6,7 +6,7 @@
 <!-- Navbar for Desktop -->
 <div class="navbar flex" id="navbar_for_desktop" style="background: linear-gradient(to right, #ff6600 , #FD7F2B); padding:0px;">
 <a class="navbar-brand-2 logo_div text-center" href="<?php echo base_url; ?>" style="margin:auto;">
-<img src="<?php echo base_url; ?>assets_web/images/Bussinesshub_logo_new.png" class="img-fluid navbar_logo_image" alt="Navbar Logo">
+<img src="<?php echo base_url; ?>logo_white.png" class="img-fluid navbar_logo_image" alt="Navbar Logo">
 </a>
 <div class="col content_div" style="padding:0px;">
 <div class="d-flex justify-content-end" style="border-bottom-left-radius: 60px; background-color: white;">
@@ -147,11 +147,19 @@
 //$share_code = 'Hey, I am using BznessHub App.  Use my Refer code to get 💯CASHBACK on every order 🛍.  🎁Code: '.$this->session->userdata("referral_code").'   📲Download the BznessHub App from Google Play Store:  https://play.google.com/store/apps/details?id=com.bussinesshub   Happy Shopping with Us.'; 
 
 $share_code = 'Hey, I am using BznessHub App.
- Use my Refer code to get 💯CASHBACK on every order 🛍. 
+Get 3 Levels of Income with Bzness Hub
+1. "Share & Earn — ₹50 for Every Referral!"-- Invite your friends, family, or followers to join Bzness Hub and earn ₹50 per referral.
+It’s a simple way to grow your network while earning cash rewards. The more people you refer, the bigger your income grows!
+2. "Your Store, Your Commission, Your Profit!" -- Whenever a customer places an order through your shared store or referral link, you earn a commission instantly.
+3. "Partner Virtually. Earn Really." -- As a Virtual Partner, you don’t just earn from your own activity — you also earn commissions from your team’s performance.
 
 🎁Code: '.$this->session->userdata("referral_code").'
+
 📲Download the BznessHub App from Google Play Store:
+
 https://bussinesshub.page.link/'.$this->session->userdata("referral_code").'
+
+website : www.bznesshub.com 
 
 Happy Shopping with Us.'; 
 ?>

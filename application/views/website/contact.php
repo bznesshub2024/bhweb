@@ -39,7 +39,7 @@
 <form action="<?php echo base_url('Home/contactsave'); ?>" method="post" class="p-3 border rounded shadow-sm bg-light">
        <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" 
            value="<?php echo $this->security->get_csrf_hash(); ?>" />
-
+<div class="p-10">
 <div class="mb-3">
 <label for="name" class="form-label">Name</label>
 <input type="text" name="name" id="name" class="form-control" required>
@@ -61,6 +61,7 @@
 </div>
 
 <button type="submit" class="btn btn-primary w-100">Submit</button>
+</div>
 </form>
 </div>
 </div>

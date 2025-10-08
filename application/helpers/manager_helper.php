@@ -202,50 +202,61 @@ if ( ! function_exists('price_format'))
     }
 }
 
-if ( ! function_exists('send_email_smtp'))
-{
+if (!function_exists('send_email_smtp')) {
 
-  function send_email_smtp($toemail,$htmlMessage,$subject){
-		
-		$smtp_host = get_settings('smtp_host');
-		$smtp_port = get_settings('smtp_port');
-		$smtp_user = get_settings('smtp_user');
-		$system_email = get_settings('system_email');
-		$smtp_password = get_settings('smtp_password');
-		$system_name = get_settings('system_name');
+    function send_email_smtp($toemail, $htmlMessage, $subject) {
 
-		$config['protocol'] = "smtp";
-		$config['smtp_host'] = $smtp_host;
-		$config['smtp_port'] = $smtp_port;
-		$config['smtp_user'] = $smtp_user;
-		$config['smtp_pass'] = $smtp_password;
-		$config['smtp_crypto'] = 'tls';
-		$config['charset'] = "utf-8"; 
-		$config['mailtype'] = "html";
+        // ✅ Define sender credentials directly (Hostinger config)
+        $smtp_user  = 'admin@bznesshub.com';
+        $smtp_pass  = 'Bzness@2025';
+        $system_name = 'Bzness Hub';
 
-		$CI = &get_instance();
-		$CI->load->library('session');
-		$CI->load->library('email');
 
-		$CI->email->initialize($config);
-		$CI->email->set_newline("\r\n");
-		$CI->email->from($smtp_user, $system_name);
-		$list = array($toemail);
-		$CI->email->to($list);
+        $smtp_user = get_settings('smtp_user'); 
+        $smtp_pass = get_settings('smtp_password'); 
 
-		$CI->email->subject($subject);
-		$CI->email->message($htmlMessage);
+        $config = [
+            'protocol'    => 'smtp',
+            'smtp_host'   => 'smtp.hostinger.com',
+            'smtp_port'   => 465,
+            'smtp_user'   => $smtp_user,
+            'smtp_pass'   => $smtp_pass,
+            'smtp_crypto' => 'ssl', // use 'tls' if port 587
+            'charset'     => 'utf-8',
+            'mailtype'    => 'html',
+            'newline'     => "\r\n",
+            'crlf'        => "\r\n",
+        ];
 
-		if ($CI->email->send()) {
-			return true;
-		} else {
-			 //show_error($CI->email->print_debugger());
-			//log_message('error', 'Email sending failed. Error: ' . $CI->email->print_debugger());
-			return false;
-		}
-		
-	}
+        $CI = &get_instance();
+        $CI->load->library('email');
+        $CI->email->initialize($config);
+
+        // ✅ Use valid sender email + name
+        $CI->email->from($smtp_user, $system_name);
+        $CI->email->to($toemail);
+        $CI->email->subject($subject);
+        $CI->email->message($htmlMessage);
+
+// if (!$CI->email->send()) {
+//     $error = $CI->email->print_debugger();
+//     echo "<pre style='background:#111;color:#0f0;padding:15px;'>Email sending failed:\n\n" . htmlspecialchars($error) . "</pre>";die;
+//     //log_message('error', 'Email failed to send. Error: ' . $error);
+//    // return false;
+// }
+
+        if ($CI->email->send()) {
+            log_message('info', 'Email sent successfully to: ' . $toemail);
+            return true;
+        } else {
+            $error = $CI->email->print_debugger(['headers']);
+            log_message('error', 'Email failed to send. Error: ' . $error);
+            echo "<pre>Email sending failed:\n" . $error . "</pre>";
+            return false;
+        }
+    }
 }
+
 function minify($html)
 {
 	// Remove extra white spaces
