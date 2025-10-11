@@ -915,7 +915,7 @@ $stmt_plan = $conn->prepare("SELECT plan_id,plan_value,payment_id FROM  seller_p
 				}
 			});
 		} else {
-			alert('elese paer');
+			alert('Something went wrong!!!');
 			//successmsg("elese paer");
 		}
 	}

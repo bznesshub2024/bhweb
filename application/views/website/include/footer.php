@@ -5,17 +5,10 @@
             <div class="col">
                 <div class="footer_logo">
                     <a href="/">
-                        <img src="<?php echo base_url; ?>logo_color.png" class="img-fluid footer_logo_image" alt="Footer Logo" style="height: 48px">
+                        <img src="<?php echo base_url; ?>logo_color.png" class="img-fluid1 footer_logo_image1" alt="Footer Logo" style="height: ">
                     </a>
                 </div>
-                <p class="fw-semibold fs-xl-6 mb-3">
-                    <!-- Experience the rich culture of Oman at your doorstep with our exquisite collection of traditional posak.
-					Shop now on our online marketplace and let the magic of Oman come alive!. -->
-					
-					The perfect one-stop shop for all your cravings. BznessHub 
-                    has simplified the shopping experience for its value-conscious buyers. Shop now on our online store and 
-                    and bring the world at your doorsteps.
-                </p>
+               
                 
             </div>
 
@@ -49,6 +42,11 @@
                     <li><a href="<?php echo base_url(); ?>shipping_policy" class="text-decoration-none text-dark fw-semibold d-xl-block text-center">Shipping Policy</a></li>
                     <li><a href="<?php echo base_url ?>term_and_conditions" class="text-decoration-none text-dark fw-semibold d-xl-block text-center">Terms and Condition</a></li>
                 </ul>
+<a href="https://play.google.com/store/apps/details?id=com.bussinesshub&pcampaignid=web_share">
+<img src="android.jpg"  style="    width: 196px;
+    float: right;
+    margin-top: 20px;">
+</a>
             </div>
         </div>
 
@@ -61,6 +59,11 @@ border-radius: 4px;
 padding: 2px;
     }
 </style>
+
+<b style="    color: #000066;"> Bzness Hub – Your All-in-One Business Partner</b>
+<p>
+Bzness Hub is a next-generation e-commerce platform designed to empower individuals and entrepreneurs to grow, earn, and succeed digitally. With Bzness Hub, anyone can start their own virtual store, promote products, and earn commissions through orders and referrals. It’s more than just an online marketplace — it’s a complete business ecosystem where every member can become a “Virtual Partner” and generate multiple levels of income. Whether you’re a student, homemaker, or business enthusiast, Bzness Hub opens the door to financial independence and digital entrepreneurship. Join today to shop, share, and earn with ease — because your business journey begins right here at Bzness Hub.
+</p>
 <h4 class="fw-bold mb-3">
                     Accepted Payments
                 </h4>             

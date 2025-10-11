@@ -202,9 +202,17 @@ if(isset($_POST['emailvalue'])){
       <!-- Left: Marketing panel (hidden on small screens) -->
       <aside class="panel" aria-hidden="false">
         <h1>Welcome to Bzness Hub</h1>
-        <p>Launching soon — get your virtual store, refer & earn ₹50 per referral. Clean, fast and secure.</p>
+        <p>🌐 Bzness Hub – Smart E-Commerce Growth Platform</p>
 
-        <div class="feature">
+        <p>
+          Bzness Hub is an upcoming e-commerce brand designed to help individuals and businesses grow their sales, gain permanent customers, and build their own virtual store through a powerful referral system.
+<br/>
+With simple referral codes, users can earn ₹50 per referral and also create a long-term customer base, making it easier to generate recurring income.
+<br/>
+Our mission is to provide a one-stop hub for business growth – combining technology, customer loyalty, and community-driven marketing.
+
+        </p>
+        <!-- <div class="feature">
           <div class="icon">🚀</div>
           <div class="meta"><div class="label">Feature</div><div class="title">Easy store setup</div></div>
         </div>
@@ -212,7 +220,7 @@ if(isset($_POST['emailvalue'])){
         <div class="feature">
           <div class="icon">🔗</div>
           <div class="meta"><div class="label">Refer</div><div class="title">₹50 per referral</div></div>
-        </div>
+        </div> -->
       </aside>
 
       <!-- Right: Auth card -->

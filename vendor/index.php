@@ -195,8 +195,8 @@ $query = $conn->query("UPDATE sellerlogin SET password ='".$passwords."' WHERE e
   <title>Bzness Hub — Auth UI (HTML + CSS)</title>
   <style>
     :root{
-      --brand-orange: #FF6A00;
-      --brand-navy: #05204A;
+      --brand-orange: #05204A;
+      --brand-navy: #FF6A00;
       --bg: #f8fafc; /* gray-50 */
       --card-radius: 18px;
       --max-width: 1100px;
@@ -215,7 +215,7 @@ $query = $conn->query("UPDATE sellerlogin SET password ='".$passwords."' WHERE e
 
     /* left marketing panel */
     .panel{
-      display:none;border-radius:var(--card-radius);padding:40px;color:white;background:linear-gradient(180deg,var(--brand-navy),#0b3461);
+      display:none;border-radius:var(--card-radius);padding:40px;color:white;background:linear-gradient(180deg,var(--brand-navy),#FF6A00);
     }
     @media(min-width:1024px){.panel{display:block}}
     .panel h1{font-size:32px;margin:0 0 12px}
@@ -272,9 +272,15 @@ $query = $conn->query("UPDATE sellerlogin SET password ='".$passwords."' WHERE e
       <!-- Left: Marketing panel (hidden on small screens) -->
       <aside class="panel" aria-hidden="false">
         <h1>Welcome to Bzness Hub</h1>
-        <p>Launching soon — get your virtual store, refer & earn ₹50 per referral. Clean, fast and secure.</p>
+        <p>Bzness Hub — Virtual Partner Program
+</p>
+<p>
+  Becoming a Virtual Partner with Bzness Hub means turning your network into your business!
+<br/>
+With Bzness Hub’s Virtual Partner Program, anyone — students, homemakers, professionals, or entrepreneurs — can start earning without investment or stock management. Simply share your referral link, promote your virtual store, and earn through multiple income levels.
 
-        <div class="feature">
+</p>
+        <!-- <div class="feature">
           <div class="icon">🚀</div>
           <div class="meta"><div class="label">Feature</div><div class="title">Easy store setup</div></div>
         </div>
@@ -282,7 +288,7 @@ $query = $conn->query("UPDATE sellerlogin SET password ='".$passwords."' WHERE e
         <div class="feature">
           <div class="icon">🔗</div>
           <div class="meta"><div class="label">Refer</div><div class="title">₹50 per referral</div></div>
-        </div>
+        </div> -->
       </aside>
 
       <!-- Right: Auth card -->
@@ -290,7 +296,7 @@ $query = $conn->query("UPDATE sellerlogin SET password ='".$passwords."' WHERE e
         <div class="card" id="authCard">
           <div class="card-head">
             <div>
-              <h2 id="cardTitle">Sign in to your account</h2>
+              <h2 id="cardTitle">Login Virtual Partner Account</h2>
               <p>Use your email and password to continue</p>
               <span style="color:red;"><?php echo $error; ?></span>
               <span style="color:green;"><?php echo $message; ?></span>
@@ -385,7 +391,7 @@ $query = $conn->query("UPDATE sellerlogin SET password ='".$passwords."' WHERE e
         viewForgot.hidden = v !== 'forgot';
 
         // title
-        if(v === 'login') cardTitle.textContent = 'Sign in to your account';
+        if(v === 'login') cardTitle.textContent = 'Login Virtual Partner Account';
       //  else if(v === 'signup') cardTitle.textContent = 'Create your account';
         else if(v === 'forgot') cardTitle.textContent = 'Reset your password';
       }
