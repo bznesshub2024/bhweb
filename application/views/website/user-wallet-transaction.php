@@ -266,6 +266,8 @@
 <span>
 Transaction ID : <?php echo $wallet_summery_data->transaction_id; ?>
 </span>
+ <span style="display: none"> - <?php echo $wallet_summery_data->id; ?>
+</span>
                                                 </p>
                                             </div>
                                             <div class="col-3 p-0 text-end">

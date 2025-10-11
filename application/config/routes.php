@@ -265,6 +265,7 @@ $route['privacy'] = 'Home/privacy';
 $route['refund'] = 'Home/refund';
 $route['about'] = 'Home/about';
 $route['faq'] = 'Home/faq';
+$route['daily_price'] = 'Home/daily_price';
 $route['shipping_policy'] = 'Home/free_shipping';
 $route['feedback'] = 'Home/feedback';
 $route['contact'] = 'Home/contact';

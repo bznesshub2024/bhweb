@@ -287,9 +287,15 @@
                             </a>
                             <div class="collapse <?= strpos($_SERVER['PHP_SELF'], 'edit_custom_page.php') !== false ? 'show' : '' ?>" id="basic">
                                 <ul class="nav-second-level">
-                                    <li class="<?= strpos($_SERVER['PHP_SELF'], 'tree_view.php') !== false ? "menuitem-active" : "" ?>">
+
+                                    <li class="<?= strpos($_SERVER['PHP_SELF'], 'daily_prize.php') !== false ? "menuitem-active" : "" ?>">
+                                            <a href="daily_prize.php"> Daily Prize Money Contest</a>
+                                     </li>
+
+                                     <li class="<?= strpos($_SERVER['PHP_SELF'], 'tree_view.php') !== false ? "menuitem-active" : "" ?>">
                                             <a href="tree_view.php"> BH Partners</a>
                                      </li>
+
 									<li class="<?= strpos($_SERVER['PHP_SELF'], 'plans.php') !== false ? "menuitem-active" : "" ?>">
                                             <a href="plans.php"> Plans</a>
                                         </li>

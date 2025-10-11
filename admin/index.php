@@ -18,7 +18,6 @@ if (isset($_POST['submit']) ) {
         $email = stripslashes($email);
         $password = stripslashes($password);
         $notExist  = 1; 
-        
         include('encryptfun.php');
         global $publickey_server;
         $encruptfun = new encryptfun();
@@ -62,17 +61,19 @@ if (isset($_POST['submit']) ) {
 			}
            
         }
+              
+
        // echo " not wxsist is ".$notExist;
         if ($notExist == 0) {
             header("location: dashboard.php"); // Redirecting To Other Page
           //  $error = " sucess valid";
           // echo " go to dashborad";
         }else if ($notExist == 2) {
-			$error = "Your account is deactiveted. Please contact administrator.";
-		} else {
-          // $password = base64_decode ( $password );
-            $error = "Email or Password is invalid";
-          //  echo $error;
+    			$error = "Your account is deactiveted. Please contact administrator.";
+    		} else {
+              // $password = base64_decode ( $password );
+                $error = "Email or Password is invalid";
+              //  echo $error;
         }
       //  mysql_close($conn); // Closing Connection
     }

@@ -237,6 +237,80 @@ class Home_model extends CI_Model {
 			}
 		return $page_content;
 	}
+
+	function get_daily_price_data()
+	{
+	    // Select all columns
+	    $this->db->select('*');
+
+	    // Set the table
+	    $this->db->from('prize_money_contests');
+
+	    // Order by 'id' descending
+	    $this->db->order_by('id', 'DESC');
+
+	    // Execute the query
+	    $query = $this->db->get();
+
+	    // Return result as array
+	    return $query->result_array();
+	}
+
+
+	function get_daily_price_view($id)
+	{
+	    // Select all columns
+	    $this->db->select('*');
+
+	    // Set the table
+	    $this->db->from('prize_money_contests');
+
+	    // Add where condition for the ID
+	    $this->db->where('id', $id);
+
+	    // Execute the query
+	    $query = $this->db->get();
+	    $reward_type_detail='';
+	    if($query->result_array()[0]['reward_type']== 1){
+	    	$reward_type_detail=$this->reward_type_one($query->result_array()[0]['schedule_date']);
+	    }
+
+	    $array=[
+	    	'prize_money_contests'=>$query->result_array(),
+	    	'reward_type_detail'=>$reward_type_detail
+	    ];
+	    // Return single row as array
+	    return $array; // fetch one row only
+	}
+
+
+
+	function reward_type_one($daily_prize_date)
+	{
+	    $this->db->select('
+	        w.wallet_id,
+	        s.user_id,
+	        SUM(w.amount) AS total_amount,
+	        u.fullname,
+	        u.referral_code,
+	        COUNT(CASE WHEN w.payment_type = 1 THEN 1 END) AS referral_count
+	    ', false); // false to prevent escaping, so SQL functions work
+
+	    $this->db->from('wallet_transaction_history AS w');
+	    $this->db->join('wallet_summery AS s', 'w.wallet_id = s.wallet_id');
+	    $this->db->join('appuser_login AS u', 's.user_id = u.user_unique_id');
+
+	    $this->db->where('DATE(w.created_at)', $daily_prize_date);
+	    $this->db->where('w.payment_type', 1);
+
+	    $this->db->group_by('s.user_id, w.wallet_id');
+	    $this->db->order_by('total_amount', 'DESC');
+
+	    $query = $this->db->get();
+
+	    return $query->result_array(); // return all rows as array
+	}
+
 	
 	function add_bank_details($ac_name,$ac_number,$ifsc_code,$upi_id,$user_id)
 	{

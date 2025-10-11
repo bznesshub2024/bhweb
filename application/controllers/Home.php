@@ -242,6 +242,20 @@ class Home extends REST_Controller {
 		$this->data['page_content'] = $this->home_model->get_aboutus_data_request();
 		$this->load->view('website/about.php',$this->data);
 	}
+
+	public function daily_price_get()
+	{
+		if(isset($_GET['daily_prize_view'])){
+		$get_daily_price_view=$this->home_model->get_daily_price_view($_GET['daily_prize_view']);
+		$this->data['data'] = $get_daily_price_view['prize_money_contests'];
+		$this->data['reward_type_detail'] = $get_daily_price_view['reward_type_detail'];
+		//echo '<pre>';print_r($this->data['reward_type_detail']);die;
+		}else{
+			$this->data['data'] = $this->home_model->get_daily_price_data();
+		}
+		$this->load->view('website/daily_price.php',$this->data);
+	}
+
 	
 	public function faq_get()
 	{

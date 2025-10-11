@@ -9,7 +9,43 @@
 <img src="<?php echo base_url; ?>logo_white.png" class="img-fluid navbar_logo_image" alt="Navbar Logo">
 </a>
 <div class="col content_div" style="padding:0px;">
-<div class="d-flex justify-content-end" style="border-bottom-left-radius: 60px; background-color: white;">
+<span class="offer-highlight ">
+<a href="<?php base_url ?>daily_price" class="flash">    
+Daily Prize Money
+</a>
+</span>
+<style>
+.offer-highlight {
+    position: relative;
+    z-index: 9999;
+    background: linear-gradient(90deg, #ffcc00, #ff9900);
+    color: #000;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 19px;
+    margin-left: 111px;
+}
+
+.flash {
+    animation: flashColor 1.5s infinite;
+}
+
+@keyframes flashColor {
+    0% { color: #000; }
+    25% { color: #fff; }
+    50% { color: #000; }
+    100% { color: #fff; }
+}
+</style>
+
+<div class="d-flex justify-content-end" style="border-bottom-left-radius: 60px; background-color: white;     z-index: 99;
+    position: relative;       margin-top: -30px;">
+
+
 <ul class="navbar-nav second_top_right_item me-10">
 <li class="nav-item list_content_right">
 <a href="javascript:void(0);" class="search-popup me-2" onclick="openSearchBar()">
