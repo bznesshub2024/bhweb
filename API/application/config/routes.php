@@ -172,6 +172,7 @@ $route['app/getOrderDetailsProd'] = 'OrderController/getOrderDetailsProd';
 
 $route['app/withdrow_money'] = 'HomeController/withdrow_money'; 
 $route['app/wallet_summery'] = 'HomeController/wallet_summery'; 
+$route['app/add_wallet_money'] = 'HomeController/add_wallet_money'; 
 $route['app/wallet_summery_datewise'] = 'HomeController/wallet_summery_datewise'; 
 
 

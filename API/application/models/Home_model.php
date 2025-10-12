@@ -1411,7 +1411,133 @@ class Home_model extends CI_Model
 		}
 		return round($amount,0);
 	}
+
+
+	function wallet_summary($user_id, $wallet_id)
+    {
+
+        // $CI =& get_instance();
+        // $CI->load->database();
+        // $CI->load->model('wallet_model'); // make sure the model is loaded
+
+        // // if no user id passed, use session
+        // if ($user_id === null) {
+        //     $user_id = $CI->session->userdata('user_id');
+        // }
+
+        $wallet = $this->get_wallet_data($user_id); 
+		$wallet_summery = $this->get_wallet_summery($wallet['wallet_id']);
+		$wallet_bonus   = $this->get_wallet_bonus($wallet['wallet_id']);
+
+		$total_bonus = 0;
+		$deduct_wallet=0;
+		$return_wallet=0;
+		$deduct_virtual_wallet=0;
+		$return_virtual_wallet=0;
+
+		foreach($wallet_bonus as $wallet_bonus)
+		{
+			
+			if($wallet_bonus->payment_type == '1')
+			{
+				$total_bonus = $total_bonus + $wallet_bonus->amount;
+			}
+	        if($wallet_bonus->payment_type == '6')
+	        {
+	            $deduct_wallet = $deduct_wallet + $wallet_bonus->amount;
+	        }
+	        if($wallet_bonus->payment_type == '8')
+	        {
+	            $return_wallet = $return_wallet + $wallet_bonus->amount;
+	        }
+	        if($wallet_bonus->payment_type == '7')
+	        {
+	            $deduct_virtual_wallet = $deduct_virtual_wallet + $wallet_bonus->amount;
+	        }
+	        if($wallet_bonus->payment_type == '9')
+	        {
+	            $return_virtual_wallet = $return_virtual_wallet + $wallet_bonus->amount;
+	        }
+		}
+		$total_bonus=($total_bonus+$return_wallet)-$deduct_wallet;
+		$unwithdraw_amount = '';
+	    $total_virtual_amount=0;
+	    if($wallet['amount'] > 0){
+	    	if($total_bonus != 0)
+	    	{
+	    		$amount = $wallet['amount'] - $total_bonus;
+	            $total_virtual_amount = ($amount+$return_virtual_wallet) - $deduct_virtual_wallet;
+	    		
+	    	}
+	    	else
+	    	{
+	    		$amount = $wallet['amount'];
+	            $total_virtual_amount = ($amount+$return_virtual_wallet) - $deduct_virtual_wallet;
+	    	}
+	    }
+	    $both_message = " (".$total_bonus." New User Bonus + ".round($total_virtual_amount,2)." Virtual Partner/Order Commission)";
+
+	    $array=[
+	    	'total_wallet_balance'=>round($wallet['amount'],0),
+	    	'newUserBonus'=>round($total_bonus,2),
+	    	'virtualPartner'=>round($total_virtual_amount,2),
+	    	'both_message'=>$both_message,
+
+	    ];
+	    return $array;
+
+    }
+
+
+    function get_wallet_data($user_id){
+		
+		$this->db->select('amount,wallet_id');
+		$this->db->where(array('user_id' => $user_id));
+		$query = $this->db->get('wallet_summery');
+		
+		$wallet_result = array();
+		if($query->result_object()){
+			$user_result = $query->result_object()[0];
+			$wallet_result['amount'] = $user_result->amount;
+			$wallet_result['wallet_id'] = $user_result->wallet_id; 
+		}
+		return $wallet_result;
+	}
+
+	function get_wallet_summery($wallet_id){
+		
+		$this->db->select("*");
+		$this->db->where(array('wallet_id' => $wallet_id));
+		$this->db->order_by("id", 'desc');
+		$this->db->limit(8,0);
+		
+		
+		$query = $this->db->get('wallet_transaction_history');
+		
+		$cart_result = array();
+		if($query->num_rows() >0){
+			$cart_result = $query->result_object();			
+		}
+		return $cart_result;
+	}
 	
+	function get_wallet_bonus($wallet_id){
+		
+		$this->db->select("*");
+		$this->db->where(array('wallet_id' => $wallet_id));
+		$this->db->order_by("id", 'desc');
+		
+		
+		$query = $this->db->get('wallet_transaction_history');
+		
+		$cart_result = array();
+		if($query->num_rows() >0){
+			$cart_result = $query->result_object();			
+		}
+		return $cart_result;
+	}
+
+
 	function bonus_wallet_summery($user_id, $wallet_id)
 	{
 
