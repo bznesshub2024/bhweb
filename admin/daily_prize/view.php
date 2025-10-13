@@ -87,10 +87,12 @@ $daily_prize_winners=$contest['winners'];
         </tr>
       </table>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <?php 
 
 if($status == 0){?>
+<div style="display: none;" id="showconfirmButton">
 <hr/>
 <center>
 <a href="?daily_prize_confrim_result=<?php echo $daily_prize_id;?>" class='btn btn-primary'  onclick="return confirm('Are you sure you want to Confirm Result?');">
@@ -99,6 +101,7 @@ if($status == 0){?>
 </a>
 </center>
 <hr/>
+</div>
 <?php }?>
 
 
@@ -108,7 +111,7 @@ if($contest['reward_type'] == 1){
 }elseif($contest['reward_type'] == 2){
   include("daily_prize_winner.php");
 }elseif($contest['reward_type'] == 3){
-  include("festival_winner.php");
+  include("daily_prize_winner.php");
 }
 ?>
 

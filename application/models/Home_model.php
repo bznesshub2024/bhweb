@@ -273,14 +273,43 @@ class Home_model extends CI_Model {
 	    $reward_type_detail='';
 	    if($query->result_array()[0]['reward_type']== 1){
 	    	$reward_type_detail=$this->reward_type_one($query->result_array()[0]['schedule_date']);
+	    }elseif(($query->result_array()[0]['reward_type']== 2) || ($query->result_array()[0]['reward_type']== 3)){
+	    	$reward_type_detail=$this->reward_type_two_three($query->result_array()[0]['schedule_date']);
 	    }
-
+	    //echo '<pre>';print_r($reward_type_detail);die;
 	    $array=[
 	    	'prize_money_contests'=>$query->result_array(),
 	    	'reward_type_detail'=>$reward_type_detail
 	    ];
 	    // Return single row as array
 	    return $array; // fetch one row only
+	}
+
+	function reward_type_two_three($daily_prize_date)
+	{
+		$data = [];
+		 $this->db->select('o.user_id, u.fullname, COUNT(o.sno) AS order_count, SUM(o.total_price) AS total_amount');
+	    $this->db->from('orders AS o');
+	    $this->db->join('appuser_login AS u', 'o.user_id = u.user_unique_id', 'inner');
+	    $this->db->where('DATE(o.create_date)', $daily_prize_date);
+	    $this->db->group_by(['o.user_id', 'u.fullname']);
+	    $this->db->order_by('total_amount', 'DESC');
+	    $query = $this->db->get();
+	    $data = $query->result_array();
+
+	    // ✅ Fetch individual orders for each user
+	    foreach ($data as &$user_data) {
+	        $this->db->select('order_id, total_price, create_date');
+	        $this->db->from('orders');
+	        $this->db->where('user_id', $user_data['user_id']);
+	        $this->db->where('DATE(create_date)', $daily_prize_date);
+	        $user_data['orders'] = $this->db->get()->result_array();
+	    }
+
+	  // $data['daily_prize_date'] = $daily_prize_date;
+     // $data['daily_prize_winners'] = 5; // example limit
+      return $data;
+
 	}
 
 

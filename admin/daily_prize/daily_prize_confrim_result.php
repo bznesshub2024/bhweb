@@ -8,16 +8,16 @@ $contest = $result->fetch_assoc();
 
 $daily_prize_id=$contest['id'];
 $reward_type=$contest['reward_type'];
+$title=$contest['title'];
 $daily_prize_date=$contest['schedule_date'];
 $status=$contest['status'];
 $daily_prize_winners=$contest['winners'];
 $price_value=$contest['value'];
 $type=$contest['type'];
 
+
+
 if($reward_type == 1){
-
-
-
 $type1 = $conn->query("
           SELECT 
               w.wallet_id,
@@ -44,32 +44,68 @@ $type1 = $conn->query("
           LIMIT $daily_prize_winners
       ");
 $type1_data = $type1->fetch_all(MYSQLI_ASSOC);
+$message_remark='Referral Winner : '.$title;
 foreach($type1_data as $this_data){
 $user_id=$this_data['user_id'];
-addmoney_wallet($conn,$user_id,$price_value,$type);
+addmoney_wallet($conn,$user_id,$price_value,$type,$message_remark);
 }
-
 
 $stmt = $conn->prepare("UPDATE prize_money_contests SET status = 1 WHERE id = ?");
 $stmt->bind_param("i", $daily_prize_id);
 $stmt->execute();
-
-
 echo "<script>alert('Contest Winner successfully'); window.location='daily_prize.php?daily_prize_view=".$daily_prize_id."';</script>";
 exit;
-
 //echo '<pre>';print_r($type1_data);die;
+}
 
+
+if(($reward_type == 2) || ($reward_type == 3)){
+$type2_3 = $conn->query("
+      SELECT 
+          o.user_id,
+          u.fullname,
+          COUNT(o.sno) AS order_count,
+          SUM(o.total_price) AS total_amount
+      FROM 
+          orders AS o
+      INNER JOIN 
+          appuser_login AS u 
+          ON o.user_id = u.user_unique_id
+      WHERE 
+          DATE(o.create_date) = '$daily_prize_date'
+      GROUP BY 
+          o.user_id, u.fullname
+      ORDER BY 
+          total_amount DESC
+      LIMIT $daily_prize_winners
+    ");
+
+
+$type2_3_data = $type2_3->fetch_all(MYSQLI_ASSOC);
+
+
+$message_remark='Daily Prize Money Winner : '.$title;
+if($reward_type == 3){
+  $message_remark='Festival Winner : '.$title;
+}
+//echo '<pre>';print_r($type2_3_data);die;
+foreach($type2_3_data as $this_data){
+$user_id=$this_data['user_id'];
+addmoney_wallet($conn,$user_id,$price_value,$type,$message_remark);
+}
+
+$stmt = $conn->prepare("UPDATE prize_money_contests SET status = 1 WHERE id = ?");
+$stmt->bind_param("i", $daily_prize_id);
+$stmt->execute();
+echo "<script>alert('Contest Winner successfully'); window.location='daily_prize.php?daily_prize_view=".$daily_prize_id."';</script>";
+exit;
 
 }
 
 
 
 
-
-
-
-function addmoney_wallet($conn,$user_id,$amount,$type){
+function addmoney_wallet($conn,$user_id,$amount,$type,$message_remark){
 $sql_wallet = "SELECT * FROM wallet_summery WHERE user_id = '$user_id' LIMIT 1";
 $result_wallet = $conn->query($sql_wallet);
 $get_wallet = $result_wallet->fetch_assoc();
@@ -108,7 +144,7 @@ $sql_insert_txn = "
     INSERT INTO wallet_transaction_history 
         (wallet_id, payment_type, transaction_id, transaction_type, amount, balance, product_id, order_id, user_id, remark, created_at)
     VALUES 
-        ('$wallet_id', '$payment_type', '$transaction_id', 'credit', '$amount', '$new_balance', '', '', '$user_id', 'Daily Prize Money', '$created_at')
+        ('$wallet_id', '$payment_type', '$transaction_id', 'credit', '$amount', '$new_balance', '', '', '$user_id', '$message_remark', '$created_at')
 ";
 $conn->query($sql_insert_txn);
 if ($conn->affected_rows > 0) {

@@ -129,7 +129,7 @@ if($reward_type == 1){
 }elseif($reward_type == 2){
   include("daily_price/daily_prize_winner.php");
 }elseif($reward_type == 3){
-  include("daily_price/festival_winner.php");
+  include("daily_price/daily_prize_winner.php");
 }
 
 ?>
