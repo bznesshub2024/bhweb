@@ -470,7 +470,9 @@ $bonus_virtual_price=wallet_calc()['virtualPartner'];
 
 		
 
-
+// print_r([
+// $total_price, $shipping_fee,$coupon_discount
+// ]);die;
 
 
 		return array(

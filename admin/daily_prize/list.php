@@ -187,9 +187,9 @@ if (isset($_GET['delete'])) {
                 <a href='?daily_prize_view={$row['id']}' class='btn btn-info btn-sm'>View</a>";
 
                 // Only show Delete button if schedule_date < today
-                if ($row['schedule_date'] > $today) {
+              //  if ($row['schedule_date'] > $today) {
                     echo " <a href='?delete={$row['id']}' class='btn btn-danger btn-sm' onclick=\"return confirm('Are you sure you want to delete this contest?');\">Delete</a>";
-                }
+               // }
 
         echo "  </td>
         </tr>";

@@ -123,7 +123,7 @@ if(isset($_POST['emailvalue'])){
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bzness Hub — Auth UI (HTML + CSS)</title>
+  <title>Bzness Hub — Admin Panel</title>
   <style>
     :root{
       --brand-orange: #FF6A00;

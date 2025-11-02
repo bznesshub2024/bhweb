@@ -1,15 +1,13 @@
 <IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteCond %{HTTP_HOST} ^fleekmart.com$ [NC,OR]
-  RewriteCond %{HTTP_HOST} ^www.fleekmart.com$
-  RewriteRule (.*)$ https://www.fleekmart.com/$1 [R=301,L]
-</IfModule>
+RewriteEngine On
 
-<IfModule mod_rewrite.c>
-	RewriteCond %{HTTPS} off
-	RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-	
-	RewriteCond %{HTTP_HOST} !^www\. [NC]
-	RewriteRule (.*) https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-</IfModule>
+# Force HTTPS and WWW
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} !^www\.bznesshub\.com$ [NC]
+RewriteRule ^(.*)$ https://www.bznesshub.com/$1 [R=301,L]
 
+# CodeIgniter default rewrite
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>

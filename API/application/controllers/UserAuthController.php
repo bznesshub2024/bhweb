@@ -197,6 +197,17 @@ class UserAuthController extends REST_Controller {
 		$validation = $this->parameterValidation($requiredparameters,$this->post()); 
 		
     	if($validation=='valid') {
+			// $check_user_exists=$this->user_model->check_user_exists($mobile_number);
+			// if($check_user_exists == 0){
+			// 	$this->response([
+			// 			'status' => 0,
+			// 			'msg' => 'User Not exists'
+						
+			// 	], self::HTTP_OK);
+			// 	die;
+			// }
+
+
       		if(is_numeric($mobile_number)){
 				$otp = $this->sms_model->generateNumericOTP(6);	 
 				//$otp = '123456';
@@ -207,20 +218,20 @@ class UserAuthController extends REST_Controller {
 				
 				$country_code = '91';
     				$send_mobile_number = $country_code . $mobile_number;
-    				$template_id = '1707173096363007016';
+    				$template_id = '1707176180987228939';
     					$receipents = array(
     						"otp" => $otp
     					);
     					
     					
-    				$message = "Dear Customer {1} is the OTP for your login at BznessHub. In case you have not requested this, please contact us at admin@bznesshub.com - BznessHub"; 
+    				$message = "Dear Customer {1} is the OTP for your login at BznessHub. In case you have not requested this, please contact us at admin@bznesshub.com - BznessHub nBgZvgZ2rsZ"; 
                     $message = str_replace("{1}", $receipents["otp"], $message);
     				
     					$sms_sent = $this->sms_model->send_sms_new($template_id,$send_mobile_number,$message);
 				
 				if($sms_sent == 'disabled'){
 					$this->responses(0,get_phrase('sms_disabled',$language_code),$invalid_response);
-				}else if($sms_sent == "Your Message Has Been Sent"){
+				}else if($sms_sent == "Your Message Has Been Sent"){ 
 					$this->user_model->save_user_otp($mobile_number,$otp);
 					$this->responses(1,get_phrase('sms_sent',$language_code),array('otp'=>$otp,'user_id'=>$mobile_number));
 				}else{
@@ -388,6 +399,71 @@ class UserAuthController extends REST_Controller {
     	}
 	}
 	
+	public function updateUserProfile_post()
+{
+    // Required parameters
+    $requiredParameters = array('language', 'user_id');
+
+    $language_code = removeSpecialCharacters($this->post('language'));
+    $user_id       = removeSpecialCharacters($this->post('user_id'));
+    $email         = removeSpecialCharacters($this->post('email'));
+
+    $updateData = [];
+
+    // Handle profile picture upload
+    if (!empty($_FILES['profile_pic']['name'])) {
+        //$config['upload_path']   = './media/profile_pictures/';
+
+    	$uploadPath = '/home/u774033453/domains/bznesshub.com/public_html/media/profile_pictures/';
+    	//print_r($uploadPath);die;
+
+		// Create folder if it doesn't exist
+		if (!is_dir($uploadPath)) {
+		    mkdir($uploadPath, 0755, true);
+		}
+
+		$config['upload_path'] = $uploadPath;
+
+        $config['allowed_types'] = 'jpg|jpeg|png|gif';
+        $config['max_size']      = 2048; // 2MB
+        $config['file_name']     = time() . '_' . $_FILES['profile_pic']['name'];
+
+        $this->load->library('upload', $config);
+
+        if ($this->upload->do_upload('profile_pic')) {
+            $uploadData = $this->upload->data();
+            $updateData['profile_pic'] = $uploadData['file_name'];
+        } else {
+            // Upload failed
+            $this->response([
+                'status' => 0,
+                'msg'    => $this->upload->display_errors(),
+                'data'   => []
+            ], self::HTTP_OK);
+            return; // Stop execution if upload fails
+        }
+    }
+
+    // Handle email update
+    if (!empty($email)) {
+        $updateData['email'] = $email;
+    }
+
+    // Update database only if there is something to update
+    if (!empty($updateData)) {
+        $this->db->where('user_unique_id', $user_id);
+        $this->db->update('appuser_login', $updateData);
+    }
+
+    // Return success response
+    $this->response([
+        'status' => 1,
+        'msg'    => 'Profile updated successfully',
+        'data'   => $updateData
+    ], self::HTTP_OK);
+}
+
+
 	public function getUserProfile_post(){
 	    $requiredparameters = array('language','user_id');
 		

@@ -4,6 +4,10 @@ class MY_Exceptions extends CI_Exceptions {
 
     function __construct() {
         parent::__construct();
+
+        if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
+            redirect("https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], 'location', 301);
+        }
     }
 
     // Overide the 404 error

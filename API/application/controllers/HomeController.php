@@ -10,7 +10,8 @@ class HomeController extends REST_Controller {
 	protected $request_method ='post'; 
 	
 		 
-	 public function __construct() { 
+	 public function __construct() {
+	
         parent::__construct();
 		require_once APPPATH.'third_party/encryptfun.php';
                 
@@ -22,6 +23,23 @@ class HomeController extends REST_Controller {
 	{
 		$this->responses(1,'Server OK');
 	}
+
+
+	public function daily_price_post()
+	{
+		$data = $this->home_model->get_daily_price_data();
+
+		$this->response([
+						'status' => 1,
+						'msg' => 'List',
+						'data' => $data,
+						
+		], self::HTTP_OK);
+
+		echo 1;die;
+		print_r(123456);die;
+	}
+
 	
 	public function generate_invoice_post()
 	{

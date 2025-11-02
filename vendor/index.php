@@ -192,7 +192,7 @@ $query = $conn->query("UPDATE sellerlogin SET password ='".$passwords."' WHERE e
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bzness Hub — Auth UI (HTML + CSS)</title>
+  <title>Bzness Hub — Vendor Panel</title>
   <style>
     :root{
       --brand-orange: #05204A;

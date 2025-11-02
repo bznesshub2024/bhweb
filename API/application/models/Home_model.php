@@ -3722,9 +3722,11 @@ class Home_model extends CI_Model
 
 		if ($query->num_rows() > 0) {
 			foreach ($query->result_array() as $row) {
+
 				$row_result = array(
 					'user_unique_id' => $row['user_unique_id'],
-					'fullname' => $row['fullname'],
+					//'create_by' => $row['create_by'],
+					'fullname' => $row['fullname'] .' ('.date('d-m-Y',strtotime($row['create_by'])).')',
 					'children' => array(),
 				);
 
@@ -3751,7 +3753,8 @@ class Home_model extends CI_Model
 			foreach ($query->result_array() as $row) {
 				$row_result = array(
 					'user_unique_id' => $row['user_unique_id'],
-					'fullname' => $row['fullname'],
+					//'create_by' => $row['create_by'],
+					'fullname' => $row['fullname'] .' ('.date('d-m-Y',strtotime($row['create_by'])).')',
 					'children' => $this->categoryTree2($row['user_unique_id']),
 				);
 
@@ -3782,6 +3785,119 @@ class Home_model extends CI_Model
 		// Shufle the $str_result and returns substring 
 		// of specified length 
 		return substr(str_shuffle($str_result), 0, $length_of_string);
+	}
+
+
+
+	function get_daily_price_data()
+	{
+	    // Select all columns
+	    $this->db->select('*');
+
+	    // Set the table
+	    $this->db->from('prize_money_contests');
+
+	    // Order by 'id' descending
+	    $this->db->order_by('id', 'DESC');
+
+	    // Execute the query
+	    $query = $this->db->get();
+
+	    $prize_money_contests = $query->result_array();
+$final_data=[];
+foreach ($prize_money_contests as $contest) {
+
+	$get_daily_price_view=$this->get_daily_price_view($contest['id']);
+
+	$contest['reward_type_detail'] = $get_daily_price_view['reward_type_detail'];
+$final_data[]=$contest;
+}
+	    // Return result as array
+	    return $final_data;
+	}
+
+
+	function get_daily_price_view($id)
+	{
+	    // Select all columns
+	    $this->db->select('*');
+
+	    // Set the table
+	    $this->db->from('prize_money_contests');
+
+	    // Add where condition for the ID
+	    $this->db->where('id', $id);
+
+	    // Execute the query
+	    $query = $this->db->get();
+	    $reward_type_detail='';
+	    if($query->result_array()[0]['reward_type']== 1){
+	    	$reward_type_detail=$this->reward_type_one($query->result_array()[0]['schedule_date']);
+	    }elseif(($query->result_array()[0]['reward_type']== 2) || ($query->result_array()[0]['reward_type']== 3)){
+	    	$reward_type_detail=$this->reward_type_two_three($query->result_array()[0]['schedule_date']);
+	    }
+	    //echo '<pre>';print_r($reward_type_detail);die;
+	    $array=[
+	    	'prize_money_contests'=>$query->result_array(),
+	    	'reward_type_detail'=>$reward_type_detail
+	    ];
+	    // Return single row as array
+	    return $array; // fetch one row only
+	}
+
+	function reward_type_two_three($daily_prize_date)
+	{
+		$data = [];
+		 $this->db->select('o.user_id, u.fullname, COUNT(o.sno) AS order_count, SUM(o.total_price) AS total_amount');
+	    $this->db->from('orders AS o');
+	    $this->db->join('appuser_login AS u', 'o.user_id = u.user_unique_id', 'inner');
+	    $this->db->where('DATE(o.create_date)', $daily_prize_date);
+	    $this->db->group_by(['o.user_id', 'u.fullname']);
+	    $this->db->order_by('total_amount', 'DESC');
+	    $query = $this->db->get();
+	    $data = $query->result_array();
+
+	    // ✅ Fetch individual orders for each user
+	    foreach ($data as &$user_data) {
+	        $this->db->select('order_id, total_price, create_date');
+	        $this->db->from('orders');
+	        $this->db->where('user_id', $user_data['user_id']);
+	        $this->db->where('DATE(create_date)', $daily_prize_date);
+	        $user_data['orders'] = $this->db->get()->result_array();
+	    }
+
+	  // $data['daily_prize_date'] = $daily_prize_date;
+     // $data['daily_prize_winners'] = 5; // example limit
+      return $data;
+
+	}
+
+
+
+	function reward_type_one($daily_prize_date)
+	{
+	    $this->db->select('
+	        w.wallet_id,
+	        s.user_id,
+	        SUM(w.amount) AS total_amount,
+	        u.fullname,
+	        u.referral_code,
+	        COUNT(CASE WHEN w.payment_type = 1 THEN 1 END) AS referral_count
+	    ', false); // false to prevent escaping, so SQL functions work
+
+	    $this->db->from('wallet_transaction_history AS w');
+	    $this->db->join('wallet_summery AS s', 'w.wallet_id = s.wallet_id');
+	    $this->db->join('appuser_login AS u', 's.user_id = u.user_unique_id');
+
+	    $this->db->where('DATE(w.created_at)', $daily_prize_date);
+	    $this->db->where('w.payment_type', 1);
+
+	    $this->db->group_by('s.user_id, w.wallet_id');
+	    $this->db->order_by('total_amount', 'DESC');
+
+	    $query = $this->db->get();
+
+	    return $query->result_array(); // return all rows as array
 	}
 	
 }

@@ -920,6 +920,20 @@ $("#paymentMethodBtn").attr("disabled", "disabled").css({
 			var wallet_money = $('input[name="wallet_money"]:checked').val();
 			var payment_type = $('input[name="flexRadioDefault"]:checked').val();
 			$(".paymentMethodBtn").prop('disabled', true);
+
+// 		console.log(
+// '>>>>>>>>>>>>.',
+// {
+// 					language: default_language,
+// 					coupon_code: input_code,
+// 					shipping_city: city,
+// 					shipping_pincode: user_pincode,
+// 					payment_type: payment_type,
+// 					wallet_money: wallet_money,
+// 					[csrfName]: csrfHash
+// 				}
+// 					);
+			
 			$.ajax({
 				method: "post",
 				url: site_url + "checkout",
