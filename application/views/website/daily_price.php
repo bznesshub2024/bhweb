@@ -62,6 +62,8 @@
                 $reward_name ='Daily Prize Money Winner';
               }elseif($row['reward_type'] == 3){
                 $reward_name ='Festival Winner';
+              }elseif($row['reward_type'] == 4){
+                $reward_name ='Virtual Partner';
               }
 
               $type_name='';
@@ -130,6 +132,8 @@ if($reward_type == 1){
   include("daily_price/daily_prize_winner.php");
 }elseif($reward_type == 3){
   include("daily_price/daily_prize_winner.php");
+}elseif($reward_type == 4){
+  include("daily_price/virtual.php");
 }
 
 ?>

@@ -365,8 +365,15 @@ class User_model extends CI_Model {
 			}else{
 			    $img =$user_result1->profile_pic;
 			}			
-			
-			
+
+			if(!empty($img)){
+				$base_url = 'https://www.bznesshub.com/media/profile_pictures/';
+				if (!preg_match('/^https?:\/\//', $img)) {
+				    // Prepend base URL
+				    $img = $base_url . ltrim($img, '/'); // remove leading slash if exists
+				}
+			}
+
 			$this->db->select('*');
 			$this->db->where(array('user_id' => $user_result1->user_unique_id));
 			$query_seller_data = $this->db->get('sellerlogin');
@@ -383,6 +390,14 @@ class User_model extends CI_Model {
 				}else{
 					$img = $seller_result1->logo;
 				}		
+
+				if(!empty($img)){
+				$base_url = 'https://www.bznesshub.com/media/';
+				if (!preg_match('/^https?:\/\//', $img)) {
+				    // Prepend base URL
+				    $img = $base_url . ltrim($img, '/'); // remove leading slash if exists
+				}
+				}
 				
 			}
 			else
@@ -391,6 +406,9 @@ class User_model extends CI_Model {
 				$isseller = '0';
 				$email = $user_result1->email;
 			}
+//print_r($img);die;
+
+			
 			
 			$user_result['user_id'] = $user_result1->user_unique_id;
 			$user_result['seller_id'] = $seller_unique_id;
@@ -412,6 +430,15 @@ class User_model extends CI_Model {
 			}else{
 			    $img = $seller_result1->logo;
 			}			
+
+
+			if(!empty($img)){
+				$base_url = 'https://www.bznesshub.com/media/';
+				if (!preg_match('/^https?:\/\//', $img)) {
+				    // Prepend base URL
+				    $img = $base_url . ltrim($img, '/'); // remove leading slash if exists
+				}
+			}
 			
 			$user_result['user_id'] = $seller_result1->user_id;
 			$user_result['seller_id'] = $seller_result1->seller_unique_id;

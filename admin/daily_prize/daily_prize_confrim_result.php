@@ -1,5 +1,7 @@
 <?php
 $daily_prize_id=$_GET['daily_prize_confrim_result'];
+
+
 $stmt = $conn->prepare("SELECT * FROM prize_money_contests WHERE id = ?");
 $stmt->bind_param("i", $daily_prize_id);
 $stmt->execute();
@@ -14,6 +16,42 @@ $status=$contest['status'];
 $daily_prize_winners=$contest['winners'];
 $price_value=$contest['value'];
 $type=$contest['type'];
+
+
+
+if($reward_type == 4){
+$seller_id=$_GET['seller_id'] ?? 0;
+$user_id=$_GET['user_id'] ?? 0;
+$plan_price=$_GET['plan_price'] ?? 0;
+
+$sql_insert_txn = "
+    INSERT INTO prize_money_contests_winner 
+        (prize_money_contests_id ,sellers_id ,user_id,plan_price,winning_price)
+    VALUES 
+        ('$daily_prize_id', '$seller_id', '$user_id', '$plan_price', '$price_value')
+";
+$conn->query($sql_insert_txn);
+
+$message_remark='Virtual Partner : '.$title;
+addmoney_wallet($conn,$user_id,$price_value,$type,$message_remark);
+
+
+$get_count = $conn->query("SELECT COUNT(*) AS total FROM prize_money_contests_winner WHERE prize_money_contests_id = '$daily_prize_id'");
+$row = $get_count->fetch_assoc();
+$total_records = $row['total'];
+
+if($daily_prize_winners == $total_records){
+$stmt = $conn->prepare("UPDATE prize_money_contests SET status = 1 WHERE id = ?");
+$stmt->bind_param("i", $daily_prize_id);
+$stmt->execute();
+}
+
+
+
+echo "<script>alert('Contest Winner successfully'); window.location='daily_prize.php?daily_prize_view=".$daily_prize_id."';</script>";
+exit;
+
+}
 
 
 

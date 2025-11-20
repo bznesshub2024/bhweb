@@ -7,6 +7,7 @@ class Checkout_model extends CI_Model {
 		$this->load->model('email_model');
 		$this->date_time = date('Y-m-d H:i:s');
 		$this->date = date('Y-m-d');
+		$this->load->model('wallet_model');
     }
 
   
@@ -512,6 +513,8 @@ $payable_amount = ($payable_amount - $bonus_virtual_price)+ $shipping_fee;
 	//function for place order
 	
 	function place_order_details($language, $user_id,$qouteid,$fullname,$mobile,$locality,$fulladdress,$city,$state,$pincode,$addresstype,$email,$payment_id,$payment_mode,$coupon_code,$city_id,$coupon_value,$lat,$lang,$wallet_money=0,$globalJson=''){
+
+
 		$status =array('status'=>'');
 		$order = $delivery_array = $order = array();
 		$this->load->model('cart_model');
@@ -961,7 +964,6 @@ $payable_amount = ($payable_amount - $bonus_virtual_price)+ $shipping_fee;
 				
 			}
 			
-		
 
 
 
@@ -1003,9 +1005,9 @@ if (isset($globalJson->Information)) {
 			$this->db->where(array('order_id' => $order_id));
 			$queryup = $this->db->update('orders', $order);
 			
-
-
+	
 $wallet = $this->wallet_model->get_wallet_data($user_id);
+
 if($wallet_money > 0){
 $final_wallet_amount = $wallet['amount'] - $bonus_virtual_price;
 $walletupdate['amount'] = $final_wallet_amount;
@@ -1032,6 +1034,7 @@ $wallet_txn['user_id']=$user_id;
 $wallet_txn['created_at']=date('Y-m-d H:i:s');
 $this->db->insert('wallet_transaction_history', $wallet_txn);
 }
+
 
 
 

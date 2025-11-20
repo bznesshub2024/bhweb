@@ -164,6 +164,8 @@ if (isset($_GET['delete'])) {
                 $reward_name ='Daily Prize Money Winner';
               }elseif($row['reward_type'] == 3){
                 $reward_name ='Festival Winner';
+              }elseif($row['reward_type'] == 4){
+                $reward_name ='Virtual Partner';
               }
 
               $type_name='';
@@ -274,6 +276,7 @@ if (isset($_GET['delete'])) {
                 <option value="1">Referral Winner</option>
                 <option value="2">Daily Prize Money Winner</option>
                 <option value="3">Festival Winner</option>
+                <option value="4">Virtual Partner</option>
               </select>
             </div>
             <div class="form-group col-md-6">
@@ -287,7 +290,7 @@ if (isset($_GET['delete'])) {
               <label for="type">Type</label>
               <select class="form-control" required name="type">
                 <option value="">Select</option>
-                <option value="1">Cash</option>
+                <option value="1">Cash(Wallet)</option>
                 <option value="2">New User Bonus</option>
               </select>
             </div>

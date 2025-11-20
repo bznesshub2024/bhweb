@@ -3835,6 +3835,8 @@ $final_data[]=$contest;
 	    	$reward_type_detail=$this->reward_type_one($query->result_array()[0]['schedule_date']);
 	    }elseif(($query->result_array()[0]['reward_type']== 2) || ($query->result_array()[0]['reward_type']== 3)){
 	    	$reward_type_detail=$this->reward_type_two_three($query->result_array()[0]['schedule_date']);
+	    }elseif($query->result_array()[0]['reward_type']== 4){
+	    	$reward_type_detail=$this->reward_type_four($id);
 	    }
 	    //echo '<pre>';print_r($reward_type_detail);die;
 	    $array=[
@@ -3843,6 +3845,31 @@ $final_data[]=$contest;
 	    ];
 	    // Return single row as array
 	    return $array; // fetch one row only
+	}
+
+	function reward_type_four($daily_prize_id)
+	{
+		$this->db->where('plan_value >', 1);
+	$this->db->order_by('plan_value', 'DESC');
+	$query = $this->db->get('sellerlogin');
+	$data = $query->result_array();
+
+	foreach ($data as &$user_data) {
+	    $this->db->from('prize_money_contests_winner');
+	    $this->db->where('sellers_id', $user_data['seller_unique_id']);
+	    $this->db->where('prize_money_contests_id', $daily_prize_id);
+	    
+	    // Get only one row
+	    $user_data['is_winner'] = $this->db->get()->row_array();
+	    
+	    // Optional: if you just want a boolean flag
+	     $user_data['is_winner'] = $user_data['is_winner'] ? 1 : 0;
+
+	    $this->db->from('prize_money_contests_winner');
+		$this->db->where('sellers_id', $user_data['seller_unique_id']);
+		$user_data['winner_count'] = $this->db->count_all_results();
+	}
+	return $data;
 	}
 
 	function reward_type_two_three($daily_prize_date)

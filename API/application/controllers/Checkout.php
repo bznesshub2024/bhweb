@@ -325,15 +325,16 @@ class Checkout extends REST_Controller {
 		
 		$wallet_money = removeSpecialCharacters($this->post('wallet_money'));
 		$bonus_virtual_price = removeSpecialCharacters($this->post('bonus_virtual_price'));
-		$globalJson = removeSpecialCharacters($this->post('globalJson'));
+		$globalJson = ($this->post('globalJson'));
 		
 		$validation = $this->parameterValidation($requiredparameters,$this->post()); //$this->post() holds post values
 		
+
     	if($validation=='valid') {
 			if(($user_id || $qouteid) && $fullname && $mobile && $fulladdress && $city && $state && $addresstype && $payment_id && $payment_mode && $city_id){
 				//echo 'fffff';
 				$order_detail = $this->checkout_model->place_order_details($language_code,$user_id,$qouteid,$fullname,$mobile,$locality,$fulladdress,$city,$state,$pincode,$addresstype,$email,$payment_id,$payment_mode,$coupon_code,$city_id,$coupon_value,$lat,$lang,$wallet_money,$globalJson);
-				//print_r($order_detail);
+				//print_r($order_detail);die;
 				
 				if($order_detail['status'] == 'update'){						
 					$order_details['order_id'] = $order_detail['order_id'];

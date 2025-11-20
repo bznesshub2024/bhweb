@@ -18,6 +18,8 @@ if($contest['reward_type'] == 1){
   $reward_name ='Daily Prize Money Winner';
 }elseif($contest['reward_type'] == 3){
   $reward_name ='Festival Winner';
+}elseif($contest['reward_type'] == 4){
+  $reward_name ='Virtual Partner';
 }
 
 $type_name='';
@@ -112,6 +114,8 @@ if($contest['reward_type'] == 1){
   include("daily_prize_winner.php");
 }elseif($contest['reward_type'] == 3){
   include("daily_prize_winner.php");
+}elseif($contest['reward_type'] == 4){
+  include("virtual_winner.php");
 }
 ?>
 

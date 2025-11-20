@@ -45,7 +45,48 @@ class WalletController extends REST_Controller
 
 	public function add_wallet_create_post()
 	{
-		$order_id = 'ord'.$this->random_strings_digit(10).date('dmYHi');
+		$amount = removeSpecialCharacters($this->post('amount'));	
+		
+		$key_id     = 'rzp_live_oVzpJnJRDQttrF';
+		$key_secret = 'j3wOmrEPLY5St6hONRSKTv05';
+		$amount = intval($amount * 100);
+		$data = [
+		    "amount" => $amount,
+		    "currency" => "INR",
+		    "receipt" => "rcpt_" . time(),
+		    "payment_capture" => 1 // auto capture ✅
+		];
+
+		// cURL request to create order ✅
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "https://api.razorpay.com/v1/orders");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_USERPWD, "$key_id:$key_secret");
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, [
+		    'Content-Type: application/json'
+		]);
+
+		$response = curl_exec($ch);
+
+		if (curl_errno($ch)) {
+		    die('Razorpay Create Order Error: ' . curl_error($ch));
+		}
+
+		curl_close($ch);
+
+		$responseData = json_decode($response, true);
+
+		if (!isset($responseData['id'])) {
+		    die("Failed to create order: " . $response);
+		}
+
+		$order_id = $responseData['id']; // ✅ Valid Razorpay Order ID (order_XXXXX)
+
+		
+
+		//$order_id = ;//'ord'.$this->random_strings_digit(10).date('dmYHi');
 		$this->response([
 		'order_id' => $order_id
 		], self::HTTP_OK);

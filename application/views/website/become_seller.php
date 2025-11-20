@@ -672,108 +672,108 @@ return ;
 
 
 
-							var options = {
-								key: 'rzp_live_oVzpJnJRDQttrF',
-								amount: amount * 100, // Amount in paise
-								currency: 'INR',
-								name: 'Bznesshub',
-								description: 'Place Order',
-								capture: 1,
-								prefill: {
-									name: $("#fullname_a").val(),
-									email: $("#email").val(),
-									contact: $("#mobile").val(),
-								},
-								handler: function (response) {
-									// Handle Razorpay response here, like updating database or showing success message
-									if (response.razorpay_payment_id) {
-										const proxyUrl = site_url + 'Razorpay/capturePayment?payment_id=' + response.razorpay_payment_id + '&amount=' + amount * 100;
+var options = {
+key: 'rzp_live_oVzpJnJRDQttrF',
+amount: amount * 100, // Amount in paise
+currency: 'INR',
+name: 'Bznesshub',
+description: 'Place Order',
+capture: 1,
+prefill: {
+name: $("#fullname_a").val(),
+email: $("#email").val(),
+contact: $("#mobile").val(),
+},
+handler: function (response) {
+// Handle Razorpay response here, like updating database or showing success message
+if (response.razorpay_payment_id) {
+const proxyUrl = site_url + 'Razorpay/capturePayment?payment_id=' + response.razorpay_payment_id + '&amount=' + amount * 100;
 
-										fetch(proxyUrl)
-											.then(response => {
-												if (!response.ok) {
-													throw new Error('Network response was not ok');
-												}
-												return response.text();
-											})
-											.then(data => {
-												console.log(data); // Output: "Payment Captured" if successful
-											})
-											.catch(error => {
-												console.error('There was a problem with the fetch operation:', error);
-											});
+fetch(proxyUrl)
+.then(response => {
+if (!response.ok) {
+throw new Error('Network response was not ok');
+}
+return response.text();
+})
+.then(data => {
+console.log(data); // Output: "Payment Captured" if successful
+})
+.catch(error => {
+console.error('There was a problem with the fetch operation:', error);
+});
 
-										form_data.set('payment_id', response.razorpay_payment_id);
-										$.ajax({
-											method: 'post',
-											url: site_url + 'add_seller',
-											cache: false,
-											contentType: false,
-											processData: false,
-											data: form_data,
+form_data.set('payment_id', response.razorpay_payment_id);
+$.ajax({
+method: 'post',
+url: site_url + 'add_seller',
+cache: false,
+contentType: false,
+processData: false,
+data: form_data,
 
-											success: function(response) {
-												//hideloader();
-												//alert(response);
-												//location.reload();
-												//Swal.fire({
-												// position: "center",
-												//icon: "success",
-												// title: response,
-												//showConfirmButton: false,
-												//confirmButtonColor: '#ff5400',
-												//timer: 1000
-												// })
-												// setTimeout(function(){
-												//thankyouseller.php
-												// window.location = site_url + "thankyouseller";
-												//location.reload();
-												//}, 3000);
-											//	hideloader();
+success: function(response) {
+//hideloader();
+//alert(response);
+//location.reload();
+//Swal.fire({
+// position: "center",
+//icon: "success",
+// title: response,
+//showConfirmButton: false,
+//confirmButtonColor: '#ff5400',
+//timer: 1000
+// })
+// setTimeout(function(){
+//thankyouseller.php
+// window.location = site_url + "thankyouseller";
+//location.reload();
+//}, 3000);
+//	hideloader();
 
-												window.location.href = site_url + 'thankyou_seller';
+window.location.href = site_url + 'thankyou_seller';
 
-												/*Swal.fire({
+/*Swal.fire({
 
-													position: "center",
+position: "center",
 
-													//icon: "success",
+//icon: "success",
 
-													title: 'Add Seller Successfully',
+title: 'Add Seller Successfully',
 
-													showConfirmButton: false,
+showConfirmButton: false,
 
-													confirmButtonColor: '#ff5400',
+confirmButtonColor: '#ff5400',
 
-													timer: 3000
+timer: 3000
 
-												})
+})
 
-												setTimeout(function() {
+setTimeout(function() {
 
-													window.location.href = site_url + 'thankyou_seller';
+window.location.href = site_url + 'thankyou_seller';
 
-												}, 2000);*/
+}, 2000);*/
 
-											}
-										});
-									} else {
-										Swal.fire({
-											text: 'Payment failed or was canceled.',
-											type: "error",
-											showCancelButton: true,
-											showCloseButton: true,
-											confirmButtonColor: theme_colour,
-										});
-									}
-								},
-								modal: {
-									ondismiss: function () {
-										// Reload the page if payment is canceled
-										window.location.reload();
-									}
-								}
-							};
+}
+});
+} else {
+Swal.fire({
+text: 'Payment failed or was canceled.',
+type: "error",
+showCancelButton: true,
+showCloseButton: true,
+confirmButtonColor: theme_colour,
+});
+}
+},
+modal: {
+ondismiss: function () {
+// Reload the page if payment is canceled
+window.location.reload();
+}
+}
+};
 
 							var rzp = new Razorpay(options);
 							rzp.open();

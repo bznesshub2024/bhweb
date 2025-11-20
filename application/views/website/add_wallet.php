@@ -319,7 +319,7 @@ $("#formoid").submit(function (event) {
             // update CSRF token for next request
 var csrfName = $(".txt_csrfname").attr("name"); // CSRF token name
 var csrfHash = $(".txt_csrfname").val();        // CSRF hash
-
+ console.log('>>>>>>',order.order_id);
             var options = {
                 //"key": "rzp_test_qYpWkw3GxxEIPA", 
                 "key": "rzp_live_oVzpJnJRDQttrF",
@@ -327,7 +327,8 @@ var csrfHash = $(".txt_csrfname").val();        // CSRF hash
                 "currency": "INR",
                 "name": "Bznesshub",
                 "description": "Wallet Topup",
-                "order_id": order.id, // Razorpay order_id from backend
+                "order_id": order.order_id, // Razorpay order_id from backend
+                "capture": 1, 
                 "handler": function (response) {
                     console.log(response);
 
