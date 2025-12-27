@@ -89,25 +89,43 @@
 	<?php if($this->session->userdata("user_name") == '') { redirect('', 'refresh'); } ?>
 	
 	<?php
-	$total_bonus = 0;
-	foreach($wallet_bonus as $wallet_bonus)
-	{
+	// $total_bonus = 0;
+    // $deduct_wallet=0;
+    // $deduct_virtual_wallet=0;
+	// foreach($wallet_bonus as $wallet_bonus)
+	// {
 		
-		if($wallet_bonus->payment_type == '1')
-		{
-			$total_bonus = $total_bonus + $wallet_bonus->amount;
-		}
-	}
-	$unwithdraw_amount = '';
-	if($total_bonus != 0)
-	{
-		$amount = $wallet['amount'] - $total_bonus;
-		$unwithdraw_amount = " (".$total_bonus." New User Bonus + ".round($amount,2)." Virtual Partner/Order Commission)";
-	}
-	else
-	{
-		$amount = $wallet['amount'];
-	}
+	// 	if($wallet_bonus->payment_type == '1')
+	// 	{
+	// 		$total_bonus = $total_bonus + $wallet_bonus->amount;
+	// 	}
+    //     if($wallet_bonus->payment_type == '6')
+    //     {
+    //         $deduct_wallet = $deduct_wallet + $wallet_bonus->amount;
+    //     }
+    //     if($wallet_bonus->payment_type == '7')
+    //     {
+    //         $deduct_virtual_wallet = $deduct_virtual_wallet + $wallet_bonus->amount;
+    //     }
+	// }
+
+    // $total_bonus=$total_bonus-$deduct_wallet;
+	// $unwithdraw_amount = '';
+    // $total_virtual_amount=0;
+    // if($wallet['amount'] > 0){
+    // 	if($total_bonus != 0)
+    // 	{
+    // 		$amount = $wallet['amount'] - $total_bonus;
+    //         $total_virtual_amount = $amount - $deduct_virtual_wallet;
+    		
+    // 	}
+    // 	else
+    // 	{
+    // 		$amount = $wallet['amount'];
+    //         $total_virtual_amount = $amount - $deduct_virtual_wallet;
+    // 	}
+    // }
+    // $unwithdraw_amount = " (".$total_bonus." New User Bonus + ".round($total_virtual_amount,2)." Virtual Partner/Order Commission)";
 	?>
 	
 	<input type="hidden" id="bank_details" value="<?php echo $bank_details['id']; ?>" >
@@ -118,10 +136,21 @@
                     <div class="balance_box my-3 col-sm-12">
                         <div class="card box-shadow-4">
                             <div class="card-body">
-                                <h4 class="card-title">Wallet Balance</h4>
-                                <h3 class="card-title mb-2 fw-bolder">Rs <?php echo round($wallet['amount'],0); ?></h3>
-								<b><span class="unwithdraw_amount"><?php echo $unwithdraw_amount; ?></span></b>
-                               <input type="hidden" id="wallet_balance" value="<?php echo round($wallet['amount'],0); ?>" >
+                                <h4 class="card-title">Wallet Balance
+
+<a class="btn btn-success btn-xm rounded text-white" style="float:right" href="<?php echo base_url ?>add_wallet"><i class="bx bx-wallet me-2"></i>Add to Wallet</a>
+
+                                </h4>
+                                 <h3 class="card-title mb-2 fw-bolder">Rs <?php 
+print_r(wallet_calc()['total_wallet_balance']);
+                                //echo round($wallet['amount'],0); ?></h3>
+								<b><span class="unwithdraw_amount"><?php 
+                                print_r(wallet_calc()['both_message']);
+                                //echo $unwithdraw_amount;
+                                 ?></span></b>
+								
+								
+                               <input type="hidden" id="wallet_balance" value="<?php print_r(wallet_calc()['total_wallet_balance']); ?>" >
                                <input type="hidden" id="bonus_wallet_balance" value="<?php echo round($total_bonus,0); ?>" >
                                 <p class="card-text">
 									Use your Wallet amount to purchase the products and avail awesome discounts and offers.
@@ -176,7 +205,16 @@
                     <div class="card h-91" id="">
 					<?php if(count($wallet_summery) > 0) { ?>
                         <div class="card-body px-3 py-0">
-                            <h4 class="card-title p-2">Previous Transactions</h4>
+                            <!-- <h4 class="card-title p-2">Previous Transactions</h4> -->
+<div class="row d-flex">
+<div class="col-10">
+<h4 class="card-title p-2">Previous Transactions</h4>
+</div>
+<div class="col-2 p-0">
+<h4 class="card-title pt-2">	Round off</h4>
+</div>
+</div>
+
                             <?php foreach ($wallet_summery as $wallet_summery_data) {
                                 if ($wallet_summery_data->transaction_type == 'credit') {
                                     $transaction_type = '+';
@@ -200,8 +238,16 @@
                                         <img src="<?php echo base_url; ?>assets_web/images/<?= $transaction_img ?>.png" class="money_cards">
                                     </div>
                                     <div class="col-8 p-0">
-                                        <span class="fw-bolder"><?php echo $wallet_summery_data->remark; ?></span>
-                                        <p class="text-muted"><?php echo date('d M Y h:i A', strtotime($wallet_summery_data->created_at)); ?><span class="display_data"><?php echo $display_data; ?><span></p>
+                                        <span class="fw-bolder"><?php echo $wallet_summery_data->remark; ?>
+                                        	
+                                        </span>
+                                        <p class="text-muted"><?php echo date('d M Y h:i A', strtotime($wallet_summery_data->created_at)); ?><span class="display_data"><?php echo $display_data; ?></span>
+<br/>
+<span>
+Transaction ID : <?php echo $wallet_summery_data->transaction_id; ?>
+</span>
+                                        </p>
+                                        	
                                     </div>
                                     <div class="col-2 p-0 justify-content-end">
                                         <span class="fw-bolder <?php echo $transaction_class; ?>"><?php echo $transaction_type . ' Rs ' . round($wallet_summery_data->amount); ?></span>

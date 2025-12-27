@@ -49,13 +49,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-
+ 
 //user login
 $route['auth/login'] = 'UserAuthController/login'; 
 $route['auth/signup'] = 'UserAuthController/signup';
 $route['auth/verify_otp'] = 'UserAuthController/verify_otp';
 $route['app/getUserReview'] = 'UserAuthController/getUserReview';
 $route['app/getUserProfile'] = 'UserAuthController/getUserProfile';
+$route['app/updateUserProfile'] = 'UserAuthController/updateUserProfile';
 $route['auth/forgot_otp'] = 'UserAuthController/forgot_otp';
 $route['auth/update_password'] = 'UserAuthController/update_password';
 $route['app/send_otp'] = 'UserAuthController/send_otp';
@@ -63,6 +64,7 @@ $route['app/send_otp_verify'] = 'UserAuthController/send_otp_verify';
 $route['app/login_banner'] = 'UserAuthController/login_banner';
 $route['app/generate_invoice'] = 'HomeController/generate_invoice';
 $route['app/order_status_data'] = 'HomeController/order_status_data';
+$route['app/daily_price'] = 'HomeController/daily_price';
 
 $route['app/banner-click'] = 'HomeController/bannerClick';
 
@@ -172,6 +174,7 @@ $route['app/getOrderDetailsProd'] = 'OrderController/getOrderDetailsProd';
 
 $route['app/withdrow_money'] = 'HomeController/withdrow_money'; 
 $route['app/wallet_summery'] = 'HomeController/wallet_summery'; 
+$route['app/add_wallet_money'] = 'HomeController/add_wallet_money'; 
 $route['app/wallet_summery_datewise'] = 'HomeController/wallet_summery_datewise'; 
 
 

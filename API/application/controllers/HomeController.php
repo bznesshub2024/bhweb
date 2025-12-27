@@ -10,7 +10,8 @@ class HomeController extends REST_Controller {
 	protected $request_method ='post'; 
 	
 		 
-	 public function __construct() { 
+	 public function __construct() {
+	
         parent::__construct();
 		require_once APPPATH.'third_party/encryptfun.php';
                 
@@ -22,6 +23,23 @@ class HomeController extends REST_Controller {
 	{
 		$this->responses(1,'Server OK');
 	}
+
+
+	public function daily_price_post()
+	{
+		$data = $this->home_model->get_daily_price_data();
+
+		$this->response([
+						'status' => 1,
+						'msg' => 'List',
+						'data' => $data,
+						
+		], self::HTTP_OK);
+
+		echo 1;die;
+		print_r(123456);die;
+	}
+
 	
 	public function generate_invoice_post()
 	{
@@ -678,6 +696,95 @@ class HomeController extends REST_Controller {
     	}
 
 	}
+
+
+	public function add_wallet_money_post(){
+		$requiredparameters = array('amount','user_id','razorpay_payment_id');
+		$user_id = removeSpecialCharacters($this->post('user_id'));		
+		$amount = removeSpecialCharacters($this->post('amount'));	
+		$validation = $this->parameterValidation($requiredparameters,$this->post());
+		if($validation!='valid') {
+			echo $validation;die;
+		}
+		$razorpay_payment_id = removeSpecialCharacters($this->post('razorpay_payment_id'));	
+
+		$this->db->select('*');
+		$this->db->where(array('user_unique_id' => $user_id));
+		$query1 = $this->db->get('appuser_login');
+		
+		$user_result1 = $query1->result_object()[0];
+
+	    //$wallet_id = 'w_'.$this->random_strings(8);
+
+
+		$this->db->select('*');
+		$this->db->where(array('user_id' => $user_id));
+		$query_wallet = $this->db->get('wallet_summery');
+		$get_wallet = $query_wallet->result_object()[0];
+		$old_amount = $get_wallet->amount;
+
+		$walet_history_upd['amount'] = $old_amount + $amount;
+		$wallet_id =$get_wallet->wallet_id;
+		$this->db->where(array('user_id'=>$user_id));
+		$this->db->update('wallet_summery', $walet_history_upd);
+		
+
+
+		$transaction_id = 'txt'.$this->random_strings_digit(3).date('dmYHi');
+
+		$this->db->select('*');
+		$this->db->where(array('wallet_id' => $wallet_id));
+		$this->db->order_by('id','DESC');
+		$this->db->limit(1,0);
+		$query_wallet_his = $this->db->get('wallet_transaction_history');
+
+		$old_balance = 0;
+		if($query_wallet_his->num_rows() >0){
+			$get_wallet = $query_wallet_his->result_object()[0];
+		
+			$old_balance = $get_wallet->balance;
+		}		
+
+		$data_wallet_history1['wallet_id'] = $wallet_id;
+		$data_wallet_history1['payment_type'] = 5;
+		$data_wallet_history1['transaction_id'] = $transaction_id;
+		$data_wallet_history1['transaction_type'] = 'credit';
+		$data_wallet_history1['amount'] = $amount;
+		$data_wallet_history1['balance'] = $old_balance + $amount;
+		$data_wallet_history1['product_id'] = '';
+		$data_wallet_history1['order_id'] = '';
+		$data_wallet_history1['user_id'] = $user_result1->user_unique_id;
+		$data_wallet_history1['remark'] = 'Add Money to your Wallet';
+		$data_wallet_history1['created_at'] = date('Y-m-d H:i:s');
+		$this->db->insert('wallet_transaction_history',$data_wallet_history1);
+
+		$this->response([
+						'status' => 1,
+						'msg' => 'Wallet Add money Successfully'
+						
+		], self::HTTP_OK);
+
+
+	}
+function random_strings($length_of_string){ 
+  
+		// String of all alphanumeric character 
+		$str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'; 
+  
+		// Shufle the $str_result and returns substring 
+		// of specified length 
+		return substr(str_shuffle($str_result),0, $length_of_string); 
+	}
+	function random_strings_digit($length_of_string){ 
+  
+		// String of all alphanumeric character 
+		$str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'; 
+  
+		// Shufle the $str_result and returns substring 
+		// of specified length 
+		return substr(str_shuffle($str_result),0, $length_of_string); 
+	}
+
 	
 	public function wallet_summery_post(){
 
@@ -696,6 +803,7 @@ class HomeController extends REST_Controller {
 			 if($user_id && $wallet_id){
 			
 				$wallet_balance_array = $this->home_model->wallet_total_amount($user_id,$wallet_id);
+				$wallet_summary = $this->home_model->wallet_summary($user_id,$wallet_id);
 				$wallet_bonus = $this->home_model->bonus_wallet_summery($user_id,$wallet_id);
 				$data_array = $this->home_model->wallet_summery($user_id,$wallet_id);
 				if(!empty($data_array)){
@@ -704,6 +812,7 @@ class HomeController extends REST_Controller {
 							$this->config->item('rest_status_field_name') => 1,
 							$this->config->item('rest_message_field_name') => 'Wallet Summery',
 							'wallet' => $wallet_balance_array,
+							'wallet_summary' => $wallet_summary,
 							'bonus' => $wallet_bonus,
 							$this->config->item('rest_data_field_name') =>$data_array
 							
@@ -717,6 +826,7 @@ class HomeController extends REST_Controller {
 							$this->config->item('rest_status_field_name') => 0,
 							$this->config->item('rest_message_field_name') => get_phrase('no_record_found',$language_code),
 							'wallet' => $wallet_balance_array,
+							'wallet_summary' => $wallet_summary,
 							'bonus' => $wallet_bonus,
 							$this->config->item('rest_data_field_name') =>$data_array
 							

@@ -1513,12 +1513,41 @@ class Common_Function
 
 	//send email for seller
 
+
+	function send_password_email($conn, $to_email, $sellername, $new_passwords)
+	{
+
+		$message  = "<html><body>";
+		$message .= "<table width='500px;' align='center' border='1' cellpadding='0' cellspacing='0' style='font-family: sans-serif;background: rgba(220, 220, 220, 0.17);font-size: 14px;'>";
+
+		$message .= "<tbody>
+						<tr>
+							<td colspan='2'>Dear " . $sellername . ", </td>
+							
+						</tr>
+						
+						<tr>
+							<td style='padding: 10px;font-weight: 600;' colspan='2'>Your new password : <b>".$new_passwords."</b> </td>
+						</tr>
+						
+					</tbody>";
+
+		$message .= "</table>";
+		$message .= "</body></html>";
+		$this->smtp_email($conn, $to_email, 'Forgot Password', $message);
+
+	}
+
+
+function generateRandomCode($length = 10) {
+    return substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), 0, $length);
+}
+
 	function send_email_forgot_password($conn, $to_email, $sellername, $checksum, $base_url, $subject)
 	{
 
 		$link = $base_url . "admin/change_password.php?checksum=" . $checksum;
 		$message  = "<html><body>";
-
 		$message .= "<table width='500px;' align='center' border='1' cellpadding='0' cellspacing='0' style='font-family: sans-serif;background: rgba(220, 220, 220, 0.17);font-size: 14px;'>";
 
 		$message .= "<tbody>
@@ -1583,14 +1612,42 @@ class Common_Function
 		$smtp_user = $this->get_system_settings($conn, 'smtp_user');
 		$smtp_password = $this->get_system_settings($conn, 'smtp_password');
 
+
+// $mail = new PHPMailer(true);
+
+// try {
+// $mail->isSMTP();
+// $mail->Host       = 'smtp.hostinger.com';   // Hostinger SMTP server
+// $mail->SMTPAuth   = true;
+// $mail->Username   = 'admin@bznesshub.com';   // full email address
+// $mail->Password   = 'Bzness@2025';     // email account password
+// $mail->SMTPSecure = 'null';   // TLS is preferred
+// $mail->Port       = 587;     // use 465 with ssl if 587 blocked
+
+// $mail->setFrom('vipul19921@gmail.com', 'Vipul');
+// $mail->addAddress('vipul19921@gmail.com');
+
+// $mail->isHTML(true);
+// $mail->Subject = 'Test Email from Hostinger';
+// $mail->Body    = '<h3>This is a test email</h3><p>Sent via Hostinger SMTP & PHPMailer</p>';
+
+// $mail->send();
+// echo "Message sent successfully!";
+// } catch (Exception $e) {
+// echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+// }
+
+// dd('12345');
+
+
 		$mail = new PHPMailer;
 		$mail->IsSMTP();
 		$mail->Host = $smtp_host; //
 		$mail->SMTPAuth = true;
 		$mail->Username = $smtp_user;
 		$mail->Password = $smtp_password;
-		$mail->SMTPSecure = 'ssl';
-		$mail->Port = $smtp_port; //465;        
+		$mail->SMTPSecure = 'null';
+		$mail->Port = 587 ;//$smtp_port; //465;        
 
 		$mail->setFrom($smtp_user, 'no-reply');
 		$mail->addAddress($to_email);
@@ -1598,6 +1655,9 @@ class Common_Function
 		$mail->Subject = $subject;
 		$mail->Body    = $message;
 		$mail->AltBody = $message;
+		//$mail->SMTPDebug = 2; 
+		//$mail->Debugoutput = 'html'; 
+		//print_r($mail->send());die;
 		if ($mail->send()) {
 			//echo	$msg =  'done';
 		} else {

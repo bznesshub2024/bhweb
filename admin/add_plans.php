@@ -16,7 +16,7 @@ $code = $_POST['code'];
 
 $name = $_POST['namevalue'];
 $plan_value = $_POST['plan_value'];
-
+$duration = $_POST['duration'];
 
 
 
@@ -27,7 +27,6 @@ $code=   stripslashes($code);
 
 $name =   stripslashes($name);
 $plan_value =   stripslashes($plan_value);
-
 
 
 
@@ -86,9 +85,9 @@ if($code == $_SESSION['_token'] && isset($name)   && !empty($name) && !empty($pl
 
 			$orderid =0;
 
-			$stmt11 = $conn->prepare("INSERT INTO plans( plan_name,plan_value)  VALUES (?,?)");
+			$stmt11 = $conn->prepare("INSERT INTO plans( plan_name,plan_value,duration)  VALUES (?,?,?)");
 
-			$stmt11->bind_param( "ss",  $name,$plan_value );
+			$stmt11->bind_param( "sss",  $name,$plan_value,$duration );
 
 		
 

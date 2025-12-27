@@ -130,10 +130,10 @@ if (!isset($_SESSION['admin'])) {
 
 		if (counapm_type == 1) {
 			$("#cvaluelbl").text('Value(%)');
-			$("#cvalue").attr('placeholder', 'Coupan Value in %');
+			$("#cvalue").attr('placeholder', 'Coupon Value in %');
 		} else if (counapm_type == 2) {
 			$("#cvaluelbl").text('Value(<?php echo $currency; ?>)');
-			$("#cvalue").attr('placeholder', 'Coupan Value in <?php echo $currency; ?>');
+			$("#cvalue").attr('placeholder', 'Coupon Value in <?php echo $currency; ?>');
 		}
 	}
 </script>
@@ -147,7 +147,7 @@ if (!isset($_SESSION['admin'])) {
 		<!-- Modal content-->
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Add Coupan Code</h5>
+				<h5 class="modal-title">Add Coupon Code</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -156,11 +156,11 @@ if (!isset($_SESSION['admin'])) {
 				<form class="form" id="add_brand_form" enctype="multipart/form-data">
 
 					<div class="form-group">
-						<label for="name">Coupan Code</label>
-						<input type="text" class="form-control" id="cname" placeholder="Coupan Code">
+						<label for="name">Coupon Code</label>
+						<input type="text" class="form-control" id="cname" placeholder="Coupon Code">
 					</div>
 					<div class="form-group">
-						<label for="name">Coupan Type</label>
+						<label for="name">Coupon Type</label>
 						<select class="form-control" id="counapm_type" onchange="counapm_type1()">
 
 							<option value="1">Percentage</option>
@@ -170,7 +170,7 @@ if (!isset($_SESSION['admin'])) {
 					</div>
 					<div class="form-group">
 						<label for="name" id="cvaluelbl">Value(%)</label>
-						<input type="number" class="form-control" id="cvalue" min="0" placeholder="Coupan Value in %">
+						<input type="number" class="form-control" id="cvalue" min="0" placeholder="Coupon Value in %">
 					</div>
 
 					<div class="form-group">

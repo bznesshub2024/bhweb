@@ -333,11 +333,11 @@ body[dir=rtl] .detailsProd span {
 }
 
 .btn-radious {
-	border-radius : 25px !important;
+	/*border-radius : 25px !important;*/
 }
 
 input , select{
-	border-radius : 25px !important;
+	/*border-radius : 25px !important;*/
 }
 
 .product-details-page .product-slider .right-block .btn-wrap .btn {

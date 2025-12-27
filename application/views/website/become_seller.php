@@ -123,17 +123,35 @@
 
 								<div class="col-md-6" id="plan_div">
 									<label class="form-label">Select Plans:</label>
-									<select name="selectplan" id="selectplan" class="form-control" onchange="show_data()">
 
-										<option value="">Select Plans</option>
+<input type="hidden" name="plan_price" id="plan_price">
 
-										<?php foreach ($get_plans as $plans_data) { ?>
-											<option data-plan_value="<?php echo $plans_data['plan_value']; ?>" value="<?php echo $plans_data['plan_id']; ?>"><?php echo $plans_data['plan_name'] . ' (' . $plans_data['plan_value'] . ')'; ?></option>
+<select name="selectplan" id="selectplan" class="form-control" onchange="show_data()">
 
-											
-										<?php } ?>
+<!-- <option value="">Select Plans</option> -->
 
-									</select>
+<?php foreach ($get_plans as $plans_data) { ?>
+<option data-plan_value="<?php echo $plans_data['plan_value']; ?>" value="<?php echo $plans_data['plan_id']; ?>">
+
+
+<?php echo $plans_data['plan_name']?>
+
+<?php 
+if($plans_data['plan_value'] > 0){
+echo' (Price: ' . $plans_data['plan_value'] . ')';
+}else{
+echo '(Free)';
+}
+ ?>
+
+
+(Duration : <?php echo $plans_data['duration']; ?> Days)
+</option>
+
+
+<?php } ?>
+
+</select>
 									<span id="error"></span>
 								</div>
 								
@@ -160,7 +178,7 @@
 								</div>
 
 							</div>
-							<a href="#" class="seller_form btn btn-default btn-radious">Next</a>
+							<a href="#" class="seller_form btn btn-default ">Next</a>
 						</fieldset>
 						<fieldset>
 							<div class="row g-3" id="seller_desc">
@@ -214,7 +232,7 @@
 
 							</div>
 							<a href="#" class="previous btn btn-secondary btn-radious btn-radious btn-radious">Previous</a>
-							<a href="#" class="seller_desc btn btn-default btn-radious btn-radious btn-radious">Next</a>
+							<a href="#" class="seller_desc btn btn-default  ">Next</a>
 						</fieldset>
 						<fieldset>
 							<div class="row g-3" id="seller_info">
@@ -243,7 +261,7 @@
 
 							</div>
 							<a href="#" class="previous btn btn-secondary btn-radious">Previous</a>
-							<a href="#" class="seller_info btn btn-default btn-radious">Next</a>
+							<a href="#" class="seller_info btn btn-default ">Next</a>
 
 						</fieldset>
 						<fieldset>
@@ -304,7 +322,7 @@
 								
 							</div>
 							<a href="#" class="previous btn btn-secondary btn-radious">Previous</a>
-							<button onclick="form_send()" class="btn btn-default btn-radious sendBtn seller_doc" name="submit" type="submit">Submit</button>
+							<button onclick="form_send()" class="btn btn-default  sendBtn seller_doc" name="submit" type="submit">Submit</button>
 
 						</fieldset>
 						<fieldset>
@@ -346,17 +364,28 @@
 			window.onload = getStatedata();
 			window.onload = getCitydata(0);
 		});
-        
+       	show_data();
+
         function show_data1()
         {
             plan_value = $('#selectplan1 option:selected').data('plan_value');
             plan_name = $('#selectplan1 option:selected').text();
            
-           plan_gst = (plan_value * 18) / 118;
-           
-           plan_amount = plan_value - plan_gst;
-           
-           plan_total_amount = plan_value
+
+			$("#plan_price").val(plan_value);
+			plan_gst=0;
+			plan_amount=0;
+			plan_total_amount=0;
+
+			if(plan_value > 0){
+			plan_gst = (plan_value * 18) / 118;
+            plan_amount = plan_value - plan_gst;
+            plan_total_amount = plan_value;
+			}
+
+           // plan_gst = (plan_value * 18) / 118;
+           // plan_amount = plan_value - plan_gst;
+           // plan_total_amount = plan_value
            
            $('#plan_name').html(plan_name);
            $('#plan_amount').html(plan_amount.toFixed(2));
@@ -364,18 +393,22 @@
            $('#plan_total_amount').html('₹ '+plan_total_amount);
            
         }
-        
          function show_data()
         {
             plan_value = $('#selectplan option:selected').data('plan_value');
             plan_name = $('#selectplan option:selected').text();
+			$("#plan_price").val(plan_value);
+			plan_gst=0;
+			plan_amount=0;
+			plan_total_amount=0;
+
+			if(plan_value > 0){
+			plan_gst = (plan_value * 18) / 118;
+			plan_amount = plan_value - plan_gst;
+			plan_total_amount = plan_value;
+			}
            
-           plan_gst = (plan_value * 18) / 118;
-           
-           plan_amount = plan_value - plan_gst;
-           
-           plan_total_amount = plan_value
-           
+           //console.log('>>>>>>>>>>>>>>>>>',plan_gst,plan_amount,plan_total_amount);
            $('#plan_name').html(plan_name);
            $('#plan_amount').html(plan_amount.toFixed(2));
            $('#plan_gst').html(plan_gst.toFixed(2));
@@ -616,111 +649,131 @@
 				}*/
 				
 				form_data.append('plan_value', plan_value);
-				
+				var plan_value = $("#plan_price").val(); 
+
 				var amount = plan_value;
 
-							var options = {
-								key: 'rzp_live_oVzpJnJRDQttrF',
-								amount: amount * 100, // Amount in paise
-								currency: 'INR',
-								name: 'Bznesshub',
-								description: 'Place Order',
-								capture: 1,
-								prefill: {
-									name: $("#fullname_a").val(),
-									email: $("#email").val(),
-									contact: $("#mobile").val(),
-								},
-								handler: function (response) {
-									// Handle Razorpay response here, like updating database or showing success message
-									if (response.razorpay_payment_id) {
-										const proxyUrl = site_url + 'Razorpay/capturePayment?payment_id=' + response.razorpay_payment_id + '&amount=' + amount * 100;
+if(amount == 0){
 
-										fetch(proxyUrl)
-											.then(response => {
-												if (!response.ok) {
-													throw new Error('Network response was not ok');
-												}
-												return response.text();
-											})
-											.then(data => {
-												console.log(data); // Output: "Payment Captured" if successful
-											})
-											.catch(error => {
-												console.error('There was a problem with the fetch operation:', error);
-											});
+$.ajax({
+method: 'post',
+url: site_url + 'add_seller',
+cache: false,
+contentType: false,
+processData: false,
+data: form_data,
+success: function(response) {
+window.location.href = site_url + 'thankyou_seller';
+}
+});
+return ;
+}
 
-										form_data.set('payment_id', response.razorpay_payment_id);
-										$.ajax({
-											method: 'post',
-											url: site_url + 'add_seller',
-											cache: false,
-											contentType: false,
-											processData: false,
-											data: form_data,
 
-											success: function(response) {
-												//hideloader();
-												//alert(response);
-												//location.reload();
-												//Swal.fire({
-												// position: "center",
-												//icon: "success",
-												// title: response,
-												//showConfirmButton: false,
-												//confirmButtonColor: '#ff5400',
-												//timer: 1000
-												// })
-												// setTimeout(function(){
-												//thankyouseller.php
-												// window.location = site_url + "thankyouseller";
-												//location.reload();
-												//}, 3000);
-											//	hideloader();
 
-												window.location.href = site_url + 'thankyou_seller';
 
-												/*Swal.fire({
+var options = {
+key: 'rzp_live_oVzpJnJRDQttrF',
+amount: amount * 100, // Amount in paise
+currency: 'INR',
+name: 'Bznesshub',
+description: 'Place Order',
+capture: 1,
+prefill: {
+name: $("#fullname_a").val(),
+email: $("#email").val(),
+contact: $("#mobile").val(),
+},
+handler: function (response) {
+// Handle Razorpay response here, like updating database or showing success message
+if (response.razorpay_payment_id) {
+const proxyUrl = site_url + 'Razorpay/capturePayment?payment_id=' + response.razorpay_payment_id + '&amount=' + amount * 100;
 
-													position: "center",
+fetch(proxyUrl)
+.then(response => {
+if (!response.ok) {
+throw new Error('Network response was not ok');
+}
+return response.text();
+})
+.then(data => {
+console.log(data); // Output: "Payment Captured" if successful
+})
+.catch(error => {
+console.error('There was a problem with the fetch operation:', error);
+});
 
-													//icon: "success",
+form_data.set('payment_id', response.razorpay_payment_id);
+$.ajax({
+method: 'post',
+url: site_url + 'add_seller',
+cache: false,
+contentType: false,
+processData: false,
+data: form_data,
 
-													title: 'Add Seller Successfully',
+success: function(response) {
+//hideloader();
+//alert(response);
+//location.reload();
+//Swal.fire({
+// position: "center",
+//icon: "success",
+// title: response,
+//showConfirmButton: false,
+//confirmButtonColor: '#ff5400',
+//timer: 1000
+// })
+// setTimeout(function(){
+//thankyouseller.php
+// window.location = site_url + "thankyouseller";
+//location.reload();
+//}, 3000);
+//	hideloader();
 
-													showConfirmButton: false,
+window.location.href = site_url + 'thankyou_seller';
 
-													confirmButtonColor: '#ff5400',
+/*Swal.fire({
 
-													timer: 3000
+position: "center",
 
-												})
+//icon: "success",
 
-												setTimeout(function() {
+title: 'Add Seller Successfully',
 
-													window.location.href = site_url + 'thankyou_seller';
+showConfirmButton: false,
 
-												}, 2000);*/
+confirmButtonColor: '#ff5400',
 
-											}
-										});
-									} else {
-										Swal.fire({
-											text: 'Payment failed or was canceled.',
-											type: "error",
-											showCancelButton: true,
-											showCloseButton: true,
-											confirmButtonColor: theme_colour,
-										});
-									}
-								},
-								modal: {
-									ondismiss: function () {
-										// Reload the page if payment is canceled
-										window.location.reload();
-									}
-								}
-							};
+timer: 3000
+
+})
+
+setTimeout(function() {
+
+window.location.href = site_url + 'thankyou_seller';
+
+}, 2000);*/
+
+}
+});
+} else {
+Swal.fire({
+text: 'Payment failed or was canceled.',
+type: "error",
+showCancelButton: true,
+showCloseButton: true,
+confirmButtonColor: theme_colour,
+});
+}
+},
+modal: {
+ondismiss: function () {
+// Reload the page if payment is canceled
+window.location.reload();
+}
+}
+};
 
 							var rzp = new Razorpay(options);
 							rzp.open();

@@ -500,7 +500,8 @@ $stmt_plan = $conn->prepare("SELECT plan_id,plan_value,payment_id FROM  seller_p
 		if (map) {
 			mapForm.submit();
 		} else {
-			successmsg('You must allow popups for this map to work.');
+			alert('You must allow popups for this map to work.');
+			//successmsg('You must allow popups for this map to work.');
 		}
 	}
 </script>
@@ -804,7 +805,8 @@ $stmt_plan = $conn->prepare("SELECT plan_id,plan_value,payment_id FROM  seller_p
 						hideloader();
 						var data = $.parseJSON(response);
 						if (data["status"] == "1") {
-							successmsg(data["msg"]);
+							alert(data["msg"]);
+							//successmsg(data["msg"]);
 							$("#log_img").remove();
 							$("#banner_img").remove();
 							$("#bt_list").html('<img src="' + data["img"] + '" id="log_img" height="75" width="75" hspace="20" vspace="20">');
@@ -813,22 +815,24 @@ $stmt_plan = $conn->prepare("SELECT plan_id,plan_value,payment_id FROM  seller_p
 							var x = document.getElementById("sendmail");
 							x.style.display = "block";
 						} else {
-							successmsg(data["msg"]);
+							alert(data["msg"]);
+							//successmsg(data["msg"]);
 						}
 					}
 				});
 			}
 		});
 		$("#update_password_btn").click(function(event) {
+			console.log('123456>>>>>>');
 			event.preventDefault();
 			var selleridvalue = $('#sellerid').val();
 			var passwords = $('#password').val();
 			if (passwords == "" || passwords == null) {
-				successmsg("Password is empty");
+				alert("Password is empty");
 			} else if (strong_check_password(passwords) == 'fail') {
-				successmsg("Password Must contain 5 characters or more,lowercase and uppercase characters and contains digits.");
+				alert("Password Must contain 5 characters or more,lowercase and uppercase characters and contains digits.");
 			} else if (selleridvalue && passwords) {
-				showloader();
+				//showloader();
 				var form_data = new FormData();
 				form_data.append('selleridvalue', selleridvalue);
 				form_data.append('passwords', passwords);
@@ -840,14 +844,14 @@ $stmt_plan = $conn->prepare("SELECT plan_id,plan_value,payment_id FROM  seller_p
 					contentType: false,
 					processData: false,
 					success: function(response) {
-						hideloader();
+						//hideloader();
 						var data = $.parseJSON(response);
 						if (data["status"] == "1") {
-							successmsg(data["msg"]);
+							alert(data["msg"]);
 							$("#myModal").modal('hide');
 							$('#password').val('');
 						} else {
-							successmsg(data["msg"]);
+							alert(data["msg"]);
 						}
 					}
 				});
@@ -902,14 +906,17 @@ $stmt_plan = $conn->prepare("SELECT plan_id,plan_value,payment_id FROM  seller_p
 					//  successmsg(response); // display response from the PHP script, if any
 					var data = $.parseJSON(response);
 					if (data["status"] == "1") {
-						successmsg(data["msg"]);
+						alert(data["msg"]);
+						//successmsg(data["msg"]);
 					} else {
-						successmsg(data["msg"]);
+						alert(data["msg"]);
+						//successmsg(data["msg"]);
 					}
 				}
 			});
 		} else {
-			successmsg("elese paer");
+			alert('Something went wrong!!!');
+			//successmsg("elese paer");
 		}
 	}
 </script>
@@ -934,3 +941,11 @@ $stmt_plan = $conn->prepare("SELECT plan_id,plan_value,payment_id FROM  seller_p
 		</div>
 	</div>
 </div>
+
+
+<script>
+	
+	successmsg(msg){
+		alert(msg);
+	}
+</script>

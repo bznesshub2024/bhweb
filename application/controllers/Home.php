@@ -188,7 +188,7 @@ class Home extends REST_Controller {
 	{
 		$this->load->view('website/personal_info.php',$this->data);
 	}
-	
+
 	public function register_get()
 	{
 		$this->load->view('website/register.php',$this->data);  // ye view/website folder hai
@@ -242,6 +242,20 @@ class Home extends REST_Controller {
 		$this->data['page_content'] = $this->home_model->get_aboutus_data_request();
 		$this->load->view('website/about.php',$this->data);
 	}
+
+	public function daily_price_get()
+	{
+		if(isset($_GET['daily_prize_view'])){
+		$get_daily_price_view=$this->home_model->get_daily_price_view($_GET['daily_prize_view']);
+		$this->data['data'] = $get_daily_price_view['prize_money_contests'];
+		$this->data['reward_type_detail'] = $get_daily_price_view['reward_type_detail'];
+		//echo '<pre>';print_r($this->data['reward_type_detail']);die;
+		}else{
+			$this->data['data'] = $this->home_model->get_daily_price_data();
+		}
+		$this->load->view('website/daily_price.php',$this->data);
+	}
+
 	
 	public function faq_get()
 	{
@@ -273,6 +287,100 @@ class Home extends REST_Controller {
 		$this->data['page_content'] = $this->home_model->get_contact_data_request();
 		$this->load->view('website/contact.php',$this->data);
 	}
+
+
+	public function contactsave_post()
+	{
+	 $name    = $this->input->post('name');
+	 $email   = $this->input->post('email');
+	 $mobile  = $this->input->post('mobile');
+	 $message = $this->input->post('message');
+
+$messageadmin  = "<html><body>";
+
+$messageadmin .= "<table width='500px;' align='center' border='1' cellpadding='0' cellspacing='0' style='font-family: sans-serif;background: rgba(220, 220, 220, 0.17);font-size: 14px;'>";
+
+$messageadmin .= "<tbody>
+<tr>
+<td colspan='2'>Hello Admin</td>
+</tr>
+<tr>
+<td style='padding: 10px;font-weight: 600;'>Name</td>
+<td style='padding: 10px;'>".$name." </td>
+</tr>
+<tr>
+<td style='padding: 10px;font-weight: 600;'>Email</td>
+<td style='padding: 10px;'>".$email." </td>
+</tr>
+<tr>
+<td style='padding: 10px;font-weight: 600;'>Mobile</td>
+<td style='padding: 10px;'>".$mobile." </td>
+</tr>
+<tr>
+<td style='padding: 10px;font-weight: 600;'>Message</td>
+<td style='padding: 10px;'>".$message." </td>
+</tr>
+</tbody>";
+$messageadmin .= "</table>";
+$messageadmin .= "</body></html>";
+
+$admin_email = 'contact@bznesshub.com';
+$admin_subj = 'Contact Us'; 
+//print_r($messageadmin);die;
+send_email_smtp($admin_email,$messageadmin,$admin_subj);
+
+
+
+	 $this->session->set_flashdata('success', 'Thank you! Your message has been saved.');
+	 redirect($_SERVER['HTTP_REFERER']);
+	}
+
+	public function feedbacksave_post()
+	{
+	 $name    = $this->input->post('name');
+	 $email   = $this->input->post('email');
+	 $mobile  = $this->input->post('mobile');
+	 $message = $this->input->post('message');
+
+$messageadmin  = "<html><body>";
+
+$messageadmin .= "<table width='500px;' align='center' border='1' cellpadding='0' cellspacing='0' style='font-family: sans-serif;background: rgba(220, 220, 220, 0.17);font-size: 14px;'>";
+
+$messageadmin .= "<tbody>
+<tr>
+<td colspan='2'>Hello Admin</td>
+</tr>
+<tr>
+<td style='padding: 10px;font-weight: 600;'>Name</td>
+<td style='padding: 10px;'>".$name." </td>
+</tr>
+<tr>
+<td style='padding: 10px;font-weight: 600;'>Email</td>
+<td style='padding: 10px;'>".$email." </td>
+</tr>
+<tr>
+<td style='padding: 10px;font-weight: 600;'>Mobile</td>
+<td style='padding: 10px;'>".$mobile." </td>
+</tr>
+<tr>
+<td style='padding: 10px;font-weight: 600;'>Message</td>
+<td style='padding: 10px;'>".$message." </td>
+</tr>
+</tbody>";
+$messageadmin .= "</table>";
+$messageadmin .= "</body></html>";
+
+$admin_email = 'admin@bznesshub.com';
+$admin_subj = 'Feedback'; 
+//print_r($messageadmin);die;
+send_email_smtp($admin_email,$messageadmin,$admin_subj);
+
+
+
+	 $this->session->set_flashdata('success', 'Thank you! Your message has been saved.');
+	 redirect($_SERVER['HTTP_REFERER']);
+	}
+
 	
 	public function tearm_get()
 	{

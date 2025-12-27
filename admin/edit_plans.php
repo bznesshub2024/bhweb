@@ -15,11 +15,10 @@ $code = $_POST['code'];
 $name = $_POST['namevalue'];
 
 $plan_value = $_POST['plan_value'];
-
+$duration = $_POST['duration'];
 
 
 $plan_id = $_POST['plan_id'];
-
 
 
 $error='';  // Variable To Store Error Message
@@ -32,7 +31,7 @@ $plan_value =   stripslashes($plan_value);
 
 
 $plan_id =   stripslashes($plan_id);
-
+$duration =   stripslashes($duration);
 
 
 if(!isset($_SESSION['admin'])){
@@ -72,9 +71,9 @@ if($code == $_SESSION['_token'] && isset($name) && isset($plan_value)   && !empt
 		if($totalrow == 0){
 		
 
-			$stmt11 = $conn->prepare("UPDATE plans SET plan_name =? , plan_value =?  WHERE plan_id ='".$plan_id."'");
+			$stmt11 = $conn->prepare("UPDATE plans SET plan_name =? ,duration =? , plan_value =?  WHERE plan_id ='".$plan_id."'");
 
-			$stmt11->bind_param( "ss",  $name, $plan_value );
+			$stmt11->bind_param( "sss",  $name,$duration, $plan_value );
 
 			
 

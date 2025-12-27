@@ -218,7 +218,7 @@
                                     <div class="logo-box">
                                         <a href="" class="logo logo-light text-center">
                                             <span class="logo-large">
-                                                <img src="images/Bussinesshub_logo_new.png" class="mb-1" alt="" height="50">
+                                                <img src="logo_white.png" class="mb-1" alt="" height="50">
                                             </span>
                                         </a>
                                     </div>
@@ -287,9 +287,15 @@
                             </a>
                             <div class="collapse <?= strpos($_SERVER['PHP_SELF'], 'edit_custom_page.php') !== false ? 'show' : '' ?>" id="basic">
                                 <ul class="nav-second-level">
-                                    <li class="<?= strpos($_SERVER['PHP_SELF'], 'tree_view.php') !== false ? "menuitem-active" : "" ?>">
+
+                                    <li class="<?= strpos($_SERVER['PHP_SELF'], 'daily_prize.php') !== false ? "menuitem-active" : "" ?>">
+                                            <a href="daily_prize.php"> Daily Prize Money Contest</a>
+                                     </li>
+
+                                     <li class="<?= strpos($_SERVER['PHP_SELF'], 'tree_view.php') !== false ? "menuitem-active" : "" ?>">
                                             <a href="tree_view.php"> BH Partners</a>
                                      </li>
+
 									<li class="<?= strpos($_SERVER['PHP_SELF'], 'plans.php') !== false ? "menuitem-active" : "" ?>">
                                             <a href="plans.php"> Plans</a>
                                         </li>
@@ -304,6 +310,9 @@
                                     <?php // ?>
                                         <li class="<?= strpos($_SERVER['PHP_SELF'], 'brand.php') !== false ? "menuitem-active" : "" ?>">
                                             <a href="brand.php"> Brand</a>
+                                        </li>
+                                        <li class="<?= strpos($_SERVER['PHP_SELF'], 'coupancode.php') !== false ? "menuitem-active" : "" ?>">
+                                            <a href="coupancode.php"> Coupon Code</a>
                                         </li>
                                     <?php  //} ?>
                                     <?php /* if ($Common_Function->user_module_premission($_SESSION, $CouponCode)) { ?>

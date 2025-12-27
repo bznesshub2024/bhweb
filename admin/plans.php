@@ -132,7 +132,8 @@ if (!isset($_SESSION['admin'])) {
 
                         <th>Name</th>
 
-                        <th>Value(Price)</th>
+                        <th>Duration</th>
+                         <th>Value(Price)</th>
 
                         <th>Action</th>
 
@@ -248,6 +249,19 @@ if (!isset($_SESSION['admin'])) {
 
           </div> 
 		  
+
+<div class="form-group">
+
+<label for="name">Duration</label>
+
+<select name="duration" id="duration"  class="form-control">
+    <?php for ($i = 1; $i <= 1100; $i++): ?>
+        <option value="<?= $i ?>"><?= $i ?></option>
+    <?php endfor; ?>
+</select>
+
+</div>
+
 		  <div class="form-group">
 
             <label for="name">Plan Value (Price)</label>
@@ -313,6 +327,19 @@ if (!isset($_SESSION['admin'])) {
             <input type="text" class="form-control" id="update_name" placeholder="Plan Name">
 
           </div>
+
+
+
+<div class="form-group">
+<label for="name">Duration</label>
+<select name="duration" id="update_duration"  class="form-control">
+    <?php for ($i = 1; $i <= 1100; $i++): ?>
+        <option value="<?= $i ?>"><?= $i ?></option>
+    <?php endfor; ?>
+</select>
+</div>
+
+
 
 		 <div class="form-group">
 

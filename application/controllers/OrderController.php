@@ -56,7 +56,8 @@ class OrderController extends REST_Controller {
 		$this->data['order_return_track'] = $this->product_model->order_return_track($order_id,$prod_id);
 		$this->data['order_review'] = $this->product_model->check_order_review($user_id,$prod_id);
 		$this->data['offers_product'] = $this->home_model->get_order_details_products($default_language,'Offers');
-		$this->data['related_product'] = $this->product_model->get_popular_product_track_request($default_language,2,$product_id);	
+		$this->data['related_product'] = $this->product_model->get_popular_product_track_request($default_language,2,$product_id);
+		//echo '<pre>';print_r($this->data['order_details']);die;	
 		$this->load->view('website/orderdetails.php',$this->data);  // ye view/website folder hai
 	}
 	

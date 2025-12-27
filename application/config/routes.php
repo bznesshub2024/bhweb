@@ -102,6 +102,8 @@ $route['app/getProductWishlist'] = 'Wishlist/getProductWishlist';
 $route['app/getWishlistCount'] = 'Wishlist/getWishlistCount';
 
 //user address
+$route['userAddress/upload_profile_image'] = 'UserAddress/upload_profile_image';
+
 $route['app/addUserAddress'] = 'UserAddress/addUserAddress';
 $route['app/updateUserAddress'] = 'UserAddress/updateUserAddress';
 $route['app/deleteUserAddress'] = 'UserAddress/deleteUserAddress';
@@ -187,6 +189,9 @@ $route['set_language'] = 'Home/set_language';
 $route['myaddress'] = 'Home/myaddress';
 $route['notification'] = 'Home/notification';
 $route['personal_info'] = 'Home/personal_info';
+
+
+
 $route['send_whatsapp_msg'] = 'Home/send_whatsapp_msg';
 $route['thankyou_seller'] = 'Home/thankyou_seller';
 $route['tree_view'] = 'Home/tree_view';
@@ -199,6 +204,10 @@ $route['add_user_details'] = 'Home/add_user_details';
 // User Wallet
 $route['user-wallet'] = 'WalletController/getIndexPage';
 $route['user-wallet-transactions'] = 'WalletController/getuserWalletTransaction';
+$route['add_wallet'] = 'WalletController/add_wallet';
+$route['add_wallet_create'] = 'WalletController/add_wallet_create';
+$route['add_wallet_verify'] = 'WalletController/add_wallet_verify';
+
 $route['user_wallet_transactions/(:any)'] = 'WalletController/user_wallet_transaction/$1';
 $route['withdrow_money'] = 'WalletController/withdrow_money';
 $route['search_wallet_data'] = 'WalletController/search_wallet_data';
@@ -235,7 +244,8 @@ $route['high_discount'] = 'Home/high_discount';
 $route['regarding_price'] = 'Home/regarding_price';
 
 
-
+$route['upgrade_plan'] = 'SellerController/upgrade_plan';
+$route['planupgrade'] = 'SellerController/planupgrade';
 $route['become-seller'] = 'SellerController/seller_form';
 $route['add_seller'] = 'SellerController/add_sellers';
 $route['thankyouseller'] = 'SellerController/thankyouseller';
@@ -255,6 +265,7 @@ $route['privacy'] = 'Home/privacy';
 $route['refund'] = 'Home/refund';
 $route['about'] = 'Home/about';
 $route['faq'] = 'Home/faq';
+$route['daily_price'] = 'Home/daily_price';
 $route['shipping_policy'] = 'Home/free_shipping';
 $route['feedback'] = 'Home/feedback';
 $route['contact'] = 'Home/contact';

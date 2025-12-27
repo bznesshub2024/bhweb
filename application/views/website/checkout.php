@@ -294,14 +294,14 @@
 										<h5 style="color:#438F29;padding-bottom:0;border-bottom:none;">-<span id="default_discount"><?php echo $checkout['default_discount']; ?></span></h5>
 									</li>
 								</ul>
-								<!--<ul class="discount">
+								<ul class="discount">
 									<li>
 										<h6>Coupon Discount</h6>
 									</li>
 									<li>
 										<h6>-<span id="coupo_discount_value"><?php // echo $checkout['coupon_discount']; ?></span></h6>
 									</li>
-								</ul>-->
+								</ul>
 								<ul class="tax">
 									<li>
 										<h6>Tax (Included)</h6>
@@ -313,19 +313,150 @@
 								<ul class="discount">
 									<li>
 										<h6>Delivery Charges</h6>
+										
 									</li>
 									<li>
 										<h6><span id="shipping_fee" class="text-dark"><?php echo $checkout['shipping_fee']; ?></span></h6>
 									</li>
 								</ul>
-								<form style="display:none;">
-									<div class="input-group">
-										<input type="text" class="form-control" name="coupon_code" id="coupon_code" placeholder="Discount Code" />
-										<span onclick="get_checkout_data()" class="input-group-text btn btn-default btn-radious">Apply</span>
-									</div>
-									<span id="coupon_message" style="color:#438F29;font-weight:600"></span>
-								</form>
-							</div>
+								<br/>		
+<p style="color: #e01616; text-align: center;   font-size: ;
+    font-weight: 500;font-weight: bold; margin: 0;">Delivery Charges will not be applicable</p>
+
+
+	
+<div style="    border-top: 0.5px solid #424242; width: 100%;" ></div>
+<br/>	
+
+
+<div class="">
+  <div class="input-group" style="    margin: 0;border: 1px solid #b7b7b7;border-radius: 8px;">
+    <input type="text" class="form-control"  id="coupon_code" placeholder="Enter coupon code" style="  height: auto;
+    border: 0 !important;    font-size: inherit;">
+    <button class="btn btn-success text-white"  onclick="get_checkout_data()" type="button" id="applyCoupon">Apply</button>
+    <button class="btn btn-danger text-white" type="button" onclick="clear_coupon()" id="clearCoupon">Clear</button>
+  </div>
+
+
+<span id="coupon_message" class="form-text text-success mt-1"></span>
+<span id="coupon_message_invalid" class="form-text text-danger mt-1"></span>
+
+  <!-- <div id="couponFeedback" class="form-text text-success mt-1"></div> -->
+</div>
+<style>
+	#coupon_code:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+
+}
+
+</style>
+
+
+
+<!-- <div class="" style="display: flex; align-items: center; width: 100%; ">
+<input type="text" id="coupon_code"  placeholder="Discount Code"  />
+
+<span onclick="get_checkout_data()" style="cursor: pointer; color: #e01616; font-weight: 500; padding-left: 10px;">
+Apply
+</span>
+</div> -->
+
+<!-- <br/>			
+<div style="    border-top: 0.5px solid #424242; width: 100%;" ></div>
+<br/>	 -->
+<!-- <style>
+#coupon_code {
+	    font-size: 18px;
+  height: 25px;
+  border-radius: 0 !important;
+  flex: 1;
+  border: none !important;                 /* removes all borders */
+  border-bottom: 2px solid #ccc !important; /* default bottom border */
+  outline: none !important;                /* removes focus outline */
+  box-shadow: none !important;             /* removes browser-specific shadows */
+  background: transparent !important;      /* keeps background clean */
+  transition: border-color 0.3s ease;      /* smooth highlight effect */
+}
+
+#coupon_code:focus {
+  border-bottom: 2px solid #438F29 !important;
+   color: #438F29 !important;
+}
+
+</style>
+ -->
+
+						
+
+<?php
+	// $total_bonus = 0;
+  //   $deduct_wallet=0;
+  //   $deduct_virtual_wallet=0;
+	// foreach($wallet_bonus as $wallet_bonus)
+	// {
+		
+	// 	if($wallet_bonus->payment_type == '1')
+	// 	{
+	// 		$total_bonus = $total_bonus + $wallet_bonus->amount;
+	// 	}
+  //       if($wallet_bonus->payment_type == '6')
+  //       {
+  //           $deduct_wallet = $deduct_wallet + $wallet_bonus->amount;
+  //       }
+  //       if($wallet_bonus->payment_type == '7')
+  //       {
+  //           $deduct_virtual_wallet = $deduct_virtual_wallet + $wallet_bonus->amount;
+  //       }
+	// }
+
+  // $total_bonus=$total_bonus-$deduct_wallet;
+	// $unwithdraw_amount = '';
+	// $total_virtual_amount=0;
+  //  if($wallet['amount'] > 0){
+	// if($total_bonus != 0)
+	// {
+	// 	$amount = $wallet['amount'] - $total_bonus;
+  //   $total_virtual_amount = $amount - $deduct_virtual_wallet;
+	// 	//$unwithdraw_amount = " (".$total_bonus." New User Bonus + ".round($total_virtual_amount,2)." Virtual Partner/Order Commission)";
+	// }
+	// else
+	// {
+	// 	$amount = $wallet['amount'];
+  //   $total_virtual_amount = $amount - $deduct_virtual_wallet;
+  //   //$unwithdraw_amount = " (".$total_bonus." New User Bonus + ".round($total_virtual_amount,2)." Virtual Partner/Order Commission)";
+	// }
+	// }
+
+
+	?>
+
+					
+<div style="font-size: 14px;">
+<br/>
+<label 
+<?php if(wallet_calc()['newUserBonus'] <= 0){?>
+ style=" pointer-events: none; color: #aaa; "
+<?php }?>
+><input type="radio" 	onclick="get_checkout_data()"  name="wallet_money" value="1"><b> <?php echo wallet_calc()['newUserBonus'];?> New User Bonus</b> </label>
+<input type="hidden" name="wallet_money_amount1" value="<?php echo wallet_calc()['newUserBonus'];?>">
+<br/><br/>
+<label
+<?php if(wallet_calc()['virtualPartner'] <= 0){?>
+ style=" pointer-events: none; color: #aaa; "
+<?php }?>
+
+><input type="radio" 	onclick="get_checkout_data()" name="wallet_money" value="2"> <b> <?php echo wallet_calc()['virtualPartner'];?> Virtual Partner/Order Commission </b></label>
+
+<input type="hidden" name="wallet_money_amount2" value="<?php echo wallet_calc()['virtualPartner'];?>">
+
+
+</div>
+
+
+	</div>
+
+
 							<ul class="total">
 								<li>
 									<h5>Total Amount</h5>
@@ -336,7 +467,7 @@
 							</ul>
 
 							<div class="continue paymentMethod0">
-								<h6>You will save <?php echo $checkout['total_discount']; ?> on this order</h6>
+								<h6 id="you_save">You will save  ₹ <?php echo str_replace(['₹'], '', $checkout['total_discount'])+str_replace(['₹'], '', $checkout['default_discount']); ?> on this order</h6>
 								<?php
 								$str_result = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz';
 								?>
@@ -765,14 +896,44 @@
 				}
 			});
 		}
+var globalJson = null; // global variable
+
+function clear_coupon(){
+	get_checkout_data();
+	$('#coupo_discount_value').html('');
+	$('#coupon_code').val('');
+	
+}
 
 		function get_checkout_data(user_pincode) {
+$("#paymentMethodBtn").attr("disabled", "disabled").css({
+  "pointer-events": "none",
+  "opacity": "0.5",
+  "cursor": "not-allowed"
+});
 			//alert(user_pincode);
+			var user_pincode = $('#pincode').val();
 			$('#coupon_message').html('');
+			$('#coupon_message_invalid').html('');
 			var input_code = $('#coupon_code').val();
 			var city = $("#city option:selected").val();
+			var wallet_money = $('input[name="wallet_money"]:checked').val();
 			var payment_type = $('input[name="flexRadioDefault"]:checked').val();
 			$(".paymentMethodBtn").prop('disabled', true);
+
+// 		console.log(
+// '>>>>>>>>>>>>.',
+// {
+// 					language: default_language,
+// 					coupon_code: input_code,
+// 					shipping_city: city,
+// 					shipping_pincode: user_pincode,
+// 					payment_type: payment_type,
+// 					wallet_money: wallet_money,
+// 					[csrfName]: csrfHash
+// 				}
+// 					);
+			
 			$.ajax({
 				method: "post",
 				url: site_url + "checkout",
@@ -782,16 +943,42 @@
 					shipping_city: city,
 					shipping_pincode: user_pincode,
 					payment_type: payment_type,
+					wallet_money: wallet_money,
 					[csrfName]: csrfHash
 				},
 				success: function(response) {
+					 globalJson = response; // set global variable
+//  return ;
+
 
 					var parsedJSON = response.Information;
+
+let total_discount = parsedJSON.total_discount;
+
+let clean =0;
+if (total_discount) {
+    clean = total_discount.replace(/₹|\s/g, ''); // Remove ₹ and spaces
+}
+
+	let coupon_discount   = parseFloat(parsedJSON.coupon_discount) || 0;
+let clean_value       = parseFloat(clean) || 0;
+let default_discount  = parseFloat(parsedJSON.default_discount) || 0;
+// Sum them
+let totalSave = coupon_discount + clean_value + default_discount;
+// Show in element
+//console.log('response>>>>>>>>>>>>.',coupon_discount , clean_value , default_discount,parsedJSON);
+
+$("#you_save").html('You will save ₹ ' + totalSave + ' on this order');
+
 					var product_html = "";
 					$(".paymentMethod").empty();
 					$('#total_discount_data').text();
 					if (response.status == 2) {
-						$('#coupon_message').html(response.msg);
+						//console.log('response>>>>>>>>>>>>234567.');
+						$('#coupon_message_invalid').html(response.msg);
+						$('#coupo_discount_value').html('');
+						$('#coupon_code').val('');
+
 						/*Swal.fire({
 							position: "center",
 							//icon: "success",
@@ -808,15 +995,25 @@
 						$('#shipping_fee').text(this.shipping_fee);
 						$('#total_val').text(this.payable_amount);
 						$('#coupon_message').html();
+						$('#coupon_message_invalid').html();
 						//alert(this.shipping_fee);
 						if (this.coupon_discount != '') {
 							$('#total_discount_data').text('Total Savings :' + this.coupon_discount_text);
 							$('#coupo_discount_value').text(this.coupon_discount);
+							
+
+						
+
+							//$('#you_save').text(this.coupon_discount + this.tax_payable + this.default_discount);
+
 							$('#coupon_message').html('Coupon applied successfully.');
 						}
 						else if(this.coupon_discount == 0)
 						{
-							$('#coupon_message').html('Invalid Coupon.');	
+							if(input_code){
+								$('#coupon_message_invalid').html('Invalid Coupon.');	
+							}
+							
 						}
 							
 						$(".paymentMethodBtn").prop('disabled', false);
@@ -825,6 +1022,11 @@
 						$(".paymentMethod").html(product_html);
 						alert(this.payable_amount);*/
 					});
+$("#paymentMethodBtn").removeAttr("disabled").css({
+  "pointer-events": "auto",
+  "opacity": "1",
+  "cursor": "pointer"
+});
 					//alert(response);
 				}
 			});
@@ -1018,12 +1220,28 @@ async function place_order_data(ele) {
         form_data.append('coupon_value', coupon_value);
         form_data.append('kyc_document', null);
         form_data.append([csrfName], csrfHash);
+
+        form_data.append('globalJson', JSON.stringify(globalJson));
+				
 		
+		var wallet_money = $('input[name="wallet_money"]:checked').val();
+		var bonus_virtual_price = '';
+
+		// if (wallet_money && wallet_money >= 1) {
+		// 	bonus_virtual_price = $("input[name='wallet_money_amount" + wallet_money + "']").val();
+		// }
+
 		
+		form_data.append('bonus_virtual_price', bonus_virtual_price);
+
+		form_data.append('wallet_money', wallet_money);
+
+$("#paymentMethodBtn").attr("disabled", "disabled").css({
+  "pointer-events": "none",
+  "opacity": "0.5",
+  "cursor": "not-allowed"
+});
 		
-		
-		
-					
 			if ($('input[name="flexRadioDefault"]:checked').val() === 'cod') {
 				$.ajax({
 					method: "post",
@@ -1057,21 +1275,28 @@ async function place_order_data(ele) {
 					url: site_url + "checkout",
 					data: {
 						language: default_language,
-						coupon_code: '',
+						coupon_code: coupon_code,
 						shipping_pincode: $("#pincode").val(),
 						payment_type: payment_type,
+						wallet_money:wallet_money,
+						bonus_virtual_price:bonus_virtual_price,
 						payment_method: $('input[name="flexRadioDefault"]:checked').val(),
+						globalJson: JSON.stringify(globalJson),
 						[csrfName]: csrfHash
 					},
 					success: function (response) {
-						if (response.status) {
-							var amount = response.Information.payable_amount_value - $('#default_discount').text();
-							var pay_orderId = response.Information.pay_orderId;
 
+
+						if (response.status) {
+							//var amount = response.Information.payable_amount_value - $('#default_discount').text();
+							var amount = response.Information.total_price_value;
+							var pay_orderId = response.Information.pay_orderId;
+// console.log('response>>>>>>>>>>>>.',response);
+// return ;
 							var options = {
-								//key: 'rzp_test_qYpWkw3GxxEIPA',
+								//key: 'rzp_test_R6HPHmrG7B2oge',
 								key: 'rzp_live_oVzpJnJRDQttrF',
-								amount: 1 * 100, // Amount in paise
+								amount: amount * 100, // Amount in paise
 								currency: 'INR',
 								name: 'Bznesshub',
 								description: 'Place Order',

@@ -176,7 +176,7 @@ class Order_model extends CI_Model
 
 	function get_order_track_details($language, $order_id, $prod_id)
 	{
-		$this->db->select("o.order_id,o.status, o.total_price,o.payment_mode,o.create_date,
+		$this->db->select("o.order_id,o.status, o.total_price,o.payment_mode,o.create_date,o.globalJson,
 							o.discount,o.total_qty, o.fullname, o.mobile,o.locality, o.fulladdress,o.city,o.state,o.pincode,o.addresstype,o.email,o.coupon_value,st.name as state_name,order_product.prod_attr,order_product.default_discount");
 
 
@@ -189,7 +189,9 @@ class Order_model extends CI_Model
 		$order_summery = array('order_id' => '', 'status' => '', 'payment_mode' => '', 'create_date' => '', 'total_qty' => '', 'total_price' => '', 'discount' => '', 'ordered_products' => []);
 		$shipping_address = array('fullname' => '', 'mobile' => '', 'locality' => '', 'fulladdress' => '', 'city' => '', 'state' => '', 'pincode' => '', 'addresstype' => '', 'email' => '','coupon_value' => '','default_discount' => '');
 
-		$ordered_products = $this->db->select("op.prod_id,op.prod_sku,op.prod_name, op.prod_name_ar,op.prod_img,op.prod_attr,op.qty,op.prod_price,op.shipping,op.discount,op.status,op.tracking_id")->get_where('order_product op', array('op.order_id' => $order_id))->result_array();
+		$ordered_products = $this->db
+		//->select("op.prod_id,op.prod_sku,op.prod_name, op.prod_name_ar,op.prod_img,op.prod_attr,op.qty,op.prod_price,op.shipping,op.discount,op.status,op.tracking_id")
+		->get_where('order_product op', array('op.order_id' => $order_id))->result_array();
 
 		$order_product_array = array();
 		$orders = $shipping = array();
@@ -197,6 +199,7 @@ class Order_model extends CI_Model
 		if ($query->num_rows() > 0) {
 			$order_result = $query->result_object();
 			$order_detail = $order_result[0];
+			//echo '<pre>';print_r($order_detail);die;	
 			$orders['order_id'] = $order_detail->order_id;
 			$orders['status'] = $order_detail->status;
 			$orders['payment_mode'] = $order_detail->payment_mode;
@@ -209,8 +212,14 @@ class Order_model extends CI_Model
 			$orders['default_discount'] = $order_detail->default_discount;
 			$orders['ordered_products'] = $ordered_products;
 			$orders['prod_attr'] = json_decode($order_detail->prod_attr);
-			
+			$default_discount=0;
+			foreach ($ordered_products as $this_del) {
+				$default_discount +=$this_del['default_discount'];
+			}
+			$orders['default_discount'] = $default_discount;
+				//echo '<pre>';print_r($default_discount);die;	
 
+			$orders['globalJson'] = $order_detail->globalJson;
 			$order_summery = $orders;
 
 			$shipping['fullname'] = $order_detail->fullname;
@@ -261,6 +270,7 @@ class Order_model extends CI_Model
 					$order_product['tracking_id'] = $order_prod_detail->tracking_id;
 					$order_product['tracking_url'] = $order_prod_detail->tracking_url;
 					$order_product['pickup_type'] = $order_prod_detail->pickup_type;
+
 					$order_product['total_gst'] = price_format($order_prod_detail->cgst + $order_prod_detail->sgst + $order_prod_detail->igst);
 					if ($order_prod_detail->prod_attr) {
 						$attr = json_decode($order_prod_detail->prod_attr);
@@ -284,6 +294,7 @@ class Order_model extends CI_Model
 
 	function change_order_status_details($order_id, $pid, $status1)
 	{
+
 		$msg = "";
 		$this->db->select("op.prod_id,op.status,op.prod_name,o.user_id,op.prod_price,ul.level_1");
 
@@ -294,7 +305,7 @@ class Order_model extends CI_Model
 		$this->db->JOIN('appuser_login ul', 'ul.user_unique_id = o.user_id', 'INNER');
 
 		$query_prod = $this->db->get('order_product op');
-
+	
 		if ($query_prod->num_rows() > 0) {
 			$order_prod_result = $query_prod->result_object();
 
@@ -330,14 +341,60 @@ class Order_model extends CI_Model
 					$old_balance = $get_wallet->balance;
 				}
 
-				$this->db->select('*');
+				
+
+$this->db->select('*');
+$this->db->where(array('order_id' => $order_id));
+$query_orders = $this->db->get('orders');
+$get_orders = $query_orders->result_object()[0];
+
+$bonus_virtual=$get_orders->bonus_virtual;
+$bonus_virtual_price=$get_orders->bonus_virtual_price;
+if($bonus_virtual > 0){
+
+$this->db->select('*');
+$this->db->where(array('user_id' => $user_id));
+$query_or_wallet = $this->db->get('wallet_summery');
+$get_wallet_or = $query_or_wallet->result_object()[0];
+$old_amount_or = $get_wallet_or->amount + $bonus_virtual_price;
+$this->db->where(array('user_id'=>$user_id));
+$walet_history_upd['amount'] = $old_amount_or;
+$this->db->update('wallet_summery', $walet_history_upd);	
+
+
+
+$data_wallet_history['wallet_id'] = $get_wallet_or->wallet_id;
+if($bonus_virtual == 1){
+$data_wallet_history['remark']='Return New User Bonus';
+$data_wallet_history['payment_type']=8;
+}elseif($bonus_virtual == 2){
+$data_wallet_history['remark']='Return Virtual Partner/Order Commission';
+$data_wallet_history['payment_type']=9;
+}
+$data_wallet_history['transaction_id'] = $transaction_id;
+$data_wallet_history['transaction_type'] = 'credit';
+$data_wallet_history['amount'] = $bonus_virtual_price;
+$data_wallet_history['balance'] = $old_amount_or;
+$data_wallet_history['product_id'] = $pid;
+$data_wallet_history['order_id'] = $order_id;
+$data_wallet_history['user_id'] = $user_id;
+$data_wallet_history['created_at'] = $this->date_time;
+
+$this->db->insert('wallet_transaction_history',$data_wallet_history);
+
+}
+
+		$this->db->select('*');
 				$this->db->where(array('user_id' => admin_user_id));
 				$query_wallet = $this->db->get('wallet_summery');
 				
 				$get_wallet = $query_wallet->result_object()[0];
 				
-				
 				$old_amount = $get_wallet->amount;
+	$transaction_id = 'txt'.$this->random_strings_digit(3).date('dmYHi');
+
+				
+				
 				$walet_history_upd['amount'] = $old_amount - $prod_commision_admin;
 			
 				$this->db->where(array('user_id'=>admin_user_id));

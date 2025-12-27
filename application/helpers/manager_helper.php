@@ -1,6 +1,137 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 
+
+
+
+if (!function_exists('wallet_calc')) {
+    function wallet_calc($user_id = null)
+    {
+
+        $CI =& get_instance();
+        $CI->load->database();
+        $CI->load->model('wallet_model'); // make sure the model is loaded
+
+        // if no user id passed, use session
+        if ($user_id === null) {
+            $user_id = $CI->session->userdata('user_id');
+        }
+
+        $wallet = $CI->wallet_model->get_wallet_data($user_id); 
+		$wallet_summery = $CI->wallet_model->get_wallet_summery($wallet['wallet_id']);
+		$wallet_bonus   = $CI->wallet_model->get_wallet_bonus($wallet['wallet_id']);
+
+		$total_bonus = 0;
+		$deduct_wallet=0;
+		$return_wallet=0;
+		$deduct_virtual_wallet=0;
+		$return_virtual_wallet=0;
+
+		foreach($wallet_bonus as $wallet_bonus)
+		{
+			
+			if($wallet_bonus->payment_type == '1')
+			{
+				$total_bonus = $total_bonus + $wallet_bonus->amount;
+			}
+	        if($wallet_bonus->payment_type == '6')
+	        {
+	            $deduct_wallet = $deduct_wallet + $wallet_bonus->amount;
+	        }
+	        if($wallet_bonus->payment_type == '8')
+	        {
+	            $return_wallet = $return_wallet + $wallet_bonus->amount;
+	        }
+	        if($wallet_bonus->payment_type == '7')
+	        {
+	            $deduct_virtual_wallet = $deduct_virtual_wallet + $wallet_bonus->amount;
+	        }
+	        if($wallet_bonus->payment_type == '9')
+	        {
+	            $return_virtual_wallet = $return_virtual_wallet + $wallet_bonus->amount;
+	        }
+		}
+		$total_bonus=($total_bonus+$return_wallet)-$deduct_wallet;
+		$unwithdraw_amount = '';
+	    $total_virtual_amount=0;
+	    if($wallet['amount'] > 0){
+	    	if($total_bonus != 0)
+	    	{
+	    		$amount = $wallet['amount'] - $total_bonus;
+	            $total_virtual_amount = ($amount+$return_virtual_wallet) - $deduct_virtual_wallet;
+	    		
+	    	}
+	    	else
+	    	{
+	    		$amount = $wallet['amount'];
+	            $total_virtual_amount = ($amount+$return_virtual_wallet) - $deduct_virtual_wallet;
+	    	}
+	    }
+	    $both_message = " (".$total_bonus." New User Bonus + ".round($total_virtual_amount,2)." Virtual Partner/Order Commission)";
+
+	    $array=[
+	    	'total_wallet_balance'=>round($wallet['amount'],0),
+	    	'newUserBonus'=>$total_bonus,
+	    	'virtualPartner'=>$total_virtual_amount,
+	    	'both_message'=>$both_message,
+
+	    ];
+	    return $array;
+
+    }
+}
+
+
+if (!function_exists('get_profile_image')) {
+    function get_profile_image($user_id = null)
+    {
+        $CI =& get_instance();
+        $CI->load->database();
+
+        // if no user id passed, use session
+        if ($user_id === null) {
+            $user_id = $CI->session->userdata('user_id');
+        }
+
+        if (!$user_id) {
+            return base_url('assets_web/images/icons/userprofile.png'); // fallback
+        }
+
+        $user = $CI->db->get_where('appuser_login', ['user_unique_id' => $user_id])->row();
+
+        if (!empty($user) && !empty($user->profile_pic)) {
+            return base_url('media/profile_pictures/'.$user->profile_pic);  // full path to stored image
+        } else {
+            return base_url('assets_web/images/icons/userprofile.png'); // fallback
+        }
+    }
+}
+
+
+if (!function_exists('check_wishlist')) {
+
+   
+    function check_wishlist($product_id, $user_id)
+    {
+        
+        $CI =& get_instance(); // get CodeIgniter instance
+
+        $CI->db->where('user_id', $user_id);
+        $CI->db->where('prod_id', $product_id);
+        $query = $CI->db->get('wishlistdetails'); // table name
+
+        if($query->num_rows() > 0){
+            return 1;
+        } else {
+            return 0;
+        }
+
+        //print_r([$product_id, $user_id]);
+        //return $html;
+    }
+}
+
+
 if ( ! function_exists('manager'))
 {
 	function manager($total_rows, $per_page_item) {
@@ -71,50 +202,61 @@ if ( ! function_exists('price_format'))
     }
 }
 
-if ( ! function_exists('send_email_smtp'))
-{
+if (!function_exists('send_email_smtp')) {
 
-  function send_email_smtp($toemail,$htmlMessage,$subject){
-		
-		$smtp_host = get_settings('smtp_host');
-		$smtp_port = get_settings('smtp_port');
-		$smtp_user = get_settings('smtp_user');
-		$system_email = get_settings('system_email');
-		$smtp_password = get_settings('smtp_password');
-		$system_name = get_settings('system_name');
+    function send_email_smtp($toemail, $htmlMessage, $subject) {
 
-		$config['protocol'] = "smtp";
-		$config['smtp_host'] = $smtp_host;
-		$config['smtp_port'] = $smtp_port;
-		$config['smtp_user'] = $smtp_user;
-		$config['smtp_pass'] = $smtp_password;
-		$config['smtp_crypto'] = 'tls';
-		$config['charset'] = "utf-8"; 
-		$config['mailtype'] = "html";
+        // ✅ Define sender credentials directly (Hostinger config)
+        $smtp_user  = 'admin@bznesshub.com';
+        $smtp_pass  = 'Bzness@2025';
+        $system_name = 'Bzness Hub';
 
-		$CI = &get_instance();
-		$CI->load->library('session');
-		$CI->load->library('email');
 
-		$CI->email->initialize($config);
-		$CI->email->set_newline("\r\n");
-		$CI->email->from($smtp_user, $system_name);
-		$list = array($toemail);
-		$CI->email->to($list);
+        $smtp_user = get_settings('smtp_user'); 
+        $smtp_pass = get_settings('smtp_password'); 
 
-		$CI->email->subject($subject);
-		$CI->email->message($htmlMessage);
+        $config = [
+            'protocol'    => 'smtp',
+            'smtp_host'   => 'smtp.hostinger.com',
+            'smtp_port'   => 465,
+            'smtp_user'   => $smtp_user,
+            'smtp_pass'   => $smtp_pass,
+            'smtp_crypto' => 'ssl', // use 'tls' if port 587
+            'charset'     => 'utf-8',
+            'mailtype'    => 'html',
+            'newline'     => "\r\n",
+            'crlf'        => "\r\n",
+        ];
 
-		if ($CI->email->send()) {
-			return true;
-		} else {
-			 //show_error($CI->email->print_debugger());
-			//log_message('error', 'Email sending failed. Error: ' . $CI->email->print_debugger());
-			return false;
-		}
-		
-	}
+        $CI = &get_instance();
+        $CI->load->library('email');
+        $CI->email->initialize($config);
+
+        // ✅ Use valid sender email + name
+        $CI->email->from($smtp_user, $system_name);
+        $CI->email->to($toemail);
+        $CI->email->subject($subject);
+        $CI->email->message($htmlMessage);
+
+// if (!$CI->email->send()) {
+//     $error = $CI->email->print_debugger();
+//     echo "<pre style='background:#111;color:#0f0;padding:15px;'>Email sending failed:\n\n" . htmlspecialchars($error) . "</pre>";die;
+//     //log_message('error', 'Email failed to send. Error: ' . $error);
+//    // return false;
+// }
+
+        if ($CI->email->send()) {
+            log_message('info', 'Email sent successfully to: ' . $toemail);
+            return true;
+        } else {
+            $error = $CI->email->print_debugger(['headers']);
+            log_message('error', 'Email failed to send. Error: ' . $error);
+            echo "<pre>Email sending failed:\n" . $error . "</pre>";
+            return false;
+        }
+    }
 }
+
 function minify($html)
 {
 	// Remove extra white spaces

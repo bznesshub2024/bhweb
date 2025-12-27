@@ -41,7 +41,7 @@ class Wishlist extends REST_Controller {
 		$qty = removeSpecialCharacters($this->post('qty'));
 		$referid = removeSpecialCharacters($this->post('referid'));
 		$devicetype = removeSpecialCharacters($this->post('devicetype'));
-		
+
 		
 		
 		$validation = $this->parameterValidation($requiredparameters,$this->post()); //$this->post() holds post values
@@ -54,7 +54,7 @@ class Wishlist extends REST_Controller {
 					
 					if($cart =='add'){
 						$cart_detail = $this->wishlist_model->get_cart_full_details($user_id,$devicetype);
-						
+						$this->wishlist_model->del_pro($pid,$user_id);
 						$this->response([
 							$this->config->item('rest_status_field_name') => 1,
 							$this->config->item('rest_message_field_name') => 'Product Added to Wishlist!',
@@ -68,7 +68,7 @@ class Wishlist extends REST_Controller {
 						
 					}else if($cart =='update'){
 						$cart_detail = $this->wishlist_model->get_cart_full_details($user_id,$devicetype);
-								
+						$this->wishlist_model->del_pro($pid,$user_id);		
 						$this->response([
 							$this->config->item('rest_status_field_name') => 1,
 							$this->config->item('rest_message_field_name') => get_phrase('wishlist_updated',$language_code),
@@ -80,6 +80,7 @@ class Wishlist extends REST_Controller {
 						], self::HTTP_OK);
 					}else if($cart =='delete')
 					{
+						$this->wishlist_model->del_pro($pid,$user_id);
 						$this->response([
 							$this->config->item('rest_status_field_name') => 1,
 							$this->config->item('rest_message_field_name') => 'Product Remove From the Wishlist!',

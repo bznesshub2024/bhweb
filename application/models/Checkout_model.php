@@ -13,11 +13,12 @@ class Checkout_model extends CI_Model
 		$this->load->model('address_model');
 		$this->date_time = date('Y-m-d H:i:s');
 		$this->date = date('Y-m-d');
+		$this->load->model('wallet_model');
 	}
 
 
 
-	function get_checkout_full_details($user_id, $quote_id, $shipping_city = '', $shipping_pincode = '', $coupon_code = '',$payment_type = '')
+	function get_checkout_full_details($user_id, $quote_id, $shipping_city = '', $shipping_pincode = '', $coupon_code = '',$payment_type = '',$wallet_money=0,$globalJson='')
 	{
 
 		$validate_coupon = $this->Validate_coupon_code($user_id, $coupon_code, '');
@@ -273,7 +274,8 @@ class Checkout_model extends CI_Model
 				}
 				
 				$total_shipping_fee += $shiping_detail;*/
-				
+							//print_r([ preg_replace('/[^\d]/', '', $product_detail['price1']) , intval($qty),]);die;
+ $product_detail['price1']=preg_replace('/[^\d]/', '', $product_detail['price1']);
 				$shipping_data = $this->calculateShippingFee($seller_pincode, $shipping_pincode, '10', '10','10', '300', $payment_type, $product_detail['price1'] / intval($qty),intval($qty));
 					//print_r($shipping_data);
 					$shipping_data_array[] = array(
@@ -292,13 +294,52 @@ class Checkout_model extends CI_Model
 				
 				
 				// Razorpay API Credentials
+				// $key_id = 'rzp_test_R6HPHmrG7B2oge';
+				// $key_secret = 'VIdcyRcV3TGDVRihpD3A8GYQ';
+					
 				$key_id = 'rzp_live_oVzpJnJRDQttrF';
 				$key_secret = 'j3wOmrEPLY5St6hONRSKTv05';
+
+
+
+
+$total_price_value = ($total_price + $shipping - round($coupon_discount, 0)) - round($default_discount,0);
+
+if(!empty($globalJson)){
+if (is_string($globalJson)) {
+    $globalJson = json_decode($globalJson);
+}
+
+if (isset($globalJson->Information)) {
+    $info = $globalJson->Information;
+    $total_price_value = str_replace(['₹', ' ', ','], '', $info->payable_amount);
+}
+}
+
+$bonus_virtual=0;
+if(!empty($wallet_money)){
+$bonus_virtual=$wallet_money;
+}
+$bonus_virtual_price=0;
+if(!empty($bonus_virtual) && $bonus_virtual > 0){
+if($bonus_virtual == 1){
+$bonus_virtual_price=wallet_calc()['newUserBonus'];
+}elseif($bonus_virtual == 2){
+$bonus_virtual_price=wallet_calc()['virtualPartner'];
+}
+}
+
+$bonus_virtual_price=min($bonus_virtual_price, $total_price_value);
+$total_price_value = ($total_price_value - $bonus_virtual_price)+ $shipping;
+
+
+
+
 
 				// Order details
 				$data = [
 					//"amount" => ($product_detail['price1'] + $shipping) * 100, // Amount in paise (e.g., 50000 = ₹500)
-					"amount" => 1 * 100, // Amount in paise (e.g., 50000 = ₹500)
+					"amount" => $total_price_value * 100, // Amount in paise (e.g., 50000 = ₹500)
 					"currency" => "INR",
 					"receipt" => "receipt#1",
 					"payment_capture" => 1 // Capture payment automatically
@@ -392,10 +433,72 @@ class Checkout_model extends CI_Model
 		//$coupon_code = '';
 		//$coupon_discount = 0;
 
+$bonus_virtual=0;
+if(!empty($wallet_money)){
+$bonus_virtual=$wallet_money;
+}
+$bonus_virtual_price=0;
+if(!empty($bonus_virtual) && $bonus_virtual > 0){
+if($bonus_virtual == 1){
+$bonus_virtual_price=wallet_calc()['newUserBonus'];
+}elseif($bonus_virtual == 2){
+$bonus_virtual_price=wallet_calc()['virtualPartner'];
+}
+}
+		
+
+
+		$total_price_value=($total_price
+		                                
+		                                - round($coupon_discount, 0))
+		                                - round($default_discount, 0);
+		$payable_amount=($total_price
+		                                )
+		                                - round($coupon_discount, 0)
+		                                - round($default_discount, 0)
+		                             ;
+		
+
+//print_r(min($bonus_virtual_price, $total_price_value));die;
+
+		$bonus_virtual_price=min($bonus_virtual_price, $total_price_value);
+
+		$total_price_value = ($total_price_value - $bonus_virtual_price)+ $shipping_fee;
+
+		$payable_amount = ($payable_amount - $bonus_virtual_price)+ $shipping_fee;
+
+
+		
+
+// print_r([
+// $total_price, $shipping_fee,$coupon_discount
+// ]);die;
+
+
 		return array(
-			'user_address' => $user_address, 'total_mrp' => price_format($total_mrp), 'total_discount' => price_format($total_mrp - $total_price), 'total_price' => price_format($total_price - round($default_discount,0)),
-			'total_item' => $total_item,'pay_orderId' => $pay_orderId, 'tax_payable' => $total_tax, 'coupon_code' => $coupon_code, 'coupon_discount' => round($coupon_discount, 0), 'shipping_fee' => $shipping_fee, 'payable_amount' => price_format($total_price + $shipping_fee - round($coupon_discount, 0) - round($default_discount,0)), 'payable_amount_value' => $total_price + $shipping_fee - round($coupon_discount, 0), 'total_price_value' => ($total_price + $shipping_fee - round($coupon_discount, 0)) - round($default_discount,0), 'seller_pincode' => $seller_pincode, 'imgurl' => $imgurl,'default_discount' => round($default_discount,0)
+		    'user_address'         => $user_address,
+		    'total_mrp'            => price_format($total_mrp),
+		    'total_discount'       => price_format($total_mrp - $total_price),
+		    'total_price'          => price_format($total_price - round($default_discount, 0)),
+		    'total_item'           => $total_item,
+		    'pay_orderId'          => $pay_orderId,
+		    'tax_payable'          => $total_tax,
+		    'coupon_code'          => $coupon_code,
+		    'coupon_discount'      => round($coupon_discount, 0),
+		    'shipping_fee'         => $shipping_fee,
+		    'payable_amount'       => price_format($payable_amount),
+		    'payable_amount_value' => $total_price
+		                                + $shipping_fee
+		                                - round($coupon_discount, 0),
+		    'total_price_value'    => price_format($total_price_value),
+		    'seller_pincode'       => $seller_pincode,
+		    'imgurl'               => $imgurl,
+		    'default_discount'     => round($default_discount, 0),
+		    'bonus_virtual'     => $bonus_virtual,
+		    'bonus_virtual_price'     => $bonus_virtual_price,
+
 		);
+
 	}
 	
 	private function nimbuspostLogin()
@@ -507,7 +610,7 @@ class Checkout_model extends CI_Model
 	
 	//function for place order
 
-	function place_order_details($user_id, $qouteid, $fullname, $mobile, $locality, $fulladdress, $city, $state, $pincode, $addresstype, $email, $payment_id, $payment_mode, $coupon_code, $coupon_value, $city_id)
+	function place_order_details($user_id, $qouteid, $fullname, $mobile, $locality, $fulladdress, $city, $state, $pincode, $addresstype, $email, $payment_id, $payment_mode, $coupon_code, $coupon_value, $city_id,$wallet_money=0,$globalJson='')
 	{
 		$status = array('status' => '');
 		$delivery_array = $order = array();
@@ -1044,13 +1147,98 @@ class Checkout_model extends CI_Model
 				}
 			}
 
+
+
+
+
+
+$bonus_virtual=0;
+if(!empty($wallet_money)){
+$bonus_virtual=$wallet_money;
+}
+$bonus_virtual_price=0;
+if(!empty($bonus_virtual) && $bonus_virtual > 0){
+if($bonus_virtual == 1){
+$bonus_virtual_price=wallet_calc()['newUserBonus'];
+}elseif($bonus_virtual == 2){
+$bonus_virtual_price=wallet_calc()['virtualPartner'];
+}
+}
+
+if(!empty($globalJson)){
+if (is_string($globalJson)) {
+    $globalJson = json_decode($globalJson);
+}
+
+if (isset($globalJson->Information)) {
+    $info = $globalJson->Information;
+    $total_price = $info->bonus_virtual_price + str_replace(['₹', ' ', ','], '', $info->payable_amount);
+
+	$bonus_virtual_price = $info->bonus_virtual_price;
+
+
+
+}
+}
+
+// print_r([$total_price_value
+// ]);die;
+
+// $total_price = ($total_price + $shipping - round($coupon_discount, 0)) - round($default_discount,0);
+// print_r([$globalJson,
+// $total_price , $shipping , round($coupon_discount, 0) , round($default_discount,0)
+// ]);die;
+
+// $bonus_virtual_price=min($bonus_virtual_price, $total_price);
+
+
+
+
+
+
+			$order['bonus_virtual'] = $wallet_money;
+			$order['bonus_virtual_price'] = $bonus_virtual_price;
 			$order['total_price'] = $total_price;
 			$order['discount'] = $total_discount;
 			$order['total_qty'] = $total_item;
+
 			/*$order['coupon_value'] = $coupon_discount;*/
+
+//print_r($order);die;
 
 			$this->db->where(array('order_id' => $order_id));
 			$queryup = $this->db->update('orders', $order);
+
+$wallet = $this->wallet_model->get_wallet_data();
+if($wallet_money > 0){
+$user_id=$this->session->userdata('user_id');
+$final_wallet_amount = $wallet['amount'] - $bonus_virtual_price;
+$walletupdate['amount'] = $final_wallet_amount;
+$this->db->where(array('user_id' => $user_id));
+$queryup = $this->db->update('wallet_summery', $walletupdate);
+
+$transaction_id = 'txt'.$this->random_strings_digit(3).date('dmYHi');
+$wallet_txn['wallet_id']=$wallet['wallet_id'];
+
+if($wallet_money == 1){
+$wallet_txn['remark']='Deduct from New User Bonus';
+$wallet_txn['payment_type']=6;
+}elseif($wallet_money == 2){
+$wallet_txn['remark']='Deduct from Virtual Partner/Order Commission';
+$wallet_txn['payment_type']=7;
+}
+$wallet_txn['transaction_id']=$transaction_id;
+$wallet_txn['transaction_type']='debit';
+$wallet_txn['amount']=$bonus_virtual_price;
+$wallet_txn['balance']=$final_wallet_amount;
+$wallet_txn['product_id']='';
+$wallet_txn['order_id']=$order_id;
+$wallet_txn['user_id']=$user_id;
+$wallet_txn['created_at']=date('Y-m-d H:i:s');
+$this->db->insert('wallet_transaction_history', $wallet_txn);
+}
+
+
 
 			$status['order_detail'] = $order;
 			$status['order_id'] = $order_id;

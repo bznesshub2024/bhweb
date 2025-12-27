@@ -141,7 +141,7 @@ Custom Theme
 
 .loaderScreen {
   background-color: #fff;
-  background-image: url('../../images/BusinessHub_footer_new.png');
+  background-image: url('../../../logo_color.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 25vh;

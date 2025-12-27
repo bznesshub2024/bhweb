@@ -1,9 +1,9 @@
 <?php
 //also change DB connection in cron folder 
 define('HOST', 'localhost');
-define('DB1', 'u774033453_bznesshub');
-define('USER', 'u774033453_bznesshub');
-define('PASS', '2CkbLC8HWFjY2rTn');
+define('DB1', 'bznesshub');
+define('USER', 'root');
+define('PASS', '');
 
 
 $conn = new mysqli(HOST, USER, PASS, DB1);
@@ -15,7 +15,7 @@ $defaultstatus= "inactive";
 $publickey_server ="9856325423368475";
 
 
-define('BASEURL', "https://www.bznesshub.com/");
+define('BASEURL', "http://localhost/completed/ella/bznesshub/admin/");
 
 $image_size = 5000000;
 $file_kb = ($image_size/1000).' KB';

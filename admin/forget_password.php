@@ -4,6 +4,8 @@ include('../app/db_connection.php');
 $error=$message=''; // Variable To Store Error Message
 include('common_function.php');
 
+include('encryptfun.php');
+ global $publickey_server;
 
 $Common_Function = new Common_Function();
 
@@ -19,9 +21,17 @@ if(isset($_POST['emailvalue'])){
 		
 		$checksum = date('dym').$Common_Function->random_strings(10).date('his');
 		
-		$query = $conn->query("UPDATE `admin_login` SET checksum ='".$checksum."' WHERE email ='".$email_id."'");
-		
-		$Common_Function->send_email_forgot_password($conn,$admin_email,$adminname,$checksum,BASEURL,'Forgot Password');
+		//$query = $conn->query("UPDATE `admin_login` SET checksum ='".$checksum."' WHERE email ='".$email_id."'");
+
+		$new_passwords = $Common_Function->generateRandomCode();
+		$encruptfun = new encryptfun();
+		$passwords = $encruptfun->encrypt($publickey_server, $new_passwords);
+
+		$Common_Function->send_password_email($conn,$admin_email,$adminname,$new_passwords);
+
+		$query = $conn->query("UPDATE `admin_login` SET password ='".$passwords."' WHERE email ='".$email_id."'");
+
+		//$Common_Function->send_email_forgot_password($conn,$admin_email,$adminname,$checksum,BASEURL,'Forgot Password');
 		$message ="Mail sent successfully";
 	}else{
 		$error = "User Not Exist";
